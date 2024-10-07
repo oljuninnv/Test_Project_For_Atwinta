@@ -16,15 +16,15 @@ return new class extends Migration
             $table->string('login')->unique();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('image')->nullable(); // Ссылка на изображение
-            $table->text('about')->nullable(); // Описание пользователя
-            $table->string('type'); // Тип пользователя
-            $table->string('github')->nullable(); // Ссылка на GitHub
-            $table->string('city')->nullable(); // Город
-            $table->boolean('is_finished')->default(false); // Завершен ли профиль
-            $table->string('phone')->nullable(); // Телефон
-            $table->date('birthday')->nullable(); // Дата рождения
-            $table->string('password'); // Пароль
+            $table->string('image')->nullable();
+            $table->text('about')->nullable();
+            $table->enum('type', ['front', 'back']); // Ограничение для поля type
+            $table->string('github')->nullable();
+            $table->string('city')->nullable();
+            $table->boolean('is_finished')->default(false);
+            $table->string('phone')->nullable();
+            $table->date('birthday')->nullable();
+            $table->string('password');
             $table->timestamps();
         });
     }

@@ -5,7 +5,7 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" @submit.prevent="loginUser">
+      <form class="space-y-6" @submit.prevent="login">
         <div>
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email-адрес</label>
           <div class="mt-2">
@@ -57,10 +57,13 @@
 </template>
 
 <script>
+import { loginUser } from '../services/api/auth';
+
 export default {
   data() {
     return {
       formData: {
+        email: '',
         password: ''
       },
       errorMessage: {}
@@ -73,10 +76,38 @@ export default {
         this.errorMessage.password = 'Пароль обязателен';
       }
     },
-    loginUser() {
+    async login() {
       this.validateInput();
       if (Object.keys(this.errorMessage).length === 0) {
-        console.log('Авторизация успешна', this.formData);
+        try {
+          const response = await loginUser(this.formData);
+          console.log(response);
+          alert('Авторизация прошла успешно');
+          if (response.data) {
+            localStorage.setItem('token', response.token);
+            this.$router.push('/users');
+          }
+        } catch (error) {
+          if (error.response) {
+            switch (error.response.status) {
+              case 406:
+                alert('Пользователь не подтвердил почту');
+                break;
+              case 408:
+                alert('Ошибка в заполнении данных');
+                break;
+              case 500:
+                alert('Неправильный логин или пароль. Попробуйте заново');
+                break;
+              default:
+                alert('Произошла неизвестная ошибка. Попробуйте позже.');
+                console.error('Произошла ошибка:', error);
+            }
+          } else {
+            alert('Проблема с сетью. Проверьте подключение к интернету.');
+            console.error('Ошибка сети:', error);
+          }
+        }
       }
     }
   }

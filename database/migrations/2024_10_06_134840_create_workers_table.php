@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('workers', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('department_id')->nullable();
+            $table->unsignedBigInteger('position_id')->nullable();
+
             $table->foreign("user_id")->references("id")->on("users")
                 ->onDelete("set null")->onUpdate("cascade");
-            $table->string('department'); 
-            $table->string('position'); 
+            $table->foreign("department_id")->references("id")->on("departments")
+                ->onDelete("set null")->onUpdate("cascade"); 
+            $table->foreign("position_id")->references("id")->on("work_positions")
+                ->onDelete("set null")->onUpdate("cascade");  
             $table->date('adopted_at'); // Дата поступления
             $table->timestamps();
         });
