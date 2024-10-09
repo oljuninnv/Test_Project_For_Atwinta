@@ -25,7 +25,7 @@
           <div class="flex items-center justify-between">
             <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Пароль</label>
             <div class="text-sm">
-              <router-link class="font-semibold text-red-600 hover:text-neutral-400" to="/#">Забыли пароль?</router-link>
+              <router-link class="font-semibold text-red-600 hover:text-neutral-400" to="/auth/restore">Забыли пароль?</router-link>
             </div>
           </div>
           <div class="mt-2">
