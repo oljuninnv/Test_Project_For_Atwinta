@@ -18,6 +18,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/auth/reset/{token}', [ResetPasswordController::class,'verificationMail']);
-Route::get('/auth/reset', [ResetPasswordController::class, 'resetPasswordLoad']);
-Route::post('/auth/reset', [ResetPasswordController::class, 'resetPassword']);
+Route::get('/auth/restore/confirm/{token}', [ResetPasswordController::class,'verificationMail']);
+Route::get('/auth/restore/confirm', [ResetPasswordController::class, 'resetPasswordLoad']);
+Route::post('/auth/restore/confirm', [ResetPasswordController::class, 'resetPassword']);

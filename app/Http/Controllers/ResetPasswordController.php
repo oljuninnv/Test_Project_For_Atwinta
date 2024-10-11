@@ -10,7 +10,6 @@ use App\Models\PasswordReset;
 use Illuminate\Support\Facades\URL;
 Use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
-use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 
 class ResetPasswordController extends Controller
@@ -21,8 +20,9 @@ class ResetPasswordController extends Controller
 
             if(count($user) > 0){
                 $token = Str::random(40);
-                $domain = URL::to('/');
-                $url = $domain.'/auth/reset?token='.$token;
+                // $domain = URL::to('/');
+                // $url = $domain.'/auth/restore/confirm?token='.$token;
+                $url = 'http://localhost:5173/auth/restore/confirm?token=' . $token;
 
                 $data['url'] = $url;
                 $data['email'] = $request->email;
@@ -60,35 +60,73 @@ class ResetPasswordController extends Controller
         if (isset($request->token) && count($resetData) > 0)
         {
             $user = User::where('email',$resetData[0]['email'])->get();
-            // return response([ compact('user'), 'message' => 'Success'], 200);
-            return view('resetPassword', compact('user'));
-        }
-        else
-        {
-            // return response()->json(['message' => 'Failed']);
-            return 'Failed';
+            // return view('resetPassword', compact('user'));
+
+            if ($user) {
+                return response()->json(['msg' => 'User found','success' => true], 200);
+            } else {
+                return response()->json(['msg' => 'User not found','success' => false], 404);
+            }
+        } else {
+            return response()->json(['msg' => 'Invalid token','success' => false], 404);
         }
     }
 
-    public function resetPassword(Request $request)
-    {
+    // public function resetPassword(Request $request)
+    // {
+    //     $request->validate([
+    //         'password' => 'required|string|min:6|confirmed'
+    //     ]);
+
+    //     $user = User::find($request->id);
+    //     $user->password =  Hash::make($request->password);
+    //     $user->save();
+
+    //     PasswordReset::where('email',$user->email)->delete();
+
+    //     // $data = [
+    //     //     'password' => $user->password,
+    //     //     'email' => $user->email,
+    //     //     'message' => 'Password changed successfully!'
+    //     // ];
+
+    //     return response()->json(['msg' => 'Password changed successfully!','success' => true], 200);
+    //     // return "<h1>Пароль успешно сменён</h1>";
+    // }
+
+        public function resetPassword(Request $request)
+    {   
+        // Проверка на наличие токена
+        $resetData = PasswordReset::where('token', $request->get('token'))->first();
+
+        if (!$resetData) {
+            return response()->json(['msg' => 'Invalid token', 'success' => false], 404);
+        }
+
+        // Проверка на наличие пользователя
+        $user = User::where('email', $resetData->email)->first();
+
+        if (!$user) {
+            return response()->json(['msg' => 'User not found', 'success' => false], 404);
+        }
+
+        // Валидация пароля
         $request->validate([
             'password' => 'required|string|min:6|confirmed'
         ]);
 
-        $user = User::find($request->id);
-        $user->password =  Hash::make($request->password);
+        // Изменение пароля
+        $user->password = Hash::make($request->get('password'));
         $user->save();
 
-        PasswordReset::where('email',$user->email)->delete();
+        // Удаление записи о сбросе пароля
+        PasswordReset::where('email', $user->email)->delete();
 
-        // $data = [
-        //     'password' => $user->password,
-        //     'email' => $user->email,
-        //     'message' => 'Password changed successfully!'
-        // ];
+        $data = [
+            'msg' => 'Password changed successfully!',
+            'success' => true,
+        ];
 
-        // return $this->successResponse($data);
-        return "<h1>Пароль успешно сменён</h1>";
+        return $this->successResponse($data);
     }
 }

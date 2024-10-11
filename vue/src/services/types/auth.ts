@@ -36,3 +36,23 @@ export interface ILoginResponse {
     data: IUser;
     token: string;
 }
+
+export interface IResetLinkParams {
+    email: string;
+}
+
+export interface IResetLinkResponse {
+    success: boolean;
+    msg: string;
+}
+
+export interface IResetPasswordParams {
+    token: string,
+    password: string,
+    password_confirmation: string
+}
+
+export interface IResetPasswordResponse {
+    success: boolean;
+    msg: string;
+}

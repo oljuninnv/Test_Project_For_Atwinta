@@ -4,6 +4,8 @@ import Register from "../views/RegisterView.vue"
 import UserView from "../views/UserView.vue"
 import UsersList from "../views/UsersList.vue"
 import GroupList from "../views/GroupList.vue"
+import SendResetLink from "../views/SendResetLink.vue"
+import ResetPassword from "../views/ResetPassword.vue"
 
 const routes = [
     {
@@ -21,6 +23,12 @@ const routes = [
     {
         path: '/groups', name: 'GroupList',component:GroupList        
     },
+    {
+        path: '/auth/restore', name: 'SendResetLink',component:SendResetLink        
+    },
+    {
+        path: '/auth/restore/confirm/', name: 'ResetPassword',component:ResetPassword
+    }
 ]
 
 const router = createRouter({

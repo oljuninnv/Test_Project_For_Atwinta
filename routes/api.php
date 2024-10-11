@@ -23,9 +23,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('auth/register', [AuthController::class,'register']);
 Route::post('auth/login', [AuthController::class,'login']);
 
-Route::post('auth/reset', [ResetPasswordController::class,'forgetPassword']);
-// Route::get('auth/reset/{token}', [ResetPasswordController::class,'verificationMail']);
-// Route::post('auth/reset/', [ResetPasswordController::class,'resetPasswordLoad']);
-// Route::post('auth/reset/confirm', [ResetPasswordController::class,'resetPassword']);
+Route::post('/auth/restore', [ResetPasswordController::class, 'forgetPassword']);
+Route::post('/auth/restore/confirm', [ResetPasswordController::class, 'resetPassword']);
 
 Route::apiResource('/users', UserController::class)->middleware('auth:api');
