@@ -53,6 +53,6 @@ export interface IResetPasswordParams {
 }
 
 export interface IResetPasswordResponse {
-    success: boolean;
-    msg: string;
+    success: boolean,
+    msg: string
 }

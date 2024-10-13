@@ -1,4 +1,11 @@
 <template>
+  <div class="absolute top-4 left-4 flex items-center">
+          <router-link to="/auth/login" class="return flex items-center text-black text-lg">
+              <span class="mr-2 w-5 h-5 bg-no-repeat bg-left-center bg-contain" style="background-image: url('../public/return.png');"></span>
+              Назад
+          </router-link>
+  </div>
+
   <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Сброс пароля</h2>
