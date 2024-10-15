@@ -7,6 +7,7 @@ import GroupList from "../views/GroupList.vue"
 import SendResetLink from "../views/SendResetLink.vue"
 import UserProfile from "../views/UserProfile.vue"
 import UserProfileEdit from "../views/UserProfileEdit.vue"
+import Admin from "../views/Admin/AdminPage.vue"
 
 const routes = [
     {
@@ -32,6 +33,9 @@ const routes = [
     },
     {
         path: '/profile/edit', name: 'UserProfileEdit',component:UserProfileEdit
+    },
+    {
+        path: '/admin', name: 'Admin',component:Admin
     }
 ]
 
