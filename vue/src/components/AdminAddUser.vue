@@ -1,7 +1,7 @@
 <template>
     <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-2 lg:px-8">
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
-        <form v-if="step === 1" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded flex flex-col gap-5" @submit.prevent="nextStep">
+        <form class="max-w-lg mx-auto p-4 bg-white shadow-md rounded flex flex-col gap-5" form @submit.prevent="addUser">
           <div>
             <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Имя</label>
             <div class="mt-2">
@@ -48,8 +48,8 @@
           <div class="mt-2">
             <select id="type" name="type" v-model="formData.type" required class="input_text">
               <option value="" disabled>Выберите тип</option>
-              <option value="front">Front</option>
-              <option value="back">Back</option>
+              <option value="Frontend">Frontend</option>
+              <option value="Backend">Backend</option>
             </select>
           </div>
   
@@ -84,50 +84,60 @@
         </div>
   
           <div>
-            <button type="submit" class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400">Далее</button>
+            <button type="submit" class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400">Добавить</button>
           </div>
         </form>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      step: 1,
-      formData: {
-        name: '',
-        email: '',
-        phone: '',
-        city: '',
-        birthday: '',
-        github: '',
-        type: '',
-        about: '',
-        image: null,
-        login: '',
-        password: ''
-      }
+<script setup>
+import { ref, defineEmits } from 'vue';
+
+const emit = defineEmits(['user-added']);
+const showForm = ref(true);
+
+const formData = ref({
+  name: '',
+  email: '',
+  phone: '',
+  city: '',
+  birthday: '',
+  github: '',
+  type: '',
+  about: '',
+  image: null,
+  login: '',
+  password: ''
+});
+
+function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (file) {
+    // Здесь можно сохранить ссылку на изображение, например, в виде URL
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      formData.value.image = e.target.result; // Сохраняем ссылку на изображение
     };
-  },
-  methods: {
-    handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        this.formData.image = file;
-      }
-    },
-    handleSubmit() {
-      if (this.step === 1) {
-        // Переход к следующему шагу
-        this.step = 2;
-      } else {
-        // Логика для отправки данных на сервер
-        console.log(this.formData);
-        // Здесь можно добавить код для отправки данных на сервер
-      }
-    }
+    reader.readAsDataURL(file); // Читаем файл как Data URL
   }
-};
+}
+
+function addUser() {
+  emit('user-added', { ...formData.value }); // Передаем данные родительскому компоненту
+  console.log(formData.value);
+  formData.value = { 
+    name: '', 
+    email: '', 
+    phone: '', 
+    city: '', 
+    birthday: '', 
+    github: '', 
+    type: '', 
+    about: '', 
+    image: null, // Очищаем ссылку на изображение
+    login: '', 
+    password: '' 
+  };
+}
 </script>

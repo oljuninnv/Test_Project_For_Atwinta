@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\WorkerController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\WorkPositionController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -27,3 +30,12 @@ Route::post('/auth/restore', [ResetPasswordController::class, 'forgetPassword'])
 Route::post('/auth/restore/confirm', [ResetPasswordController::class, 'resetPassword']);
 
 Route::apiResource('/users', UserController::class)->middleware('auth:api');
+
+Route::get('/workers', [WorkerController::class, 'index']);
+Route::post('/workers', [WorkerController::class, 'store']);
+Route::get('/workers/{id}', [WorkerController::class, 'show']);
+Route::put('/workers/{id}', [WorkerController::class, 'update']);
+Route::delete('/workers/{id}', [WorkerController::class, 'destroy']);
+
+Route::apiResource('/departments', DepartmentController::class);
+Route::apiResource('/work-positions', WorkPositionController::class);
