@@ -29,7 +29,7 @@ Route::post('auth/login', [AuthController::class,'login']);
 Route::post('/auth/restore', [ResetPasswordController::class, 'forgetPassword']);
 Route::post('/auth/restore/confirm', [ResetPasswordController::class, 'resetPassword']);
 
-Route::apiResource('/users', UserController::class)->middleware('auth:api');
+Route::apiResource('/users', UserController::class); // ->middleware('auth:api')
 
 Route::get('/workers', [WorkerController::class, 'index']);
 Route::post('/workers', [WorkerController::class, 'store']);

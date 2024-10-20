@@ -34,10 +34,10 @@ class AuthController extends Controller
         $user->phone = $request->get('phone');
         $user->city = $request->get('city');
         $user->type = $request->get('type');
-        $user->birthday = $request->get('birthday');
+        $user->birthday = $request->get('birthday'); 
         $user->github = $request->get('github');
         $user->password = Hash::make($request->get('password'));
-        $user->is_finished = true;
+        $user->is_finished = false;
         $user->save();
         $token = $user->createToken('Access Token')->accessToken;
         $data = [

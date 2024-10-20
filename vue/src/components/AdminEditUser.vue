@@ -124,7 +124,7 @@ function handleFileUpload(event) {
   }
 }
 
-async function addUser() {
+async function editUser() {
   emit('UserAdd', formData.value); // Передаем данные родительскому компоненту
   await AddUser(formData.value);
   formData.value = { 

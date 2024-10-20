@@ -8,6 +8,7 @@ import SendResetLink from "../views/SendResetLink.vue"
 import UserProfile from "../views/UserProfile.vue"
 import UserProfileEdit from "../views/UserProfileEdit.vue"
 import Admin from "../views/Admin/AdminPage.vue"
+import ResetPassword from '../views/ResetPassword.vue'
 
 const routes = [
     {
@@ -27,6 +28,9 @@ const routes = [
     },
     {
         path: '/auth/restore', name: 'SendResetLink',component:SendResetLink        
+    },
+    {
+        path: '/auth/restore/confirm', name: 'ResetPassword',component:ResetPassword        
     },
     {
         path: '/profile', name: 'UserProfile',component:UserProfile

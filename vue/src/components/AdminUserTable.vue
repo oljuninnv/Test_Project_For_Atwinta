@@ -9,7 +9,7 @@
 
   <!-- Форма добавления пользователя -->
   <div v-if="showForm" class="p-4 bg-gray-100 rounded-md mb-4">
-    <AdminAddUser @user-added="handleUserAdded"></AdminAddUser>
+    <AdminAddUser @UserAdd="handleUserAdded"></AdminAddUser>
   </div>
 
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-[5%]">
@@ -42,7 +42,7 @@
           <td class="px-6 py-4 text-right">
             <ul class="flex gap-5 text-right">
               <li><a href="#" @click.prevent="editUser(user)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a></li>
-              <li><a href="#" @click.prevent="deleteUser(user.id)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</a></li>
+              <li><a href="#" @click.prevent="removeUser(user.id)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</a></li>
             </ul>                     
           </td>
         </tr>
@@ -59,73 +59,29 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed,onMounted } from 'vue';
 import SearchInput from "../components/SearchInput.vue";
 import AdminAddUser from './AdminAddUser.vue';
+import { GetUsers, DeleteUser,AddUser } from '../services/api/auth';
 
 const showForm = ref(false);
-const users = ref([
-  { 
-    id: 1, 
-    name: 'Иван Иванов', 
-    email: 'ivan.ivanov@example.com', 
-    login: 'ivan123', 
-    image: 'https://example.com/images/ivan.jpg', 
-    city: 'Москва', 
-    phone: '+7 123 456 78 90', 
-    birthday: '01.01.1990', 
-    type: 'Backend', 
-    github: 'https://github.com/ivan' 
-  },
-  { 
-    id: 2, 
-    name: 'Мария Петрова', 
-    email: 'maria.petrova@example.com', 
-    login: 'maria123', 
-    image: 'https://example.com/images/maria.jpg', 
-    city: 'Санкт-Петербург', 
-    phone: '+7 987 654 32 10', 
-    birthday: '15.05.1992', 
-    type: 'Frontend', 
-    github: 'https://github.com/maria' 
-  },
-  { 
-    id: 3, 
-    name: 'Сергей Сидоров', 
-    email: 'sergey.sidorov@example.com', 
-    login: 'sergey123', 
-    image: 'https://example.com/images/sergey.jpg', 
-    city: 'Екатеринбург', 
-    phone: '+7 321 654 98 76', 
-    birthday: '20.03.1988', 
-    type: 'Fullstack', 
-    github: 'https://github.com/sergey' 
-  },
-  { 
-    id: 4, 
-    name: 'Анна Кузнецова', 
-    email: 'anna.kuznetsova@example.com', 
-    login: 'anna123', 
-    image: 'https://example.com/images/anna.jpg', 
-    city: 'Казань', 
-    phone: '+7 456 789 12 34', 
-    birthday: '30.07.1995', 
-    type: 'Designer', 
-    github: 'https://github.com/anna' 
-  },
-  { 
-    id: 5, 
-    name: 'Дмитрий Смирнов', 
-    email: 'dmitry.smirnov@example.com', 
-    login: 'dmitry123', 
-    image: 'https://example.com/images/dmitry.jpg', 
-    city: 'Новосибирск', 
-    phone: '+7 654 321 09 87', 
-    birthday: '10.11.1991', 
-    type: 'DevOps', 
-    github: 'https://github.com/dmitry' 
-  }
-]);
+const users = ref([]);
+
+const loadUsers = async () => {
+    try {
+        const response = await GetUsers(); // Вызываем метод GetUsers без параметров
+        console.log(response);
+        users.value = response; 
+        console.log(users.value);
+        
+    } catch (error) {
+        console.error('Ошибка при загрузке пользователей:', error);
+    }
+};
+
+onMounted(async () => {
+    await loadUsers();
+});
 
 const currentPage = ref(1);
 const itemsPerPage = 2;
@@ -153,9 +109,15 @@ function editUser(user) {
   // Логика редактирования пользователя
 }
 
-function deleteUser(id) {
-  users.value = users.value.filter(user => user.id !== id);
-}
+const removeUser = async (userId) => {
+    try {
+        await DeleteUser(Number(userId)); // Вызываем API для удаления пользователя
+    } catch (error) {
+      console.log(userId);
+        console.error('Ошибка при удалении пользователя:', error);
+    }
+    await loadUsers();
+};
 
 function prevPage() {
   if (currentPage.value > 1) {
