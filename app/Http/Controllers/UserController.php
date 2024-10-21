@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\File;
+
 
 class UserController extends Controller
 {
@@ -26,11 +28,12 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        $user->update($request->all()); // Сохранение обновленных данных
 
-        $user->update($request->all());
-
-        return response([ 'user' => new 
-        UserResource($user), 'message' => 'Success'], 200);
+        return response([
+            'user' => new UserResource($user),
+            'message' => 'Успешно обновлено'
+        ], 200);
     }
 
     public function destroy(User $user)
@@ -51,7 +54,8 @@ class UserController extends Controller
             'city' => 'nullable|string|max:100',
             'birthday' => 'nullable|date',
             'github' => 'nullable|string|max:255',
-            'password' => 'required|string|min:8', // Добавлено поле подтверждения
+            'password' => 'required|string|min:8', 
+            // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif', // Валидация для изображения
         ]);
 
         if ($validator->fails()) {
@@ -68,8 +72,11 @@ class UserController extends Controller
         $user->type = $request->get('type');
         $user->birthday = $request->get('birthday'); 
         $user->github = $request->get('github');
+        $user->about = $request->get('about');
         $user->password = Hash::make($request->get('password'));
         $user->is_finished = false; // Убедитесь, что это значение корректно
+    
+
         $user->save();
 
         return response()->json([

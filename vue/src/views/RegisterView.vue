@@ -52,8 +52,8 @@
         <div class="mt-2">
           <select id="type" name="type" v-model="formData.type" class="input_text">
             <option value="" disabled>Выберите тип</option>
-            <option value="front">Front</option>
-            <option value="back">Back</option>
+            <option value="front">Frontend</option>
+            <option value="back">Backend</option>
           </select>
         </div>
 

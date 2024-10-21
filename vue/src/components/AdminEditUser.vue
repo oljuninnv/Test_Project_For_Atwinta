@@ -1,144 +1,114 @@
 <template>
-    <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-2 lg:px-8">
-      <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
-        <form class="max-w-lg mx-auto p-4 bg-white shadow-md rounded flex flex-col gap-5" form @submit.prevent="addUser">
-          <div>
-            <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Имя</label>
-            <div class="mt-2">
-              <input id="name" name="name" v-model="formData.name" required class="input_text" />
-            </div>
-          </div>
-  
-          <div>
-            <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
-            <div class="mt-2">
-              <input id="email" name="email" type="email" v-model="formData.email" required class="input_text" />
-            </div>
-          </div>
-  
-          <div>
-            <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Телефон</label>
-            <div class="mt-2">
-              <input id="phone" name="phone" v-model="formData.phone" required class="input_text" />
-            </div>
-          </div>
-  
-          <div>
-            <label for="city" class="block text-sm font-medium leading-6 text-gray-900">Город</label>
-            <div class="mt-2">
-              <input id="city" name="city" v-model="formData.city" required class="input_text" />
-            </div>
-          </div>
-  
-          <div>
-            <label for="birthday" class="block text-sm font-medium leading-6 text-gray-900">Дата рождения</label>
-            <div class="mt-2">
-              <input id="birthday" name="birthday" type="date" v-model="formData.birthday" class="input_text" />
-            </div>
-          </div>
-  
-          <div>
-            <label for="github" class="block text-sm font-medium leading-6 text-gray-900">Ссылка на GitHub</label>
-            <div class="mt-2">
-              <input id="github" name="github" v-model="formData.github" required class="input_text" />
-            </div>
-          </div>
-  
-          <label for="type" class="block text-sm font-medium leading-6 text-gray-900">Тип</label>
-          <div class="mt-2">
-            <select id="type" name="type" v-model="formData.type" required class="input_text">
-              <option value="" disabled>Выберите тип</option>
-              <option value="front">Frontend</option>
-              <option value="back">Backend</option>
-            </select>
-          </div>
-  
-          <!-- Поле о себе -->
-          <div>
-            <label for="about" class="block text-sm font-medium leading-6 text-gray-900">О себе</label>
-            <div class="mt-2">
-              <textarea id="about" name="about" v-model="formData.about" rows="3" class="input_text"></textarea>
-            </div>
-          </div>
-  
-          <!-- Загрузка изображения -->
-          <div>
-            <label for="image" class="block text-sm font-medium leading-6 text-gray-900">Изображение профиля</label>
-            <div class="mt-2">
-              <input id="image" name="image" type="file" @change="handleFileUpload" accept=".jpg, .jpeg, .png" />
-            </div>
-          </div>
-
-          <div>
-            <label for="login" class="block text-sm font-medium leading-6 text-gray-900">Логин</label>
-            <div class="mt-2">
-              <input id="login" name="login" v-model="formData.login" required class="input_text" />
-            </div>
-          </div>
-  
-          <div>
-            <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Пароль</label>
-            <div class="mt-2">
-                <input id="password" name="password" type="password" v-model="formData.password" required class="input_text" />
-          </div>
+  <div v-if="isVisible" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full max-h-[80vh] overflow-y-auto">
+      <h2 class="text-lg font-semibold text-gray-900">Редактирование пользователя</h2>
+      <form @submit.prevent="updateUser" class="flex flex-col gap-5 mt-4">
+        <div>
+          <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Имя</label>
+          <input id="name" name="name" v-model="formData.name" required class="input_text mt-2" />
         </div>
-  
-          <div>
-            <button type="submit" class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400">Добавить</button>
-          </div>
-        </form>
+
+        <div>
+          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
+          <input id="email" name="email" type="email" v-model="formData.email" required class="input_text mt-2" />
+        </div>
+
+        <div>
+          <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Телефон</label>
+          <input id="phone" name="phone" v-model="formData.phone" required class="input_text mt-2" />
+        </div>
+
+        <div>
+          <label for="city" class="block text-sm font-medium leading-6 text-gray-900">Город</label>
+          <input id="city" name="city" v-model="formData.city" required class="input_text mt-2" />
+        </div>
+
+        <div>
+          <label for="birthday" class="block text-sm font-medium leading-6 text-gray-900">Дата рождения</label>
+          <input id="birthday" name="birthday" type="date" v-model="formData.birthday" class="input_text mt-2" />
+        </div>
+
+        <div>
+          <label for="github" class="block text-sm font-medium leading-6 text-gray-900">Ссылка на GitHub</label>
+          <input id="github" name="github" v-model="formData.github" required class="input_text mt-2" />
+        </div>
+
+        <div>
+          <label for="type" class="block text-sm font-medium leading-6 text-gray-900">Тип</label>
+          <select id="type" name="type" v-model="formData.type" required class="input_text mt-2">
+            <option value="" disabled>Выберите тип</option>
+            <option value="front">Frontend</option>
+            <option value="back">Backend</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="about" class="block text-sm font-medium leading-6 text-gray-900">О себе</label>
+          <textarea id="about" name="about" v-model="formData.about" rows="3" class="input_text mt-2"></textarea>
+        </div>
+
+        <div>
+          <label for="image" class="block text-sm font-medium leading-6 text-gray-900">Изображение профиля</label>
+          <input id="image" name="image" type="file" @change="handleFileUpload" accept=".jpg, .jpeg, .png" class="mt-2"/>
+        </div>
+
+        <div>
+          <label for="image" class="block text-sm font-medium leading-6 text-gray-900">Было ли закончено задание</label>
+          <input 
+            id="is_finished" 
+            name="is_finished" 
+            type="checkbox" 
+            v-model="formData.is_finished" 
+            class="mt-2"
+          />
+      </div>
+
+        <div class="flex justify-end mt-4">
+          <button type="button" @click="$emit('close')" class="mr-2 bg-gray-300 hover:bg-gray-400 rounded px-4 py-2">Отмена</button>
+          <button type="submit" class="bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700">Сохранить</button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue';
-import { AddUser } from '../services/api/auth';
+import { ref, watch, defineEmits } from 'vue';
 
-const emit = defineEmits(['UserAdd']);
-const showForm = ref(true);
-
-const formData = ref({
-  name: '',
-  email: '',
-  phone: '',
-  city: '',
-  birthday: '',
-  github: '',
-  type: '',
-  about: '',
-  image: null,
-  login: '',
-  password: ''
+const props = defineProps({
+  isVisible: {
+    type: Boolean,
+    required: true
+  },
+  user: {
+    type: Object,
+    default: () => ({})
+  }
 });
+
+const emit = defineEmits(['close', 'user-updated']);
+
+const formData = ref({});
+
+// Инициализация formData при изменении props.user
+watch(() => props.user, (newUser) => {
+  formData.value = { ...newUser };
+}, { immediate: true });
+
+function updateUser() {
+  formData.value.is_finished = formData.value.is_finished ? true : false;
+  console.log(formData.value.is_finished);
+  emit('user-updated', formData.value); // Передаем данные для обновления
+}
 
 function handleFileUpload(event) {
   const file = event.target.files[0];
   if (file) {
-    // Здесь можно сохранить ссылку на изображение, например, в виде URL
     const reader = new FileReader();
     reader.onload = (e) => {
       formData.value.image = e.target.result; // Сохраняем ссылку на изображение
     };
     reader.readAsDataURL(file); // Читаем файл как Data URL
   }
-}
-
-async function editUser() {
-  emit('UserAdd', formData.value); // Передаем данные родительскому компоненту
-  await AddUser(formData.value);
-  formData.value = { 
-    name: '', 
-    email: '', 
-    phone: '', 
-    city: '', 
-    birthday: '', 
-    github: '', 
-    type: '', 
-    about: '', 
-    image: null, // Очищаем ссылку на изображение
-    login: '', 
-    password: '' 
-  };
 }
 </script>

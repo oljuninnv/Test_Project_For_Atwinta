@@ -119,6 +119,6 @@ export interface IDeleteUserResponse {
 //     password: string;
 // }
 
-export interface IUpdateUserResponse {
-    msg: string; // Сообщение об успешном удалении
-}
+// export interface IUpdateUserResponse {
+//     msg: string; // Сообщение об успешном удалении
+// }

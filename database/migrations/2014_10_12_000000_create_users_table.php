@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('login')->unique();
             $table->string('name');
             $table->string('email')->unique();
+            // $table->binary('image')->nullable();
             $table->string('image')->nullable();
             $table->text('about')->nullable();
             $table->enum('type', ['front', 'back']); // Ограничение для поля type

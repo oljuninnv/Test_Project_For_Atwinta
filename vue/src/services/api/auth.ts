@@ -1,5 +1,5 @@
 import axios from '../../libs/axios';
-import { ILoginParams, ILoginResponse, IRegisterParams, IRegisterResponse, IResetLinkParams,IResetLinkResponse,IResetPasswordParams, IResetPasswordResponse, IAddUserParams, IAddUserResponse,IGetUsersParams,IGetUsersResponse, IDeleteUserParams, IDeleteUserResponse,IUpdateUserResponse} from '../types/auth';
+import { ILoginParams, ILoginResponse, IRegisterParams, IRegisterResponse, IResetLinkParams,IResetLinkResponse,IResetPasswordParams, IResetPasswordResponse, IAddUserParams, IAddUserResponse,IGetUsersParams,IGetUsersResponse, IDeleteUserParams, IDeleteUserResponse} from '../types/auth';
 
 
 export const loginUser = async (params: ILoginParams): Promise<ILoginResponse> => {
@@ -44,7 +44,7 @@ export const DeleteUser = async (id: number): Promise<IDeleteUserResponse> => {
     return data.response
 };
 
-export const UpdateUser = async (id: number): Promise<IUpdateUserResponse> => { 
-    const { data } = await axios.put(`/api/users/${id}`);
-    return data.response
-};
+// export const UpdateUser = async (id: number): Promise<IUpdateUserResponse> => { 
+//     const { data } = await axios.put(`/api/users/${id}`);
+//     return data.response
+// };

@@ -4,7 +4,8 @@
       <span class="text-xl font-semibold whitespace-nowrap dark:text-white">Пользователи:</span>
     </h1>
     <SearchInput @search="filterUsers" class="w-full max-w-md mb-4" />
-    <button @click="showForm = !showForm" class="btn">Добавить запись</button>
+    <button v-if="!showForm" @click="showForm = !showForm" class="btn">Добавить запись</button>
+    <button v-if="showForm" @click="showForm = !showForm" class="btn">Убрать форму</button>
   </div>
 
   <!-- Форма добавления пользователя -->
@@ -48,6 +49,7 @@
         </tr>
       </tbody>
     </table>
+  </div>
 
     <!-- Пагинация -->
     <div class="flex justify-center mt-4">
@@ -55,14 +57,23 @@
       <span class="mx-2">Страница {{ currentPage }} из {{ totalPages }}</span>
       <button @click="nextPage" :disabled="currentPage === totalPages" class="btn">Вперед</button>
     </div>
-  </div>
+
+    <AdminEditUser 
+      :user="selectedUser" 
+      :isVisible="isModalVisible" 
+      @close="isModalVisible = false" 
+      @user-updated="fetchUsers"
+    />
+  
 </template>
 
 <script setup>
 import { ref, computed,onMounted } from 'vue';
 import SearchInput from "../components/SearchInput.vue";
 import AdminAddUser from './AdminAddUser.vue';
+import AdminEditUser from './AdminEditUser.vue';
 import { GetUsers, DeleteUser,AddUser } from '../services/api/auth';
+import axios from '../libs/axios';
 
 const showForm = ref(false);
 const users = ref([]);
@@ -105,9 +116,31 @@ function filterUsers(query) {
 function handleUserAdded(user) {
   users.value.push(user); // Добавляем нового пользователя в массив
 }
+
+const isModalVisible = ref(false);
+const selectedUser = ref(null);
+
+// Функция для открытия модального окна
 function editUser(user) {
-  // Логика редактирования пользователя
+  selectedUser.value = { ...user }; // Устанавливаем выбранного пользователя (создаем копию)
+  isModalVisible.value = true; 
 }
+
+const fetchUsers = async (updatedUser) => {
+  console.log(updatedUser);
+  try {
+    const response = await axios.put(`/api/users/${updatedUser.id}`, updatedUser); // Передаем обновленные данные
+    console.log(response);
+
+    // Закрываем модальное окно
+    isModalVisible.value = false;
+  } catch (error) {
+    console.log(updatedUser.image);
+    console.log(updatedUser.is_finished);
+    console.error('Ошибка при изменении пользователя:', error);
+  }
+  await loadUsers();
+};
 
 const removeUser = async (userId) => {
     try {

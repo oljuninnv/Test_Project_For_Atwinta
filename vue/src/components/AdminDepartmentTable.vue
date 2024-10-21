@@ -39,6 +39,7 @@
           </tr>
         </tbody>
       </table>
+    </div>
 
       <!-- Пагинация -->
       <div class="flex justify-center mt-4">
@@ -47,7 +48,6 @@
         <button @click="nextPage" :disabled="currentPage === totalPages" class="btn">Вперед</button>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup>
