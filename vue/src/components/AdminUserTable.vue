@@ -34,7 +34,10 @@
           <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.name }}</th>
           <td class="px-6 py-4">{{ user.email }}</td>
           <td class="px-6 py-4">{{ user.login }}</td>
-          <td class="px-6 py-4">{{ user.image }}</td>
+          <td class="px-6 py-4">
+            {{user.image}}
+            <img :src="`../${user.image}`" alt="User Image" class="w-10 h-10 rounded-full">
+          </td>
           <td class="px-6 py-4">{{ user.city }}</td>
           <td class="px-6 py-4">{{ user.phone }}</td>
           <td class="px-6 py-4">{{ user.birthday }}</td>

@@ -2,7 +2,7 @@
   <div v-if="isVisible" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full max-h-[80vh] overflow-y-auto">
       <h2 class="text-lg font-semibold text-gray-900">Редактирование пользователя</h2>
-      <form @submit.prevent="updateUser" class="flex flex-col gap-5 mt-4">
+      <form @submit.prevent="updateUser" class="flex flex-col gap-5 mt-4" enctype="multipart/form-data">
         <div>
           <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Имя</label>
           <input id="name" name="name" v-model="formData.name" required class="input_text mt-2" />
@@ -49,7 +49,7 @@
 
         <div>
           <label for="image" class="block text-sm font-medium leading-6 text-gray-900">Изображение профиля</label>
-          <input id="image" name="image" type="file" @change="handleFileUpload" accept=".jpg, .jpeg, .png" class="mt-2"/>
+          <input id="image" name="image" type="file"  @change="handleFileUpload" accept=".jpg, .jpeg, .png, .webp" class="mt-2"/>
         </div>
 
         <div>
@@ -104,11 +104,7 @@ function updateUser() {
 function handleFileUpload(event) {
   const file = event.target.files[0];
   if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      formData.value.image = e.target.result; // Сохраняем ссылку на изображение
-    };
-    reader.readAsDataURL(file); // Читаем файл как Data URL
+    formData.value.append('image', file); // Добавляем файл в FormData
   }
 }
 </script>

@@ -55,12 +55,14 @@ class UserController extends Controller
             'birthday' => 'nullable|date',
             'github' => 'nullable|string|max:255',
             'password' => 'required|string|min:8', 
-            // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif', // Валидация для изображения
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        $image = time().'.'.$request->image->getClientOriginalExtension();
 
         // Создание нового пользователя
         $user = new User();
@@ -75,7 +77,11 @@ class UserController extends Controller
         $user->about = $request->get('about');
         $user->password = Hash::make($request->get('password'));
         $user->is_finished = false; // Убедитесь, что это значение корректно
-    
+        
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('users', 'public'); // Сохраняем на диск public
+            $user->image = '/storage/app/public/' . $imagePath; // Сохраняем путь к изображению в базе данных
+        }
 
         $user->save();
 
