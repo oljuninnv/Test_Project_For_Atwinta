@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 
 class UserController extends Controller
@@ -16,10 +16,11 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
+
         return $this->successResponse(UserResource::collection($users));
     }
 
-    public function show(User $user)
+        public function show(User $user)
     {
         return response([ 'user' => new 
         UserResource($user), 'message' => 'Success'], 200);
@@ -28,9 +29,64 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        $user->update($request->all()); // Сохранение обновленных данных
 
-        return response([
+        // Валидация данных
+        $validator = Validator::make($request->all(), [
+            'name' => 'nullable|string|max:255',
+            'login' => 'nullable|string|max:255|unique:users,login,' . $user->id,
+            'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:15',
+            'city' => 'nullable|string|max:100',
+            'birthday' => 'nullable|date',
+            'github' => 'nullable|string|max:255',
+            'about' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        // Обновление данных пользователя
+        $user->name = $request->get('name');
+        $user->login = $request->get('login');
+        $user->email = $request->get('email');
+        $user->phone = $request->get('phone');
+        $user->city = $request->get('city');
+        $user->birthday = $request->get('birthday');
+        $user->github = $request->get('github');
+        $user->about = $request->get('about');
+
+        if ($request->hasFile('image')) {
+
+            $image = $request->file('image');
+    
+            // Получаем логин пользователя
+            $login = $user->login;
+
+            // Получаем расширение загружаемого файла
+            $extension = $request->file('image')->getClientOriginalExtension();
+
+            // Формируем имя файла
+            $imageName = $login . '.' . $extension;
+
+            $oldImagePath = $user -> image;
+
+            if ($oldImagePath && Storage::exists($oldImagePath)) {
+                Storage::delete($oldImagePath);
+            }
+
+            // Сохраняем файл с новым именем
+            $imagePath = $request->file('image')->storeAs('users', $imageName, 'public');
+
+            // Сохраняем путь к изображению в базе данных
+            $user->image = $imagePath;
+        }
+
+        // Сохраняем обновленные данные
+        $user->save();
+
+        return response()->json([
             'user' => new UserResource($user),
             'message' => 'Успешно обновлено'
         ], 200);
@@ -38,7 +94,13 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $imagePath = $user->image;
+
         $user->delete();
+
+        if ($imagePath && Storage::exists($imagePath)) {
+            Storage::delete($imagePath);
+        }
 
         return response(['message' => 'User deleted']);
     }
@@ -62,8 +124,6 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $image = time().'.'.$request->image->getClientOriginalExtension();
-
         // Создание нового пользователя
         $user = new User();
         $user->name = $request->get('name');
@@ -79,8 +139,20 @@ class UserController extends Controller
         $user->is_finished = false; // Убедитесь, что это значение корректно
         
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('users', 'public'); // Сохраняем на диск public
-            $user->image = '/storage/app/public/' . $imagePath; // Сохраняем путь к изображению в базе данных
+            // Получаем логин пользователя
+            $login = $user->login; 
+
+            // Получаем расширение загружаемого файла
+            $extension = $request->file('image')->getClientOriginalExtension();
+
+            // Формируем имя файла
+            $imageName = $login . '.' . $extension;
+
+            // Сохраняем файл с новым именем
+            $imagePath = $request->file('image')->storeAs('users', $imageName, 'public'); // Сохраняем на диск public
+
+            // Сохраняем путь к изображению в базе данных
+            $user->image = $imagePath;
         }
 
         $user->save();

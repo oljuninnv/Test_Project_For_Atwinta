@@ -79,6 +79,7 @@ export interface IAddUserResponse {
 }
 
 export interface IGetUsersParams {
+    id: number;
     name: string;
     login: string;
     email: string;
@@ -105,20 +106,20 @@ export interface IDeleteUserResponse {
     msg: string; // Сообщение об успешном удалении
 }
 
-// export interface IUpdateUserParams {
-//     name: string;
-//     login: string;
-//     email: string;
-//     phone: string;
-//     city: string;
-//     birthday: string;
-//     github: string;
-//     type: string;
-//     about: string;
-//     image: string;
-//     password: string;
-// }
+export interface IUpdateParams {
+    id: number; // Добавим поле id для идентификации пользователя
+    login: string; // Поля могут быть необязательными
+    name: string;
+    phone: string;
+    city: string;
+    birthday: string;
+    github: string;
+    email: string;
+    type: string;
+    image: string; // Поле для обновления изображения
+    about: string; // Дополнительное поле о пользователе
+};
 
-// export interface IUpdateUserResponse {
-//     msg: string; // Сообщение об успешном удалении
-// }
+export interface IUpdateResponse {
+    data: IUser; // Ответ будет содержать обновленного пользователя
+}

@@ -36,7 +36,7 @@
           <td class="px-6 py-4">{{ user.login }}</td>
           <td class="px-6 py-4">
             {{user.image}}
-            <img :src="`../${user.image}`" alt="User Image" class="w-10 h-10 rounded-full">
+            <!-- <img v-if="user.image" :src="`http://127.0.0.1:8000/storage/${user.image}`" alt="User Image" class="w-10 h-10 rounded-full"> Колхоз, но всё же -->
           </td>
           <td class="px-6 py-4">{{ user.city }}</td>
           <td class="px-6 py-4">{{ user.phone }}</td>
@@ -75,7 +75,7 @@ import { ref, computed,onMounted } from 'vue';
 import SearchInput from "../components/SearchInput.vue";
 import AdminAddUser from './AdminAddUser.vue';
 import AdminEditUser from './AdminEditUser.vue';
-import { GetUsers, DeleteUser,AddUser } from '../services/api/auth';
+import { GetUsers, DeleteUser,updateUser } from '../services/api/auth';
 import axios from '../libs/axios';
 
 const showForm = ref(false);
@@ -125,6 +125,7 @@ const selectedUser = ref(null);
 
 // Функция для открытия модального окна
 function editUser(user) {
+  
   selectedUser.value = { ...user }; // Устанавливаем выбранного пользователя (создаем копию)
   isModalVisible.value = true; 
 }
@@ -132,7 +133,7 @@ function editUser(user) {
 const fetchUsers = async (updatedUser) => {
   console.log(updatedUser);
   try {
-    const response = await axios.put(`/api/users/${updatedUser.id}`, updatedUser); // Передаем обновленные данные
+    const response = await updateUser(updatedUser); // Передаем обновленные данные
     console.log(response);
 
     // Закрываем модальное окно
