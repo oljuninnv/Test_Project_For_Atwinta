@@ -131,9 +131,27 @@ function editUser(user) {
 }
 
 const fetchUsers = async (updatedUser) => {
-  console.log(updatedUser);
+  console.log('saas',updatedUser);
   try {
-    const response = await updateUser(updatedUser); // Передаем обновленные данные
+    const formData = new FormData();
+    formData.append('name', updatedUser.name);
+    formData.append('email', updatedUser.email);
+    formData.append('phone', updatedUser.phone);
+    formData.append('city', updatedUser.city);
+    formData.append('birthday', updatedUser.birthday);
+    formData.append('github', updatedUser.github);
+    formData.append('type', updatedUser.type);
+    formData.append('about', updatedUser.about);
+    formData.append('login', updatedUser.login);
+    formData.append('is_finished', updatedUser.is_finished);
+    if (updatedUser.image == null) {
+      formData.append('image', updatedUser.image, updatedUser.image.name);
+    }    
+    formData.append('_method', 'put');
+    const response = await axios.post(`/api/users/${updatedUser.id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }});
     console.log(response);
 
     // Закрываем модальное окно

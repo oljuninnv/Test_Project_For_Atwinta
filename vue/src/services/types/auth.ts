@@ -4,6 +4,7 @@ export interface ILoginParams {
 };
 
 export interface IRegisterParams {
+    id: number;
     login: string;
     name: string;
     phone: string;
@@ -13,6 +14,7 @@ export interface IRegisterParams {
     email: string;
     type: string;
     password: string;
+    image: string;
 };
 
 export interface IRegisterResponse {
@@ -31,6 +33,7 @@ export interface IUser {
     type: string;
     about: string;
     image: string;
+    is_finished: boolean;
     id: number;
 }
 
@@ -90,6 +93,7 @@ export interface IGetUsersParams {
     type: string;
     about: string;
     image: string;
+    is_finished: boolean;
     password: string;
 };
 
@@ -116,6 +120,7 @@ export interface IUpdateParams {
     github: string;
     email: string;
     type: string;
+    is_finished: boolean;
     image: string; // Поле для обновления изображения
     about: string; // Дополнительное поле о пользователе
 };

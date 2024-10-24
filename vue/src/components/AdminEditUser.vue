@@ -9,6 +9,11 @@
         </div>
 
         <div>
+          <label for="login" class="block text-sm font-medium leading-6 text-gray-900">Логин</label>
+          <input id="login" name="login" v-model="formData.login" required class="input_text mt-2" />
+        </div>
+
+        <div>
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
           <input id="email" name="email" type="email" v-model="formData.email" required class="input_text mt-2" />
         </div>
@@ -97,14 +102,14 @@ watch(() => props.user, (newUser) => {
 
 function updateUser() {
   formData.value.is_finished = formData.value.is_finished ? true : false;
-  console.log(formData.value.is_finished);
+  console.log(formData.value.about);
   emit('user-updated', formData.value); // Передаем данные для обновления
 }
 
 function handleFileUpload(event) {
   const file = event.target.files[0];
   if (file) {
-    formData.value.append('image', file); // Добавляем файл в FormData
+    formData.value.image = file; // Добавляем файл в FormData
   }
 }
 </script>

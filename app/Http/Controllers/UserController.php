@@ -29,7 +29,10 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-
+    
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
         // Валидация данных
         $validator = Validator::make($request->all(), [
             'name' => 'nullable|string|max:255',
@@ -56,6 +59,8 @@ class UserController extends Controller
         $user->birthday = $request->get('birthday');
         $user->github = $request->get('github');
         $user->about = $request->get('about');
+        $user->type = $request->get('type');
+        $user->is_finished = $request->get(key: 'is_finished');
 
         if ($request->hasFile('image')) {
 

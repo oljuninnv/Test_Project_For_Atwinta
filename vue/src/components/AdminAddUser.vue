@@ -119,6 +119,7 @@ async function addUser() {
   formData.value.append('login', formData.value.login);
   formData.value.append('password', formData.value.password);
 
+  console.log('sss',formData.value);
   emit('UserAdd', formData.value); // Передаем данные родительскому компоненту
   await AddUser(formData.value);
   
