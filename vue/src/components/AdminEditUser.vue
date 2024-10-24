@@ -57,7 +57,7 @@
           <input id="image" name="image" type="file"  @change="handleFileUpload" accept=".jpg, .jpeg, .png, .webp" class="mt-2"/>
         </div>
 
-        <div>
+        <div v-if="props.user.is_finished == false">
           <label for="image" class="block text-sm font-medium leading-6 text-gray-900">Было ли закончено задание</label>
           <input 
             id="is_finished" 
@@ -101,7 +101,9 @@ watch(() => props.user, (newUser) => {
 }, { immediate: true });
 
 function updateUser() {
-  formData.value.is_finished = formData.value.is_finished ? true : false;
+  if (!props.user.is_finished){
+    formData.value.is_finished = formData.value.is_finished ? 1 : 0;
+  } 
   console.log(formData.value.about);
   emit('user-updated', formData.value); // Передаем данные для обновления
 }

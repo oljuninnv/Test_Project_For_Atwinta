@@ -143,8 +143,11 @@ const fetchUsers = async (updatedUser) => {
     formData.append('type', updatedUser.type);
     formData.append('about', updatedUser.about);
     formData.append('login', updatedUser.login);
-    formData.append('is_finished', updatedUser.is_finished);
-    if (updatedUser.image == null) {
+    console.log('biba',updatedUser.is_finished)   ; 
+    if(updatedUser.is_finished){
+      formData.append('is_finished', updatedUser.is_finished);
+    }
+    if (updatedUser.image != null) {
       formData.append('image', updatedUser.image, updatedUser.image.name);
     }    
     formData.append('_method', 'put');

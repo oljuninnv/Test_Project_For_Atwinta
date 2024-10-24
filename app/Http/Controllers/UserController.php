@@ -29,10 +29,10 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-    
-    if (!$user) {
-        return response()->json(['message' => 'User not found'], 404);
-    }
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
         // Валидация данных
         $validator = Validator::make($request->all(), [
             'name' => 'nullable|string|max:255',
@@ -50,6 +50,10 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        // Сохраняем старый логин и путь к изображению
+        $oldLogin = $user->login;
+        $oldImagePath = $user->image;
+
         // Обновление данных пользователя
         $user->name = $request->get('name');
         $user->login = $request->get('login');
@@ -60,29 +64,33 @@ class UserController extends Controller
         $user->github = $request->get('github');
         $user->about = $request->get('about');
         $user->type = $request->get('type');
-        $user->is_finished = $request->get(key: 'is_finished');
 
+        if ($user->is_finished == false) {
+            $user->is_finished = $request->get('is_finished');
+        }
+
+        // Проверяем, изменился ли логин и загружено ли новое изображение
         if ($request->hasFile('image')) {
-
-            $image = $request->file('image');
-    
-            // Получаем логин пользователя
-            $login = $user->login;
-
             // Получаем расширение загружаемого файла
             $extension = $request->file('image')->getClientOriginalExtension();
 
             // Формируем имя файла
-            $imageName = $login . '.' . $extension;
+            $newImageName = $user->login . '.' . $extension;
 
-            $oldImagePath = $user -> image;
-
-            if ($oldImagePath && Storage::exists($oldImagePath)) {
-                Storage::delete($oldImagePath);
+            // Удаляем старое изображение, если логин изменился
+            if ($oldLogin !== $user->login) {
+                if ($oldImagePath && Storage::exists($oldImagePath)) {
+                    Storage::delete($oldImagePath);
+                }
+            } else {
+                // Если логин не изменился, но есть старое изображение
+                if ($oldImagePath && Storage::exists($oldImagePath)) {
+                    Storage::delete($oldImagePath);
+                }
             }
 
             // Сохраняем файл с новым именем
-            $imagePath = $request->file('image')->storeAs('users', $imageName, 'public');
+            $imagePath = $request->file('image')->storeAs('users', $newImageName, 'public');
 
             // Сохраняем путь к изображению в базе данных
             $user->image = $imagePath;
