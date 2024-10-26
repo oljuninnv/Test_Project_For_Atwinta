@@ -40,4 +40,4 @@ Route::put('/workers/{id}', [WorkerController::class, 'update']);
 Route::delete('/workers/{id}', [WorkerController::class, 'destroy']);
 
 Route::apiResource('/departments', DepartmentController::class);
-Route::apiResource('/work-positions', WorkPositionController::class);
+Route::apiResource('/positions', WorkPositionController::class);
