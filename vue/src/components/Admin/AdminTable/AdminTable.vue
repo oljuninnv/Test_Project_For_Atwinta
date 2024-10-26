@@ -4,8 +4,14 @@
         <span class="text-xl font-semibold whitespace-nowrap dark:text-white">Администраторы:</span>
       </h1>
       <SearchInput @search="filterUsers" class="w-full max-w-md mb-4" />
-      <button @click="showForm" class="btn">Добавить запись</button>
+      <button @click="openAddAdminModal" class="btn">Добавить запись</button>
     </div>
+
+    <AdminAdd 
+      v-if="isAddModalVisible" 
+      @close="isAddModalVisible = false"
+      @user-added="refreshUsers" 
+    />
   
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
       <table class="w-full text-sm text-left text-gray-500">
@@ -49,11 +55,12 @@
   import { ref, computed, onMounted } from 'vue';
   import SearchInput from "../../SearchInput.vue";
   import AdminGetUserInformation from '../AdminGetUserInformation.vue';
+  import AdminAdd from './AdminAdd.vue';
   import axios from '../../../libs/axios';
   
   const showForm = ref(false);
   const userRoles = ref([]);
-
+  const isAddModalVisible = ref(false);
   const isVisible = ref(false);
     const formData = ref({
     name: '',
@@ -73,14 +80,28 @@
     isVisible.value = true; // Открываем модальное окно
     }
 
+    function openAddAdminModal() {
+  isAddModalVisible.value = true; // Открываем модальное окно для добавления администратора
+}
+
+  function refreshUsers() {
+    isAddModalVisible.value = false;
+    loadUserRoles();
+  }
+
+
   const loadUserRoles = async () => {
-    try {
-      const response = await axios.get('/api/user_roles');
-      userRoles.value = response.data; 
-    } catch (error) {
-      console.error('Ошибка при загрузке пользователей:', error);
-    }
-  };
+  try {
+    const response = await axios.get('/api/user_roles');
+    userRoles.value = response.data.filter(user => user.role.name == 'Admin');
+
+    // Если нужно делать что-то с ролями администраторов, вы можете добавить дополнительную логику здесь
+    console.log('Роли для администратора:', userRoles.value);
+    
+  } catch (error) {
+    console.error('Ошибка при загрузке пользователей:', error);
+  }
+};
   
   onMounted(loadUserRoles);
 

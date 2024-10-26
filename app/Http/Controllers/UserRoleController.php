@@ -12,9 +12,7 @@ class UserRoleController extends Controller
     // Получение всех записей
     public function index()
     {
-        $userRoles = UserRole::with(['user', 'role'])->whereHas('role', function ($query) {
-        $query->where('name', 'Admin');
-    })->get();
+        $userRoles = UserRole::with(['user', 'role'])->get();
         return response()->json($userRoles);
     }
 
@@ -63,10 +61,10 @@ class UserRoleController extends Controller
 }
 
     // Удаление конкретной записи
-    // public function destroy($id)
-    // {
-    //     $userRole = UserRole::findOrFail($id);
-    //     $userRole->delete();
-    //     return response()->json(null, 204);
-    // }
+    public function destroy($id)
+    {
+        $userRole = UserRole::findOrFail($id);
+        $userRole->delete();
+        return response()->json(null, 204);
+    }
 }
