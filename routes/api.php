@@ -8,6 +8,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\WorkPositionController;
+use App\Http\Controllers\UserRoleController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,6 +31,7 @@ Route::post('/auth/restore', [ResetPasswordController::class, 'forgetPassword'])
 Route::post('/auth/restore/confirm', [ResetPasswordController::class, 'resetPassword']);
 
 Route::apiResource('/users', UserController::class); // ->middleware('auth:api')
+Route::apiResource('/user_roles', UserRoleController::class);
 
 Route::get('/workers', [WorkerController::class, 'index']);
 Route::post('/workers', [WorkerController::class, 'store']);

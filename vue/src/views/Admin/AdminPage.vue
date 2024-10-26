@@ -4,6 +4,7 @@
         <div class="flex items-center space-x-4 p-2 mb-5">
           <h4 class="font-semibold text-lg text-gray-700 capitalize font-poppins tracking-wide">AdminPanel</h4>
         </div>
+        <hr>
         <ul class="space-y-2 text-sm">
           <li>
             <a href="#" @click.prevent="showTable('users')" class="flex items-center space-x-3 text-gray-700 p-2 rounded-md font-medium hover:bg-gray-200 focus:bg-gray-200 focus:shadow-outline">
@@ -20,6 +21,18 @@
               <span>Отделы</span>
             </a>
           </li>
+          <li>
+            <a href="#" @click.prevent="showTable('work-positions')" class="flex items-center space-x-3 text-gray-700 p-2 rounded-md font-medium hover:bg-gray-200 focus:bg-gray-200 focus:shadow-outline">
+              <span>Должности</span>
+            </a>
+          </li>
+          <hr>
+          <li>
+            <a href="#" @click.prevent="showTable('admins')" class="flex items-center space-x-3 text-gray-700 p-2 rounded-md font-medium hover:bg-gray-200 focus:bg-gray-200 focus:shadow-outline">
+              <span>Администраторы</span>
+            </a>
+          </li>
+          <hr>
           <li>
             <a href="#" class="flex items-center space-x-3 text-gray-700 p-2 rounded-md font-medium hover:bg-gray-200 focus:bg-gray-200 focus:shadow-outline">
                 <span class="text-gray-600">
@@ -38,6 +51,8 @@
           <AdminUserTable v-if="activeTable === 'users'" />
           <AdminWorkerTable v-if="activeTable === 'workers'" />
           <AdminDepartmentTable v-if="activeTable === 'departments'" />
+          <AdminWorkPositionsTable v-if="activeTable === 'work-positions'" />
+          <AdminTable v-if="activeTable === 'admins'" />
         </div>
       </div>
     </div>
@@ -45,9 +60,11 @@
   
   <script setup>
   import { ref } from 'vue';
-  import AdminUserTable from "../../components/AdminUserTable.vue";
-  import AdminDepartmentTable from "../../components/AdminDepartmentTable.vue";
-  import AdminWorkerTable from "../../components/AdminWorkerTable.vue";
+  import AdminUserTable from "../../components/Admin/AdminUser/AdminUserTable.vue";
+  import AdminDepartmentTable from "../../components/Admin/AdminDepartment/AdminDepartmentTable.vue";
+  import AdminWorkerTable from "../../components/Admin/AdminWorker/AdminWorkerTable.vue";
+  import AdminWorkPositionsTable from "../../components/Admin/AdminWorkerPosition/AdminWorkPositionsTable.vue";
+  import AdminTable from "../../components/Admin/AdminTable/AdminTable.vue";
   
   const activeTable = ref('users');
   

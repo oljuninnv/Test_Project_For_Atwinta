@@ -52,7 +52,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import SearchInput from "../components/SearchInput.vue";
+import SearchInput from "../../SearchInput.vue";
 import AdminAddDepartment from './AdminAddDepartment.vue';
 
 const showForm = ref(false);

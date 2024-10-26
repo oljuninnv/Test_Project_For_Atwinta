@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use App\Models\UserRole;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -169,6 +171,17 @@ class UserController extends Controller
         }
 
         $user->save();
+
+        // Получение role_id для роли "User"
+        $role = Role::where('name', 'User')->first();
+
+        if ($role) {
+            // Запись в UserRole
+            UserRole::create([
+                'user_id' => $user->id,
+                'role_id' => $role->id,
+            ]);
+        }
 
         return response()->json([
             'user' => new UserResource($user),

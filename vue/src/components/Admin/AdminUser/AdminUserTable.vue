@@ -72,11 +72,11 @@
 
 <script setup>
 import { ref, computed,onMounted } from 'vue';
-import SearchInput from "../components/SearchInput.vue";
+import SearchInput from "../../SearchInput.vue";
 import AdminAddUser from './AdminAddUser.vue';
 import AdminEditUser from './AdminEditUser.vue';
-import { GetUsers, DeleteUser,updateUser } from '../services/api/auth';
-import axios from '../libs/axios';
+import { GetUsers, DeleteUser,updateUser } from '../../../services/api/auth';
+import axios from '../../../libs/axios';
 
 const showForm = ref(false);
 const users = ref([]);

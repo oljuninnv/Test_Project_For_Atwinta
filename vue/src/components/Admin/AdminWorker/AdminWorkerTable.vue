@@ -50,7 +50,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import SearchInput from "../components/SearchInput.vue";
+import SearchInput from "../../SearchInput.vue";
 import AdminAddWorker from './AdminAddWorker.vue';
 
 const showForm = ref(false);

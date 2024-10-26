@@ -93,7 +93,7 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue';
-import { AddUser } from '../services/api/auth';
+import { AddUser } from '../../../services/api/auth';
 
 const emit = defineEmits(['UserAdd']);
 const showForm = ref(true);

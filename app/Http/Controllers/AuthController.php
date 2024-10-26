@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserRole;
+use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -26,25 +28,39 @@ class AuthController extends Controller
     }
 
     public function register(Request $request)
-    {
-        $user = new User;
-        $user->name = $request->get('name');
-        $user->login = $request->get('login');
-        $user->email = $request->get('email');
-        $user->phone = $request->get('phone');
-        $user->city = $request->get('city');
-        $user->type = $request->get('type');
-        $user->birthday = $request->get('birthday'); 
-        $user->github = $request->get('github');
-        $user->password = Hash::make($request->get('password'));
-        $user->is_finished = false;
-        $user->save();
-        $token = $user->createToken('Access Token')->accessToken;
-        $data = [
-            'user' => $user,
-            'access_token' => $token,
-        ];
+{
+    // Создание нового пользователя
+    $user = new User;
+    $user->name = $request->get('name');
+    $user->login = $request->get('login');
+    $user->email = $request->get('email');
+    $user->phone = $request->get('phone');
+    $user->city = $request->get('city');
+    $user->type = $request->get('type');
+    $user->birthday = $request->get('birthday'); 
+    $user->github = $request->get('github');
+    $user->password = Hash::make($request->get('password'));
+    $user->is_finished = false;
+    $user->save();
 
-        return $this->successResponse($data);
+    // Получение role_id для роли "User"
+    $role = Role::where('name', 'User')->first();
+
+    if ($role) {
+        // Запись в UserRole
+        UserRole::create([
+            'user_id' => $user->id,
+            'role_id' => $role->id,
+        ]);
     }
+
+    // Генерация токена доступа
+    $token = $user->createToken('Access Token')->accessToken;
+    $data = [
+        'user' => $user,
+        'access_token' => $token,
+    ];
+
+    return $this->successResponse($data);
+}
 }
