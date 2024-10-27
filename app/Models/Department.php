@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Department extends Model
 {
     use HasFactory;
+
+    public $table = 'departments';
+
+    public $filables = ['name'];
 }

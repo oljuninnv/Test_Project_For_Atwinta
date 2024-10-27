@@ -4,9 +4,14 @@
         <span class="text-xl font-semibold whitespace-nowrap dark:text-white">Должности:</span>
       </h1>
       <SearchInput @search="filterPositions" class="w-full max-w-md mb-4" />
-      <button v-if="!showForm" @click="showForm = !showForm" class="btn">Добавить запись</button>
-      <button v-if="showForm" @click="showForm = !showForm" class="btn">Убрать форму</button>
+      <button @click="openAddPositionModal" class="btn">Добавить запись</button>
     </div>
+
+    <AdminWorkPositionModal
+      v-if="isAddModalVisible" 
+      @close="isAddModalVisible = false"
+      @position-added="refreshPositions" 
+    />
   
     <!-- Форма добавления должности -->
     <div v-if="showForm" class="p-4 bg-gray-100 rounded-md mb-4">
@@ -55,7 +60,11 @@
   <script setup>
   import { ref, onMounted, computed } from 'vue';
   import axios from '../../../libs/axios';
-  import SearchInput from "../../SearchInput.vue";  
+  import SearchInput from "../../SearchInput.vue"; 
+  import AdminWorkPositionModal from "./AdminWorkPositionModal.vue";
+  import AdminEditPosition from "./AdminEditPosition.vue";
+  
+  const isAddModalVisible = ref(false);
   const showForm = ref(false);
   const filteredPositions = ref([]);
   const positions = ref([]);
@@ -96,6 +105,7 @@
   
   // Функции редактирования и удаления
   function editPosition(position) {
+    console.log(position);
     selectedPosition.value = position;
     isModalVisible.value = true;
   }
@@ -127,6 +137,16 @@ const paginatedPositions = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   return filteredPositions.value.slice(start, start + itemsPerPage);
 });
+
+function openAddPositionModal(){
+    isAddModalVisible.value = true;
+}
+
+function refreshPositions() {
+    isAddModalVisible.value = false;
+    fetchPositions();
+  }
+
 </script>
 
 <style scoped>

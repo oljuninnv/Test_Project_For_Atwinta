@@ -10,4 +10,6 @@ class Position extends Model
     use HasFactory;
 
     public $table = 'work_positions';
+
+    public $fillable = ['name'];
 }

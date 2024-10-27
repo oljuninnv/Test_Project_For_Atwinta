@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use App\Models\UserRole;
 use App\Models\Role;
+use App\Models\Worker;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -108,17 +109,28 @@ class UserController extends Controller
     }
 
     public function destroy(User $user)
-    {
-        $imagePath = $user->image;
+{
+    $imagePath = $user->image;
 
-        $user->delete();
-
-        if ($imagePath && Storage::exists($imagePath)) {
-            Storage::delete($imagePath);
-        }
-
-        return response(['message' => 'User deleted']);
+    // Удаляем запись работника, если она существует
+    $worker = Worker::where('user_id', $user->id)->first();
+    if ($worker) {
+        $worker->delete();
     }
+
+    // Удаляем записи в таблице UserRole
+    UserRole::where('user_id', $user->id)->delete();
+
+    // Удаляем пользователя
+    $user->delete();
+
+    // Удаляем изображение, если оно существует
+    if ($imagePath && Storage::exists($imagePath)) {
+        Storage::delete($imagePath);
+    }
+
+    return response(['message' => 'Пользователь удалён']);
+}
 
     public function store(Request $request)
     {

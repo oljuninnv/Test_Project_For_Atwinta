@@ -4,7 +4,8 @@
       <span class="text-xl font-semibold whitespace-nowrap dark:text-white">Работники:</span>
     </h1>
     <SearchInput @search="filterWorkers" class="w-full max-w-md mb-4" />
-    <button @click="showForm = !showForm" class="btn">Добавить запись</button>
+    <button v-if="!showForm" @click="showForm = !showForm" class="btn">Добавить запись</button>
+    <button v-if="showForm" @click="showForm = !showForm" class="btn">Убрать форму</button>
   </div>
 
   <!-- Форма добавления работника -->
@@ -25,10 +26,12 @@
       </thead>
       <tbody>
         <tr v-for="worker in filteredWorkers" :key="worker.id" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><a href="#">{{ worker.userId }}</a></th>
-          <td class="px-6 py-4">{{ worker.positionId }}</td>
-          <td class="px-6 py-4">{{ worker.departmentId }}</td>
-          <td class="px-6 py-4">{{ worker.hireDate }}</td>
+          <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            <button @click="openModal(worker.user)">{{ worker.user.name }}</button>
+          </td>
+          <td class="px-6 py-4">{{ worker.position.name }}</td>
+          <td class="px-6 py-4">{{ worker.department.name }}</td>
+          <td class="px-6 py-4">{{ worker.adopted_at }}</td>
           <td class="px-6 py-4 text-right">
             <ul class="flex gap-5 text-right">
               <li><a href="#" @click.prevent="editWorker(worker)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a></li>
@@ -40,80 +43,136 @@
     </table>
   </div>
 
-    <!-- Пагинация -->
-    <div class="flex justify-center mt-4">
-      <button @click="prevPage" :disabled="currentPage === 1" class="btn">Назад</button>
-      <span class="mx-2">Страница {{ currentPage }} из {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages" class="btn">Вперед</button>
-    </div>
+  <!-- Пагинация -->
+  <div class="flex justify-center mt-4">
+    <button @click="prevPage" :disabled="currentPage === 1" class="btn">Назад</button>
+    <span class="mx-2">Страница {{ currentPage }} из {{ totalPages }}</span>
+    <button @click="nextPage" :disabled="currentPage === totalPages" class="btn">Вперед</button>
+  </div>
+
+  <!-- Модальное окно для просмотра информации о пользователе -->
+  <AdminGetUserInformation 
+      :isVisible="isModalVisible" 
+      :formData="formData" 
+      @close="isModalVisible = false"
+    />
+
+  <!-- Модальное окно для редактирования работника -->
+  <AdminEditWorker 
+    :workerData="selectedWorker"
+    :isVisible="isEditModalVisible"
+    @close="isEditModalVisible = false"
+    @worker-updated="fetchWorkers"
+  />
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
 import SearchInput from "../../SearchInput.vue";
 import AdminAddWorker from './AdminAddWorker.vue';
+import AdminEditWorker from "./AdminEditWorker.vue";
+import AdminGetUserInformation from "../AdminGetUserInformation.vue";
+import { ref, computed, onMounted } from 'vue';
+import axios from '../../../libs/axios';
 
 const showForm = ref(false);
-const workers = ref([
-  { id: 1, userId: 'Иван Иванов', positionId: 'Руководитель отдела', departmentId: 'Отдел качества', hireDate: '24.10.2018' },
-  { id: 2, userId: 'Петр Петров', positionId: 'Менеджер', departmentId: 'Отдел продаж', hireDate: '15.05.2020' },
-  { id: 3, userId: 'Марат Иванов', positionId: 'Разработчик', departmentId: 'IT-отдел', hireDate: '15.05.2020' },
-
-]);
-
+const workers = ref([]);
+const selectedWorker = ref(null);
+const isModalVisible = ref(false);
+const isEditModalVisible = ref(false);
 const currentPage = ref(1);
 const itemsPerPage = 2;
 const searchQuery = ref('');
 
-const totalPages = computed(() => filteredWorkers.value.length < 2 ? 1 : Math.ceil(workers.value.length / itemsPerPage));
+const formData = ref({
+    id:null,
+    name: '',
+    login: '',
+    email: '',
+    phone: '',
+    city: '',
+    birthday: '',
+    github: '',
+    type: '',
+    about: ''
+    });
+
+  const totalPages = computed(() => filteredWorkers.value.length < 2 ? 1 : Math.ceil(workers.value.length / itemsPerPage));
 
 const filteredWorkers = computed(() => {
-  console.log("Filtered Workers:", workers.value);
-  return workers.value.filter(worker => 
-    worker.userId.toLowerCase().includes(searchQuery.value.toLowerCase())
-  ).slice((currentPage.value - 1) * itemsPerPage, currentPage.value * itemsPerPage);
+  const filtered = workers.value.filter(worker =>
+    worker.user.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+    return filtered.slice((currentPage.value - 1) * itemsPerPage, currentPage.value * itemsPerPage);
 });
 
-function filterWorkers(query) {
-  console.log("Search Query:", query);
-  searchQuery.value = query;
-  currentPage.value = 1; // Сбросить на первую страницу при новом поиске
+// Открытие модального окна с информацией о пользователе
+function openModal(user) {
+  formData.value = { ...user }; // Копируем данные пользователя в форму
+  console.log(formData.value);
+  isModalVisible.value = true; // Открываем модальное окно
 }
 
+// Обработка добавления работника
 function handleWorkerAdded(worker) {
-  workers.value.push(worker); // Добавляем нового работника в массив
+  filteredWorkers.value.push(worker);
+  fetchWorkers(); // Перезагрузить список работников после добавления
 }
 
+// Редактирование работника
 function editWorker(worker) {
-  // Логика редактирования работника
+  selectedWorker.value = worker;
+  isEditModalVisible.value = true; // Открываем модальное окно редактирования
 }
 
-function deleteWorker(id) {
-  workers.value = workers.value.filter(worker => worker.id !== id);
+// Удаление работника
+async function deleteWorker(id) {
+  try {
+    await axios.delete(`/api/workers/${id}`);
+    fetchWorkers(); // Обновляем список после удаления
+  } catch (error) {
+    console.error('Ошибка при удалении работника:', error);
+  }
 }
 
-function prevPage() {
+// Пагинация
+const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
   }
-}
+};
 
-function nextPage() {
+const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
   }
+};
+
+// Загрузка работников при монтировании компонента
+async function fetchWorkers() {
+  try {
+    const response = await axios.get('/api/workers');
+    workers.value = response.data;
+    console.log(workers.value);
+  } catch (error) {
+    console.error('Ошибка при загрузке работников:', error);
+  }
+}
+
+onMounted(fetchWorkers);
+
+function filterWorkers(query) {
+  searchQuery.value = query;
+    currentPage.value = 1; // Сброс на первую страницу при новом поиске
 }
 </script>
 
 <style scoped>
-/* Добавьте стили при необходимости */
 .btn {
   padding: 0.5rem 1rem;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 0.25rem;
-  cursor: pointer;
 }
 .btn:disabled {
   background-color: #ccc;

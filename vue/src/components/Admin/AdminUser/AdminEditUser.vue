@@ -92,12 +92,11 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close', 'user-updated']);
-
-const formData = ref({});
+const formData = ref({'image':null});
 
 // Инициализация formData при изменении props.user
 watch(() => props.user, (newUser) => {
-  formData.value = { ...newUser };
+  formData.value = { ...newUser, image: null };
 }, { immediate: true });
 
 function updateUser() {
@@ -109,6 +108,7 @@ function updateUser() {
 }
 
 function handleFileUpload(event) {
+  console.log('Обнуление поля image:', formData.value.image);
   const file = event.target.files[0];
   if (file) {
     formData.value.image = file; // Добавляем файл в FormData

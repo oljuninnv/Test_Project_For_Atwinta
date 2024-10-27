@@ -36,7 +36,7 @@
           <td class="px-6 py-4">{{ user.login }}</td>
           <td class="px-6 py-4">
             {{user.image}}
-            <!-- <img v-if="user.image" :src="`http://127.0.0.1:8000/storage/${user.image}`" alt="User Image" class="w-10 h-10 rounded-full"> Колхоз, но всё же -->
+            <!-- <img v-if="user.image" :src="`http://127.0.0.1:8000/storage/${user.image}`" alt="User Image" class="w-10 h-10 rounded-full"> -->
           </td>
           <td class="px-6 py-4">{{ user.city }}</td>
           <td class="px-6 py-4">{{ user.phone }}</td>
@@ -147,7 +147,9 @@ const fetchUsers = async (updatedUser) => {
     if(updatedUser.is_finished){
       formData.append('is_finished', updatedUser.is_finished);
     }
+    console.log(updatedUser.image);
     if (updatedUser.image != null) {
+      console.log('vgwefk')
       formData.append('image', updatedUser.image, updatedUser.image.name);
     }    
     formData.append('_method', 'put');

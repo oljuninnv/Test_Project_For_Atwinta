@@ -1,7 +1,5 @@
 <template>
-  <form form @submit.prevent="submitForm" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded">
-    
-    <!-- Поле для выбора работника -->
+  <form @submit.prevent="submitForm" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded">
     <div>
       <label for="user" class="block text-sm font-medium leading-6 text-gray-900">Работник</label>
       <div class="relative mt-2">
@@ -19,7 +17,7 @@
             <li
               v-for="user in filteredUsers"
               :key="user.id"
-              @click="selectUser(user)"
+              @mousedown="selectUser(user)"
               class="cursor-pointer hover:bg-gray-100 px-2 py-1"
             >
               {{ user.name }}
@@ -29,7 +27,6 @@
       </div>
     </div>
 
-    <!-- Поле для выбора должности -->
     <div>
       <label for="position" class="block text-sm font-medium leading-6 text-gray-900">Должность</label>
       <div class="relative mt-2">
@@ -47,7 +44,7 @@
             <li
               v-for="position in filteredPositions"
               :key="position.id"
-              @click="selectPosition(position)"
+              @mousedown="selectPosition(position)"
               class="cursor-pointer hover:bg-gray-100 px-2 py-1"
             >
               {{ position.name }}
@@ -57,7 +54,6 @@
       </div>
     </div>
 
-    <!-- Поле для выбора отдела -->
     <div class="mt-4">
       <label for="department" class="block text-sm font-medium leading-6 text-gray-900">Отдел</label>
       <div class="relative mt-2">
@@ -75,7 +71,7 @@
             <li
               v-for="department in filteredDepartments"
               :key="department.id"
-              @click="selectDepartment(department)"
+              @mousedown ="selectDepartment(department)"
               class="cursor-pointer hover:bg-gray-100 px-2 py-1"
             >
               {{ department.name }}
@@ -85,152 +81,182 @@
       </div>
     </div>
 
-    <!-- Поле для ввода даты найма -->
     <div class="mt-4">
       <label for="hireDate" class="block text-sm font-medium leading-6 text-gray-900">Дата найма</label>
       <input
         type="date"
-        v-model="formData.hireDate"
+        v-model="formData.adopted_at"
         class="input_text w-full border border-gray-300 rounded-md p-2 mt-2"
       />
     </div>
 
-    <!-- Кнопка отправки формы -->
     <button type="submit" class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400 mt-5">Отправить</button>
   </form>
-  </template>
-  
-  <script>
-  import { ref, defineEmits } from 'vue';
+</template>
 
-  const emit = defineEmits(['worker-added']);
+<script>
+import axios from '../../../libs/axios';
+import { ref, onMounted} from 'vue';
 
-  export default {
-    data() {
-      return {
-        formData: ref({
-          userId: '',
-          positionId: '',
-          departmentId: '',
-          hireDate: ''
-        }),
-        positionSearchTerm: '',
-        departmentSearchTerm: '',
-        searchTerm: '', // Инициализация переменной для поиска пользователей
-        filteredUsers: [
-          { id: 1, name: 'Иванов Иван' },
-          { id: 2, name: 'Петров Петр' },
-        ],
-        filteredPositions: [
-          { id: 1, name: 'Менеджер по продажам' },
-          { id: 2, name: 'Разработчик' },
-          { id: 3, name: 'Тестировщик' },
-          { id: 4, name: 'Системный администратор' }
-        ],
-        filteredDepartments: [
-          { id: 1, name: 'Отдел продаж' },
-          { id: 2, name: 'IT-отдел' },
-          { id: 3, name: 'Маркетинг' },
-        ],
-        users: [
-          { id: 1, name: 'Иванов Иван' },
-          { id: 2, name: 'Петров Петр' },
-        ],
-        positions: [
-          { id: 1, name: 'Менеджер по продажам' },
-          { id: 2, name: 'Разработчик' },
-          { id: 3, name: 'Тестировщик' },
-          { id: 4, name: 'Системный администратор' }
-        ],
-        departments: [
-          { id: 1, name: 'Отдел продаж' },
-          { id: 2, name: 'IT-отдел' },
-          { id: 3, name: 'Маркетинг' },
-          { id: 4, name: 'Финансовый отдел' },
-          { id: 5, name: 'HR-отдел' }
-        ],
-        isPositionDropdownOpen: false,
-        isDepartmentDropdownOpen: false,
-        isDropdownOpen: false, // Переменная для управления дропдауном пользователей
-      };
-    },
-    methods: {
-      submitForm() {
-        this.$emit('worker-added', { ...this.formData }); 
-    },
-      filterPositions() {
-        if(this.positionSearchTerm){
-          this.filteredPositions = this.filteredPositions.filter(position =>
-          position.name.toLowerCase().includes(this.positionSearchTerm.toLowerCase())
-        );
-        this.isPositionDropdownOpen = this.filteredPositions.length > 0;
-        }
-        else{
-          this.filteredPositions = this.positions;
-        }
-      },
-      selectPosition(position) {
-        // this.formData.positionId = position.id;
-        this.formData.positionId = position.name;
-        this.positionSearchTerm = position.name;
-        this.isPositionDropdownOpen = false;
-        console.log(this.formData.positionId);
-        this.filteredPositions = [];
-      },
-      filterDepartments() {
-        if(this.departmentSearchTerm){
-          this.filteredDepartments = this.filteredDepartments.filter(department =>
-          department.name.toLowerCase().includes(this.departmentSearchTerm.toLowerCase())
-        );
-        this.isDepartmentDropdownOpen = this.filteredDepartments.length > 0;
-        }else{
-          this.filteredDepartments = this.departments;
-        }       
-      },
-      selectDepartment(department) {
-        // this.formData.departmentId = department.id;
-        this.formData.departmentId = department.name;
-        this.departmentSearchTerm = department.name;
-        this.isDepartmentDropdownOpen = false;
-        console.log(this.formData.departmentId);
-        this.filteredDepartments = [];
-      },
-      filterUsers() {
-        if (this.searchTerm){this.filteredUsers = this.filteredUsers.filter(user =>
-          user.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-        );
-        this.isDropdownOpen = this.filteredUsers.length > 0;
-      }else{
-        this.filteredUsers = this.users;
-      }},
-      selectUser(user) {
-        this.formData.userId = user.id; // Сохраняем ID пользователя
-        this.formData.userId = user.name;
-        this.searchTerm = user.name;
-        this.isDropdownOpen = false;
-        console.log(this.formData.userId);
-        this.filteredUsers = [];
-      },
-      closeDropdown() {
-        setTimeout(() => {
-          this.isDropdownOpen = false; // Закрытие дропдауна через небольшой таймаут
-        }, 200);
-      },
-      closePositionDropdown() {
-        setTimeout(() => {
-          this.isPositionDropdownOpen = false;
-        }, 200);
-      },
-      closeDepartmentDropdown() {
-        setTimeout(() => {
-          this.isDepartmentDropdownOpen = false;
-        }, 200);
-      },
-    },
-    mounted() {
-    this.filteredUsers = this.users;
-    this.filteredPositions = this.positions;
-    this.filteredDepartments = this.departments;
+export default {
+  setup() {
+    const formData = ref({
+      user_id: null,
+      position_id: null,
+      department_id: null,
+      adopted_at: ''
+    });
+
+    const users = ref([]);
+    const searchTerm = ref('');
+    const positionSearchTerm = ref('');
+    const departmentSearchTerm = ref('');
+    const filteredUsers = ref([]);
+    const filteredPositions = ref([]);
+    const filteredDepartments = ref([]);
+    const isDropdownOpen = ref(false);
+    const isPositionDropdownOpen = ref(false);
+    const isDepartmentDropdownOpen = ref(false);
+
+    const fetchUsers = async () => {
+      const usersResponse = await axios.get('/api/users');
+      const allUsers = usersResponse.data.response; // Сохраняем всех пользователей
+      
+      // Фильтруем пользователей, у которых worker_id пуст или равен null/undefined
+      filteredUsers.value = allUsers.filter(user => !user.worker_id || user.worker_id === null || user.worker_id === undefined);
+    };
+
+    const fetchPositions = async () => {
+      const response = await axios.get('/api/positions'); 
+      filteredPositions.value = response.data;
+    };
+
+    const fetchDepartments = async () => {
+      const response = await axios.get('/api/departments'); 
+      filteredDepartments.value = response.data;
+    };
+
+    const selectUser = (user) => {
+      formData.value.user_id = user.id;
+      searchTerm.value = user.name;
+      isDropdownOpen.value = false;
+      filteredUsers.value = []; // Очистим отфильтрованный массив
+    };
+
+    const selectPosition = (position) => {
+      formData.value.position_id = position.id;
+      positionSearchTerm.value = position.name;
+      isPositionDropdownOpen.value = false;
+      filteredPositions.value = [];
+    };
+
+    const selectDepartment = (department) => {
+      formData.value.department_id = department.id;
+      departmentSearchTerm.value = department.name;
+      isDepartmentDropdownOpen.value = false;
+      filteredDepartments.value = [];
+    };
+
+    const submitForm = async () => {
+  try {
+    console.log(formData.value);
+    await axios.post('/api/workers', formData.value);
+
+    // Уведомление об успешном добавлении
+    alert('Работник успешно добавлен!');
+    
+    // Очистка данных формы
+    this.SearchTerm.value = '';
+      this.positionSearchTerm.value = '';
+      this.departmentSearchTerm.value = '';
+      emit('worker-added', formData.value);
+  } catch (error) {
+    // Обработка ошибок
+    console.error('Ошибка при добавлении работника:', error);
+    alert('Произошла ошибка при добавлении работника. Пожалуйста, попробуйте еще раз.');
   }
+};
+
+    const filterUsers = () => {
+      const term = searchTerm.value.toLowerCase();
+      if (term) {
+        filteredUsers.value = users.value.filter(user =>
+          user.name.toLowerCase().includes(term)
+        );
+        isDropdownOpen.value = filteredUsers.value.length > 0;
+      } else {
+        filteredUsers.value = users.value; // Вернуть всех пользователей, если нет термина поиска
+        isDropdownOpen.value = false;
+      }
+    };
+
+    const filterPositions = () => {
+      const term = positionSearchTerm.value.toLowerCase();
+      if (term) {
+        filteredPositions.value = positions.value.filter(position =>
+          position.name.toLowerCase().includes(term)
+        );
+        isPositionDropdownOpen.value = filteredPositions.value.length > 0;
+      } else {
+        filteredPositions.value = positions.value;
+        isPositionDropdownOpen.value = false;
+      }
+    };
+
+    const filterDepartments = () => {
+      const term = departmentSearchTerm.value.toLowerCase();
+      if (term) {
+        filteredDepartments.value = departments.value.filter(department =>
+          department.name.toLowerCase().includes(term)
+        );
+        isDepartmentDropdownOpen.value = filteredDepartments.value.length > 0;
+      } else {
+        filteredDepartments.value = departments.value;
+        isDepartmentDropdownOpen.value = false;
+      }
+    };
+
+    const closeDropdown = () => {
+      isDropdownOpen.value = false;
+    };
+
+    const closePositionDropdown = () => {
+      isPositionDropdownOpen.value = false;
+    };
+
+    const closeDepartmentDropdown = () => {
+      isDepartmentDropdownOpen.value = false;
+    };
+
+    // Запускаем получение данных
+    onMounted(() => {
+    fetchUsers();
+    fetchPositions();
+    fetchDepartments();
+});
+
+    return {
+      formData,
+      searchTerm,
+      positionSearchTerm,
+      departmentSearchTerm,
+      filteredUsers,
+      filteredPositions,
+      filteredDepartments,
+      isDropdownOpen,
+      isPositionDropdownOpen,
+      isDepartmentDropdownOpen,
+      selectUser,
+      selectPosition,
+      selectDepartment,
+      submitForm,
+      filterUsers,
+      filterPositions,
+      filterDepartments,
+      closeDropdown,
+      closePositionDropdown,
+      closeDepartmentDropdown
+    };
   }
-  </script>
+}
+</script>

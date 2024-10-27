@@ -1,8 +1,7 @@
 <template>
-    <div v-if="isVisible" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
+    <div v-if="isVisible" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50">
       <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
         <h2 class="text-lg font-semibold text-gray-900">Добавить администратора</h2>
-        <label for="user" class="block text-sm font-medium leading-6 text-gray-900">Работник</label>
         <div class="relative mt-2">
           <input
             type="text"
@@ -18,7 +17,7 @@
               <li
                 v-for="user in filteredUsers"
                 :key="user.id"
-                @mousedown.prevent="selectUser(user)" 
+                @mousedown.prevent ="selectUser(user)" 
                 class="cursor-pointer p-2 hover:bg-gray-100"
               >
                 {{ user.name }} 

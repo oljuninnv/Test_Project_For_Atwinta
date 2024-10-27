@@ -18,15 +18,25 @@ class UserRoleController extends Controller
 
     // Добавление новой записи
     public function store(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'role_id' => 'required|exists:roles,id',
-        ]);
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'role_id' => 'required|exists:roles,id',
+    ]);
 
-        $userRole = UserRole::create($request->all());
-        return response()->json($userRole, 201);
+    // Проверяем, существует ли запись в таблице user_roles для данного user_id
+    $existingUserRole = UserRole::where('user_id', $request->user_id)->first();
+
+    if ($existingUserRole) {
+        // Если запись существует, обновляем role_id на 1
+        $existingUserRole->update(['role_id' => 1]);
+        return response()->json($existingUserRole, 200); // Возвращаем обновлённую запись
     }
+
+    // Если записи не существует, создаём новую
+    $userRole = UserRole::create($request->all());
+    return response()->json($userRole, 201);
+}
 
     // Получение конкретной записи
     public function show($id)

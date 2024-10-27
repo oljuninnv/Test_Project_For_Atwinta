@@ -144,6 +144,7 @@
     }
     await loadUserRoles();
   }
+
   </script>
 
 <style scoped>
