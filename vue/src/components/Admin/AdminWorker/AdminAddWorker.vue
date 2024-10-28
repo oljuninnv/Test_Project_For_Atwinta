@@ -96,7 +96,7 @@
 
 <script>
 import axios from '../../../libs/axios';
-import { ref, onMounted} from 'vue';
+import { ref, onMounted, defineEmits} from 'vue';
 
 export default {
   setup() {
@@ -107,6 +107,7 @@ export default {
       adopted_at: ''
     });
 
+    
     const users = ref([]);
     const searchTerm = ref('');
     const positionSearchTerm = ref('');
@@ -163,13 +164,11 @@ export default {
     await axios.post('/api/workers', formData.value);
 
     // Уведомление об успешном добавлении
-    alert('Работник успешно добавлен!');
-    
+    alert('Работник успешно добавлен! Перезагрузите страницу, чтобы данные в таблице обновились.');
     // Очистка данных формы
     this.SearchTerm.value = '';
       this.positionSearchTerm.value = '';
       this.departmentSearchTerm.value = '';
-      emit('worker-added', formData.value);
   } catch (error) {
     // Обработка ошибок
     console.error('Ошибка при добавлении работника:', error);

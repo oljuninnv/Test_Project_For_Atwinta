@@ -10,7 +10,7 @@
 
   <!-- Форма добавления работника -->
   <div v-if="showForm" class="p-4 bg-gray-100 rounded-md mb-4">
-    <AdminAddWorker @worker-added="handleWorkerAdded" @close="showForm = false"></AdminAddWorker>
+    <AdminAddWorker @worker-added="handleWorkerAdded" @close="toggleForm"></AdminAddWorker>
   </div>
 
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-[5%]">
@@ -114,13 +114,15 @@ function openModal(user) {
 
 // Обработка добавления работника
 function handleWorkerAdded(worker) {
+  console.log('wwwww')
   filteredWorkers.value.push(worker);
   fetchWorkers(); // Перезагрузить список работников после добавления
 }
 
 // Редактирование работника
 function editWorker(worker) {
-  selectedWorker.value = worker;
+  selectedWorker.value = { ...worker};
+  console.log(worker);
   isEditModalVisible.value = true; // Открываем модальное окно редактирования
 }
 
@@ -164,6 +166,13 @@ function filterWorkers(query) {
   searchQuery.value = query;
     currentPage.value = 1; // Сброс на первую страницу при новом поиске
 }
+
+function toggleForm() {
+      this.showForm = !this.showForm;
+      if (!this.showForm) {
+        this.fetchWorkers(); // Обновляем данные, если форма закрыта
+      }
+    };
 </script>
 
 <style scoped>
