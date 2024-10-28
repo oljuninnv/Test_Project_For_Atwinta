@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { registerUser } from '../services/api/auth';
+import { registerUser } from '../../services/api/auth';
 
 export default {
   data() {

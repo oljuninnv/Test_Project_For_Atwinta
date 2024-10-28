@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { loginUser } from '../services/api/auth';
+import { loginUser } from '../../services/api/auth';
 
 export default {
   data() {
@@ -91,7 +91,7 @@ export default {
               this.$router.push('/users');
             }
             else{
-              this.$router.push('/groups');
+              this.$router.push('/departments');
             }            
           }
         } catch (error) {

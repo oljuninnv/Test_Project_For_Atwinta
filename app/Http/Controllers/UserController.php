@@ -85,7 +85,8 @@ class UserController extends Controller
                 if ($oldImagePath && Storage::exists($oldImagePath)) {
                     Storage::delete($oldImagePath);
                 }
-            } else {
+            }
+            else {
                 // Если логин не изменился, но есть старое изображение
                 if ($oldImagePath && Storage::exists($oldImagePath)) {
                     Storage::delete($oldImagePath);

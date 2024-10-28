@@ -1,14 +1,15 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import Login from "../views/LoginView.vue"
-import Register from "../views/RegisterView.vue"
-import UserView from "../views/UserView.vue"
-import UsersList from "../views/UsersList.vue"
-import GroupList from "../views/GroupList.vue"
-import SendResetLink from "../views/SendResetLink.vue"
-import UserProfile from "../views/UserProfile.vue"
-import UserProfileEdit from "../views/UserProfileEdit.vue"
+import Login from "../views/Auth/LoginView.vue"
+import Register from "../views/Auth/RegisterView.vue"
+import UserView from "../views/Users/UserView.vue"
+import UsersList from "../views/Users/UsersList.vue"
+import DepartmentList from "../views/Department/DepartmentList.vue"
+import SendResetLink from "../views/Auth/SendResetLink.vue"
+import UserProfile from "../views/UserProfile/UserProfile.vue"
+import UserProfileEdit from "../views/UserProfile/UserProfileEdit.vue"
 import Admin from "../views/Admin/AdminPage.vue"
-import ResetPassword from '../views/ResetPassword.vue'
+import ResetPassword from '../views/Auth/ResetPassword.vue'
+import NotFoundPage from '../views/NotFoundPage.vue'
 
 const routes = [
     {
@@ -24,7 +25,7 @@ const routes = [
         path: '/users', name: 'UsersList',component:UsersList        
     },
     {
-        path: '/groups', name: 'GroupList',component:GroupList        
+        path: '/departments', name: 'DepartmentList',component:DepartmentList        
     },
     {
         path: '/auth/restore', name: 'SendResetLink',component:SendResetLink        
@@ -36,11 +37,12 @@ const routes = [
         path: '/profile', name: 'UserProfile',component:UserProfile
     },
     {
-        path: '/profile/edit', name: 'UserProfileEdit',component:UserProfileEdit
+        path: '/profile/edit/:id', name: 'UserProfileEdit', component: UserProfileEdit
     },
     {
         path: '/admin', name: 'Admin',component:Admin
-    }
+    },
+    { path: '/:catchAll(.*)', component: NotFoundPage }, // Обработчик для 404
 ]
 
 const router = createRouter({

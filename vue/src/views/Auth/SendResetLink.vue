@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { ResetLink } from '../services/api/auth';
+import { ResetLink } from '../../services/api/auth';
 
 export default {
   data() {

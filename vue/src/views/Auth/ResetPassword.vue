@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { ResetPassword } from '../services/api/auth';
+import { ResetPassword } from '../../services/api/auth';
 
 export default {
   data() {
