@@ -84,8 +84,15 @@ export default {
           console.log(response);
           alert('Авторизация прошла успешно');
           if (response.data) {
+            console.log(response.data);
             localStorage.setItem('token', response.token);
-            this.$router.push('/users');
+            localStorage.setItem('UserData', JSON.stringify(response.data));
+            if (response.data.worker_id != null){
+              this.$router.push('/users');
+            }
+            else{
+              this.$router.push('/groups');
+            }            
           }
         } catch (error) {
           if (error.response) {

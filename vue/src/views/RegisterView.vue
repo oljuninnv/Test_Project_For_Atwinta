@@ -121,7 +121,7 @@ export default {
         console.log(response);
         if (response.access_token) {
             localStorage.setItem('token', response.access_token);
-            this.$router.push('/groups');
+            this.$router.push('/auth/login');
           }
       } catch (error) {
         if (error.response) {

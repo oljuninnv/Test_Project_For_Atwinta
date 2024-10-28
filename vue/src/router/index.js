@@ -49,4 +49,14 @@ const router = createRouter({
     
 })
 
+router.beforeEach((to, from, next) => {
+    const isAuthenticated = !!localStorage.getItem('token'); // ваша логика проверки
+
+    if (to.path !== '/auth/login' && !isAuthenticated) {
+        next('/auth/login'); // перенаправление на страницу авторизации
+    } else {
+        next(); // продолжить навигацию
+    }
+});
+
 export default router
