@@ -1,6 +1,6 @@
 <template>
     <section v-if="isAuthenticated" class="p-10">
-        <router-link v-if="user.user.worker_id" to="/users" class="return flex items-center text-black text-lg">
+        <router-link v-if="user.user.worker_id" :to="`/users/${depId}`" class="return flex items-center text-black text-lg">
                 Назад
             </router-link>
             <router-link v-else to="/departments" class="return flex items-center text-black text-lg">
@@ -54,6 +54,7 @@ import axios from '../../libs/axios';
 
 const user = ref({});
 const isAuthenticated = ref(false);
+const depId = ref(''); 
 const departmentName = ref(''); 
 const positionName = ref(''); 
 
@@ -98,6 +99,7 @@ const fetchDepartmentAndPosition = async (departmentId, positionId) => {
         ]);
 
         departmentName.value = departmentResponse.data.name; 
+        depId.value = departmentResponse.data.id;
         positionName.value = positionResponse.data.name; 
         user.value.user.position = positionName.value;
     } catch (error) {
