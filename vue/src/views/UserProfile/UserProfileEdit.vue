@@ -124,9 +124,8 @@ const saveChanges = async () => {
 
         console.log(response);
         console.log('Сохраненные данные:', userData.value.image);
-        if (userData.value.image == null) {
-            userData.value.image =img.value;
-        }
+        userData.value.image = img.value;
+        console.log(userData.value.image);
         localStorage.setItem('UserData', JSON.stringify(userData.value));
         router.push('/profile'); // Переадресация на страницу профиля
     } catch (error) {

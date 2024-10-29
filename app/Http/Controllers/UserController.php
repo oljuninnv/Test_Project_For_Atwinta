@@ -62,14 +62,17 @@ class UserController extends Controller
         $user->login = $request->get('login');
         $user->email = $request->get('email');
         $user->phone = $request->get('phone');
-        $user->city = $request->get('city');
-        $user->birthday = $request->get('birthday');
+        $user->city = $request->get('city');       
         $user->github = $request->get('github');
         $user->about = $request->get('about');
         $user->type = $request->get('type');
 
-        if ($user->is_finished != false) {
+        if ($user->is_finished == false) {
             $user->is_finished = $request->get('is_finished');
+        }
+
+        if ($user->birthday == null){
+            $user->birthday = $request->get('birthday');
         }
 
         // Проверяем, изменился ли логин и загружено ли новое изображение

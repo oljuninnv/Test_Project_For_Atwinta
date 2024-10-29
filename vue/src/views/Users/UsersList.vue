@@ -16,11 +16,14 @@ import SearchInput from "../../components/SearchInput.vue"
 
 const userData = ref(null);
 
+const userImage = ref('null');
+
+
 const fetchUserData = () => {
     const userDataString = localStorage.getItem('UserData');
     if (userDataString) {
         userData.value = JSON.parse(userDataString);
-        console.log('Данные пользователя:', userData.value);
+        console.log('Данные пользователя:', userImage.value);
     } else {
         userData.value = null;
         console.log('Данные пользователя не найдены в localStorage.');
@@ -38,6 +41,7 @@ const isAuthorized = computed(() => {
 
 // Проверка наличия worker_id
 const hasWorkerId = computed(() => {
+    console.log(userData.value.image)
     return userData.value && userData.value.worker_id !== null;
 });
 

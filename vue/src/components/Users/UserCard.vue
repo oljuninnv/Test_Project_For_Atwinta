@@ -1,5 +1,31 @@
 <template>
   <div class="container mx-auto">
+    <header class="flex justify-between items-center">
+      <h1 class="text-xl font-bold">ATWINTA</h1>
+      <div class="relative">
+        <router-link to="/profile">
+      <img 
+        v-if="userImage" 
+        class="h-[60px] w-[60px] rounded-full cursor-pointer" 
+        :src="`http://127.0.0.1:8000/storage/${userImage}`" 
+        alt="User's Face"
+        @mouseover="showTooltip = true"
+        @mouseleave="showTooltip = false"
+      >
+      <img 
+        v-else 
+        class="h-[60px] w-[60px] rounded-full cursor-pointer" 
+        src="../../public/default.png" 
+        alt="User's Face"
+        @mouseover="showTooltip = true"
+        @mouseleave="showTooltip = false"
+      >
+    </router-link>
+        <div v-if="showTooltip" class="absolute bg-gray-700 text-white text-xs rounded px-2 py-1 -bottom-8 right-0">
+          Профиль
+        </div>
+      </div>
+    </header>
     <SearchInput @search="handleSearch" />
     <div v-if="filteredEmployees.length">
       <h2 class="text-2xl font-bold mb-4 text-center">Название отдела: {{ department }}</h2>
@@ -27,6 +53,7 @@
 
 <script>
 import axios from '../../libs/axios';
+import { ref } from 'vue';
 import SearchInput from "../../components/SearchInput.vue";
 
 export default {
@@ -37,7 +64,9 @@ export default {
     return {
       department: '',
       searchQuery: '',
+      userImage: '', // Изменено на строку
       employees: [],
+      showTooltip: false,
     };
   },
   computed: {
@@ -53,6 +82,7 @@ export default {
   methods: {
     async fetchWorkerInformation() {
       const userData = JSON.parse(localStorage.getItem('UserData'));
+      this.userImage = userData.image;
       const workerId = userData ? userData.worker_id : null;
 
       if (!workerId) {
@@ -61,7 +91,7 @@ export default {
       }
 
       try {
-        const response = await axios.get(`api/workers_information/${workerId}`);
+        const response = await axios.get(`/api/workers_information/${workerId}`); // Исправлено на правильный синтаксис
         const data = await response.data;
         this.department = data.department;
         this.employees = data.employees;
