@@ -9,6 +9,7 @@ use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\WorkPositionController;
 use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\Api\GetDepartmentInformationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,3 +42,5 @@ Route::delete('/workers/{id}', [WorkerController::class, 'destroy']);
 
 Route::apiResource('/departments', DepartmentController::class);
 Route::apiResource('/positions', WorkPositionController::class);
+
+Route::get('/departments_indormation', [GetDepartmentInformationController::class, 'index']);

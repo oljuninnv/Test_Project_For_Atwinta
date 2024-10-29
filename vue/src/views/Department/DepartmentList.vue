@@ -2,8 +2,7 @@
     <section class="p-5">        
         <div>
             <div v-if="isAuthorized && hasWorkerId">
-                <SearchInput></SearchInput>
-                <h2 class="text-bluePrimary text-xl font-bold text-center">Группы</h2>
+                <h2 class="text-bluePrimary text-xl font-bold text-center mb-5">Страница со списком отделов</h2>
                 <DepartmentCard ></DepartmentCard>
             </div>
             <div v-else-if="!isAuthorized || !hasWorkerId" class="text-center text-xl">Ошибка 404: Страница не найдена</div>

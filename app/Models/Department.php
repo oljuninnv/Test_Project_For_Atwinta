@@ -12,4 +12,9 @@ class Department extends Model
     public $table = 'departments';
 
     public $filables = ['name'];
+
+    public function workers()
+    {
+        return $this->hasMany(Worker::class);
+    }
 }

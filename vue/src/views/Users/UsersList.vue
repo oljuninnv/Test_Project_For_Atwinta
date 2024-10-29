@@ -2,7 +2,7 @@
     <section class="p-5"> 
         <div>
             <div v-if="isAuthorized && hasWorkerId">
-                <SearchInput></SearchInput>
+                <SearchInput @search="filterWorkers" class="w-full max-w-md mb-4" />                
                 <UserCard></UserCard>
             </div>       
             <div v-else-if="!isAuthorized || !hasWorkerId" class="text-center text-xl">Ошибка 404: Страница не найдена</div>
@@ -32,7 +32,6 @@ const fetchUserData = () => {
 
 // Вызов функции при монтировании компонента
 onMounted(() => {
-    console.log('Компонент монтируется...');
     fetchUserData();
 });
 
@@ -45,4 +44,9 @@ const isAuthorized = computed(() => {
 const hasWorkerId = computed(() => {
     return userData.value && userData.value.worker_id !== null;
 });
+
+function filterWorkers(query) {
+  searchQuery.value = query;
+    currentPage.value = 1; // Сброс на первую страницу при новом поиске
+}
 </script>
