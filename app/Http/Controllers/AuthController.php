@@ -12,20 +12,25 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     public function login(Request $request)
-    {
-        if (Auth::attempt(['email' => $request->get('email'), 'password' => $request->get('password')])) {
+{
+    if (Auth::attempt(['email' => $request->get('email'), 'password' => $request->get('password')])) {
+        $user = Auth::user();
+        $success['token'] = $user->createToken('User Token')->accessToken;
 
-            $user = Auth::user();
-            $success['token'] = $user->createToken('User Token')->accessToken;
-            $success['data'] = $user;
+        // Получаем роли пользователя
+        $roles = $user->roles()->pluck('name'); // Получаем названия ролей
 
-            return $this->successResponse($success);
-        }
+        // Добавляем роли в данные ответа
+        $success['data'] = [
+            'user' => $user,
+            'roles' => $roles,
+        ];
 
-        return $this->failureResponse(['error' => 'Unauthorization or user is not found.']);
-
-
+        return $this->successResponse($success);
     }
+
+    return $this->failureResponse(['error' => 'Unauthorization or user is not found.']);
+}
 
     public function register(Request $request)
 {

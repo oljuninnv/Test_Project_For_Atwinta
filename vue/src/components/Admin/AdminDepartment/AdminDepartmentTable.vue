@@ -56,11 +56,7 @@ import SearchInput from "../../SearchInput.vue";
 import AdminAddDepartment from './AdminAddDepartment.vue';
 
 const showForm = ref(false);
-const departments = ref([
-  { id: 1, name: 'Отдел разработки', positions: ['Frontend', 'Backend'] },
-  { id: 2, name: 'Отдел маркетинга', positions: ['SEO', 'SMM'] },
-  { id: 3, name: 'Отдел продаж', positions: ['Менеджер по продажам'] },
-]);
+const departments = ref([]);
 
 const currentPage = ref(1);
 const itemsPerPage = 2;

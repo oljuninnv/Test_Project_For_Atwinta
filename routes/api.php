@@ -10,7 +10,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\WorkPositionController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\Api\GetDepartmentInformationController;
-use App\Http\Controllers\Api\GetWorkerInformationController;
+use App\Http\Controllers\Api\GetWorkersInformationFromDepartmentsController;
 use App\Http\Controllers\Api\GetUserInformationController;
 /*
 |--------------------------------------------------------------------------
@@ -47,5 +47,5 @@ Route::apiResource('/positions', WorkPositionController::class);
 
 // Данные, которые мы получаем на страницах с контентом
 Route::get('/departments_information', [GetDepartmentInformationController::class, 'index']);
-Route::get('/workers_information/{id}', [GetWorkerInformationController::class, 'show']);
+Route::get('/workers_information/{id}', [GetWorkersInformationFromDepartmentsController::class, 'show']);
 Route::get('/user/{worker_id}', [GetUserInformationController::class, 'getUserInfo']);

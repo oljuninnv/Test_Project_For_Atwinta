@@ -3,7 +3,7 @@
         <header class="flex justify-between items-center">
       <h1 class="text-xl font-bold">ATWINTA</h1>
       <div class="relative">
-        <router-link to="/profile">
+        <router-link to="/profile" >
       <img 
         v-if="userImage" 
         class="h-[60px] w-[60px] rounded-full cursor-pointer" 
@@ -35,6 +35,11 @@
                 <div class="space-y-0.5">
                     <h2>{{ department.department_name }}</h2>
                 </div>
+                <router-link v-if="userRole == 'Admin'"
+                    :to="{ name: 'UsersList', params: { department_id: department.department_id } }"
+                    class="hover:text-red-500">
+                    Подробнее
+                </router-link>
             </div>
         </div>
 
@@ -67,6 +72,8 @@ export default {
         return {
             departments: [],
             searchQuery: '',
+            userImage: '',
+            userRole:'',
             isModalOpen: false,
             selectedDepartment: null,
             showTooltip: false,
@@ -86,9 +93,12 @@ export default {
         async fetchDepartments() {
             try {
                 const userData = JSON.parse(localStorage.getItem('UserData'));
-                this.userImage = userData.image;
+                this.userImage = userData.user.image;
+                this.userRole = userData.roles; 
+                console.log(this.userRole);
                 const response = await axios.get('/api/departments_information'); // Убедитесь, что путь правильный
                 this.departments = response.data;
+                console.log('www', this.departments);
             } catch (error) {
                 console.error('Ошибка при получении данных:', error);
             }

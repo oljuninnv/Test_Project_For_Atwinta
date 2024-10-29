@@ -11,37 +11,37 @@
 
                 <div class="mb-4">
                     <label for="username" class="block text-gray-700 font-bold mb-2">Имя:</label>
-                    <input type="text" id="username" v-model="userData.name" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите имя..." required />
+                    <input type="text" id="username" v-model="userData.user.name" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите имя..." required />
                 </div>
 
                 <div class="mb-4">
                     <label for="login" class="block text-gray-700 font-bold mb-2">Логин:</label>
-                    <input type="text" id="login" v-model="userData.login" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите логин..." required />
+                    <input type="text" id="login" v-model="userData.user.login" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите логин..." required />
                 </div>
 
                 <div class="mb-4">
                     <label for="email" class="block text-gray-700 font-bold mb-2">Email:</label>
-                    <input type="email" id="email" v-model="userData.email" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите email..." required />
+                    <input type="email" id="email" v-model="userData.user.email" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите email..." required />
                 </div>
 
                 <div class="mb-4">
                     <label for="city" class="block text-gray-700 font-bold mb-2">Город:</label>
-                    <input type="text" id="city" v-model="userData.city" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите город..." required />
+                    <input type="text" id="city" v-model="userData.user.city" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите город..." required />
                 </div>
 
                 <div class="mb-4">
                     <label for="phone" class="block text-gray-700 font-bold mb-2">Телефон:</label>
-                    <input type="text" id="phone" v-model="userData.phone" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите номер..." required />
+                    <input type="text" id="phone" v-model="userData.user.phone" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите номер..." required />
                 </div>
 
                 <div class="mb-4">
                     <label for="github" class="block text-gray-700 font-bold mb-2">GitHub:</label>
-                    <input type="text" id="github" v-model="userData.github" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите github..." required />
+                    <input type="text" id="github" v-model="userData.user.github" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите github..." required />
                 </div>
 
                 <div class="mb-4">
                     <label for="about" class="block text-gray-700 font-bold mb-2">О себе:</label>
-                    <textarea id="about" v-model="userData.about" rows="4" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите информацию о себе..."></textarea>
+                    <textarea id="about" v-model="userData.user.about" rows="4" class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите информацию о себе..."></textarea>
                 </div>
 
                 <div class="mb-4">
@@ -61,9 +61,10 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from '../../libs/axios';
 
-const img = ref('')
+const img = ref('');
 const route = useRoute();
-const router = useRouter(); // Инициализируем router
+const router = useRouter();
+
 const userData = ref({
     name: '',
     login: '',
@@ -79,15 +80,18 @@ const isAuthenticated = ref(false);
 
 onMounted(() => {
     const storedUser = localStorage.getItem('UserData');
+    console.log(storedUser);
     if (storedUser) {
         const user = JSON.parse(storedUser);
-        if (user.id == route.params.id) {
-            img.value = user.image;
-            userData.value = { ...user, image:null }; // Копируем данные пользователя
+        if (user.user.id == route.params.id) {
+            img.value = user.user.image;
+            userData.value = { ...user, image: null }; // Копируем данные пользователя
             isAuthenticated.value = true;
         } else {
             isAuthenticated.value = false;
         }
+    } else {
+        isAuthenticated.value = false; // Если пользователь не найден в localStorage
     }
 });
 
@@ -101,32 +105,38 @@ const handleFileUpload = (event) => {
 const saveChanges = async () => {
     try {
         const formData = new FormData();
-        formData.append('name', userData.value.name);
-        formData.append('email', userData.value.email);
-        formData.append('phone', userData.value.phone);
-        formData.append('city', userData.value.city);
-        formData.append('github', userData.value.github);
-        formData.append('about', userData.value.about);
-        formData.append('type', userData.value.type);
-        formData.append('login', userData.value.login);
+        formData.append('name', userData.value.user.name);
+        formData.append('email', userData.value.user.email);
+        formData.append('phone', userData.value.user.phone);
+        formData.append('city', userData.value.user.city);
+        formData.append('github', userData.value.user.github);
+        formData.append('about', userData.value.user.about);
+        formData.append('type', userData.value.user.type);
+        formData.append('login', userData.value.user.login);
 
-        if (userData.value.image != null) {
+        if (userData.value.image) {
             formData.append('image', userData.value.image, userData.value.image.name);
-        }    
+        }
 
         formData.append('_method', 'put');
 
+        console.log(userData.value);
+
+        // Убедитесь, что URL правильно оформлен
         const response = await axios.post(`/api/users/${route.params.id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
 
+        // img.value = user.image;
+
+        // Обновляем локальные данные пользователя
+        localStorage.setItem('UserData', JSON.stringify({ ...userData.value, image: img.value }));
+        
         console.log(response);
-        console.log('Сохраненные данные:', userData.value.image);
-        userData.value.image = img.value;
-        console.log(userData.value.image);
-        localStorage.setItem('UserData', JSON.stringify(userData.value));
+        console.log('Сохраненные данные:', userData.value);
+        
         router.push('/profile'); // Переадресация на страницу профиля
     } catch (error) {
         console.error('Ошибка при изменении пользователя:', error); // Логируем ошибку

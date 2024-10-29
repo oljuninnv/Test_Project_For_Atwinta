@@ -31,86 +31,88 @@ class UserController extends Controller
     }
 
     public function update(Request $request, User $user)
-    {
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        // Валидация данных
-        $validator = Validator::make($request->all(), [
-            'name' => 'nullable|string|max:255',
-            'login' => 'nullable|string|max:255|unique:users,login,' . $user->id,
-            'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:15',
-            'city' => 'nullable|string|max:100',
-            'birthday' => 'nullable|date',
-            'github' => 'nullable|string|max:255',
-            'about' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        // Сохраняем старый логин и путь к изображению
-        $oldLogin = $user->login;
-        $oldImagePath = $user->image;
-
-        // Обновление данных пользователя
-        $user->name = $request->get('name');
-        $user->login = $request->get('login');
-        $user->email = $request->get('email');
-        $user->phone = $request->get('phone');
-        $user->city = $request->get('city');       
-        $user->github = $request->get('github');
-        $user->about = $request->get('about');
-        $user->type = $request->get('type');
-
-        if ($user->is_finished == false) {
-            $user->is_finished = $request->get('is_finished');
-        }
-
-        if ($user->birthday == null){
-            $user->birthday = $request->get('birthday');
-        }
-
-        // Проверяем, изменился ли логин и загружено ли новое изображение
-        if ($request->hasFile('image')) {
-            // Получаем расширение загружаемого файла
-            $extension = $request->file('image')->getClientOriginalExtension();
-
-            // Формируем имя файла
-            $newImageName = $user->login . '.' . $extension;
-
-            // Удаляем старое изображение, если логин изменился
-            if ($oldLogin !== $user->login) {
-                if ($oldImagePath && Storage::exists($oldImagePath)) {
-                    Storage::delete($oldImagePath);
-                }
-            }
-            else {
-                // Если логин не изменился, но есть старое изображение
-                if ($oldImagePath && Storage::exists($oldImagePath)) {
-                    Storage::delete($oldImagePath);
-                }
-            }
-
-            // Сохраняем файл с новым именем
-            $imagePath = $request->file('image')->storeAs('users', $newImageName, 'public');
-
-            // Сохраняем путь к изображению в базе данных
-            $user->image = $imagePath;
-        }
-
-        // Сохраняем обновленные данные
-        $user->save();
-
-        return response()->json([
-            'user' => new UserResource($user),
-            'message' => 'Успешно обновлено'
-        ], 200);
+{
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
     }
+
+    // Валидация данных
+    $validator = Validator::make($request->all(), [
+        'name' => 'nullable|string|max:255',
+        'login' => 'nullable|string|max:255|unique:users,login,' . $user->id,
+        'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
+        'phone' => 'nullable|string|max:15',
+        'city' => 'nullable|string|max:100',
+        'birthday' => 'nullable|date',
+        'github' => 'nullable|string|max:255',
+        'about' => 'nullable|string',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+        'is_finished' => 'nullable|boolean', // Добавьте это правило валидации
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    // Сохраняем старый логин и путь к изображению
+    $oldLogin = $user->login;
+    $oldImagePath = $user->image;
+
+    // Обновление данных пользователя
+    $user->name = $request->get('name');
+    $user->login = $request->get('login');
+    $user->email = $request->get('email');
+    $user->phone = $request->get('phone');
+    $user->city = $request->get('city');       
+    $user->github = $request->get('github');
+    $user->about = $request->get('about');
+    $user->type = $request->get('type');
+
+    // Устанавливаем значение is_finished, если оно передано в запросе
+    if ($request->has('is_finished')) {
+        $user->is_finished = $request->get('is_finished');
+    }
+
+    // Устанавливаем значение birthday, если оно передано в запросе
+    if ($request->has('birthday') && $user->birthday == null) {
+        $user->birthday = $request->get('birthday');
+    }
+
+    // Проверяем, изменился ли логин и загружено ли новое изображение
+    if ($request->hasFile('image')) {
+        // Получаем расширение загружаемого файла
+        $extension = $request->file('image')->getClientOriginalExtension();
+
+        // Формируем имя файла
+        $newImageName = $user->login . '.' . $extension;
+
+        // Удаляем старое изображение, если логин изменился
+        if ($oldLogin !== $user->login) {
+            if ($oldImagePath && Storage::exists($oldImagePath)) {
+                Storage::delete($oldImagePath);
+            }
+        } else {
+            // Если логин не изменился, но есть старое изображение
+            if ($oldImagePath && Storage::exists($oldImagePath)) {
+                Storage::delete($oldImagePath);
+            }
+        }
+
+        // Сохраняем файл с новым именем
+        $imagePath = $request->file('image')->storeAs('users', $newImageName, 'public');
+
+        // Сохраняем путь к изображению в базе данных
+        $user->image = $imagePath;
+    }
+
+    // Сохраняем обновленные данные
+    $user->save();
+
+    return response()->json([
+        'user' => new UserResource($user),
+        'message' => 'Успешно обновлено'
+    ], 200);
+}
 
     public function destroy(User $user)
 {

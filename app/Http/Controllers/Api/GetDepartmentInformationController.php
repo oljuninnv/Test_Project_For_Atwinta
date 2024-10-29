@@ -12,6 +12,7 @@ class GetDepartmentInformationController extends Controller
     {
         $departments = Department::with(['workers.position'])->get()->map(function ($department) {
             return [
+                'department_id' => $department->id,
                 'department_name' => $department->name,
                 'employee_count' => $department->workers->count(),
                 'positions' => $department->workers->pluck('position.name')->unique(),

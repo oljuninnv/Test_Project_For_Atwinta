@@ -41,6 +41,6 @@ const isAuthorized = computed(() => {
 
 // Проверка наличия worker_id
 const hasWorkerId = computed(() => {
-    return userData.value && userData.value.worker_id === null;
+    return userData.value && userData.value.roles == "Admin" || userData.value && userData.value.roles == "User";
 });
 </script>

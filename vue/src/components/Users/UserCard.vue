@@ -37,12 +37,17 @@
             <p class="text-lg text-black font-semibold">{{ employee.name }}</p>
             <p class="text-slate-500 font-medium">{{ employee.position }}</p>
           </div>
-          <router-link 
+          <router-link
             :to="{ name: 'UserView', params: { id: employee.worker_id } }"
             class="px-4 py-1 text-sm text-red-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-red-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2">
             Открыть профиль
           </router-link>
         </div>
+      </div>
+      <div class="flex items-center justify-center mt-5">
+        <button @click="goBack" class="m-0 px-4 py-2 hover:text-white hover:bg-red-500 rounded">
+            Назад
+        </button>
       </div>
     </div>
     <div v-else>
@@ -53,7 +58,7 @@
 
 <script>
 import axios from '../../libs/axios';
-import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import SearchInput from "../../components/SearchInput.vue";
 
 export default {
@@ -64,8 +69,12 @@ export default {
     return {
       department: '',
       searchQuery: '',
-      userImage: '', // Изменено на строку
+      departmentID: '',
+      userRole: '',
+      userImage: '',
       employees: [],
+      route: useRoute(),
+      router: useRouter(), // Инициализируем router
       showTooltip: false,
     };
   },
@@ -82,17 +91,13 @@ export default {
   methods: {
     async fetchWorkerInformation() {
       const userData = JSON.parse(localStorage.getItem('UserData'));
-      this.userImage = userData.image;
-      const workerId = userData ? userData.worker_id : null;
-
-      if (!workerId) {
-        console.error('worker_id не найден в localStorage');
-        return;
-      }
-
+      this.userImage = userData.user.image;
+      this.departmentID = this.route.params.department_id;
+      console.log(this.departmentID);
       try {
-        const response = await axios.get(`/api/workers_information/${workerId}`); // Исправлено на правильный синтаксис
+        const response = await axios.get(`/api/workers_information/${this.departmentID}`); // Исправлено на правильный синтаксис
         const data = await response.data;
+        console.log(data);
         this.department = data.department;
         this.employees = data.employees;
       } catch (error) {
@@ -102,6 +107,9 @@ export default {
     handleSearch(query) {
       this.searchQuery = query; 
     },
+    goBack() {
+            this.$router.go(-1); // Возвращаемся на предыдущую страницу
+        }
   },
 };
 </script>

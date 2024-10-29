@@ -87,12 +87,15 @@ export default {
             console.log(response.data);
             localStorage.setItem('token', response.token);
             localStorage.setItem('UserData', JSON.stringify(response.data));
-            if (response.data.worker_id != null){
+            if (response.data.roles == "Worker"){
               this.$router.push('/users');
             }
+            else if (response.data.roles == "Admin"){
+              this.$router.push('/departments');
+            } 
             else{
               this.$router.push('/departments');
-            }            
+            }           
           }
         } catch (error) {
           if (error.response) {
