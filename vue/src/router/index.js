@@ -19,7 +19,7 @@ const routes = [
         path: '/auth/register', name: 'Register',component:Register        
     },
     {
-        path: '/users/user', name: 'UserView',component:UserView       
+        path: '/users/:id', name: 'UserView',component:UserView       
     },
     {
         path: '/users', name: 'UsersList',component:UsersList        

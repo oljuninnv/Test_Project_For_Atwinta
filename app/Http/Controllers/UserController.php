@@ -68,7 +68,7 @@ class UserController extends Controller
         $user->about = $request->get('about');
         $user->type = $request->get('type');
 
-        if ($user->is_finished == false) {
+        if ($user->is_finished != false) {
             $user->is_finished = $request->get('is_finished');
         }
 

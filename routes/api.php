@@ -10,6 +10,8 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\WorkPositionController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\Api\GetDepartmentInformationController;
+use App\Http\Controllers\Api\GetWorkerInformationController;
+use App\Http\Controllers\Api\GetUserInformationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,4 +45,7 @@ Route::delete('/workers/{id}', [WorkerController::class, 'destroy']);
 Route::apiResource('/departments', DepartmentController::class);
 Route::apiResource('/positions', WorkPositionController::class);
 
-Route::get('/departments_indormation', [GetDepartmentInformationController::class, 'index']);
+// Данные, которые мы получаем на страницах с контентом
+Route::get('/departments_information', [GetDepartmentInformationController::class, 'index']);
+Route::get('/workers_information/{id}', [GetWorkerInformationController::class, 'show']);
+Route::get('/user/{worker_id}', [GetUserInformationController::class, 'getUserInfo']);

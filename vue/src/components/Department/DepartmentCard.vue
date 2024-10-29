@@ -57,7 +57,7 @@ export default {
     methods: {
         async fetchDepartments() {
             try {
-                const response = await axios.get('/api/departments_indormation'); // Убедитесь, что путь правильный
+                const response = await axios.get('/api/departments_information'); // Убедитесь, что путь правильный
                 this.departments = response.data;
             } catch (error) {
                 console.error('Ошибка при получении данных:', error);
