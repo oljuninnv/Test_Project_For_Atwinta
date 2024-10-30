@@ -128,7 +128,7 @@ function editPosition(position) {
 async function removePosition(id) {
   try {
     await axios.delete(`/api/positions/${id}`);
-    fetchPositions(1); // Обновляем список после удаления
+    fetchPositions(); // Обновляем список после удаления
   } catch (error) {
     console.error('Ошибка при удалении должности:', error);
   }

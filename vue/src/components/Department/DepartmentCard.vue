@@ -60,63 +60,112 @@
                 </div>
             </div>
         </div>
+        <!-- Пагинация -->
+        <div class="pagination">
+                    <button @click="prevPage" :disabled="pagination.page === 1 || loading == true"
+                        class="btn">Назад</button>
+                    <span class="mx-2">Страница {{ pagination.page }} из {{ pagination.last_page }}</span>
+                    <button @click="nextPage" :disabled="pagination.page === pagination.last_page || loading === true"
+                        class="btn">Вперед</button>
+                </div>
     </div>
 </template>
 
 <script>
+import { ref, computed, onMounted } from 'vue';
 import axios from '../../libs/axios';
-import SearchInput from "../../components/SearchInput.vue"
+import SearchInput from "../../components/SearchInput.vue";
+import { GetDepartments } from '../../services/api/department';
 
 export default {
     components: {
         SearchInput,
     },
-    data() {
-        return {
-            departments: [],
-            searchQuery: '',
-            userImage: '',
-            userRole: '',
-            isModalOpen: false,
-            selectedDepartment: null,
-            showTooltip: false,
-        };
-    },
-    computed: {
-        filteredDepartments() {
-            return this.departments.filter(department =>
-                department.department_name.toLowerCase().startsWith(this.searchQuery.toLowerCase())
+    setup() {
+        const pagination = ref({
+            page: 1,
+            per_page: 3,
+            total: 1,
+            last_page: 1,
+        });
+        const departments = ref([]);
+        const searchQuery = ref('');
+        const userImage = ref('');
+        const userRole = ref('');
+        const isModalOpen = ref(false);
+        const selectedDepartment = ref(null);
+        const showTooltip = ref(false);
+
+        const filteredDepartments = computed(() => {
+            return departments.value.filter(department =>
+                department.department_name.toLowerCase().startsWith(searchQuery.value.toLowerCase())
             );
-        },
-    },
-    mounted() {
-        this.fetchDepartments();
-    },
-    methods: {
-        async fetchDepartments() {
+        });
+
+        const fetchDepartments = async (page = 1, name = null) => {
             try {
                 const userData = JSON.parse(localStorage.getItem('UserData'));
-                this.userImage = userData.user.image;
-                this.userRole = userData.roles;
-                console.log(this.userRole);
-                const response = await axios.get('/api/departments_information'); // Убедитесь, что путь правильный
-                this.departments = response.data;
-                console.log('www', this.departments);
+                userImage.value = userData.user.image;
+                userRole.value = userData.roles;
+                const response = await GetDepartments(page, pagination.value.per_page, name);
+                departments.value = response.data;
+                pagination.value.total = response.total; // Обновляем общее количество
+                pagination.value.last_page = response.last_page; // Обновляем последнюю страницу
             } catch (error) {
                 console.error('Ошибка при получении данных:', error);
             }
-        },
-        handleSearch(query) {
-            this.searchQuery = query; // Здесь query - это строка, введенная пользователем
-        },
-        openModal(department) {
-            this.selectedDepartment = department;
-            this.isModalOpen = true;
-        },
-        closeModal() {
-            this.isModalOpen = false;
-            this.selectedDepartment = null;
-        },
+        };
+
+        const handleSearch = (query) => {
+            searchQuery.value = query; // Здесь query - это строка, введенная пользователем
+            fetchDepartments(1, query);
+        };
+
+        const openModal = (department) => {
+            selectedDepartment.value = department;
+            isModalOpen.value = true;
+        };
+
+        const closeModal = () => {
+            isModalOpen.value = false;
+            selectedDepartment.value = null;
+        };
+
+        const prevPage = async () => {
+            if (pagination.value.page > 1) {
+                await fetchDepartments(pagination.value.page - 1);
+                pagination.value.page--;
+            }
+        };
+
+        const nextPage = async () => {
+            if (pagination.value.page < pagination.value.last_page) {
+                await fetchDepartments(pagination.value.page + 1);
+                pagination.value.page++;
+            }
+        };
+
+        onMounted(() => {
+            fetchDepartments();
+        });
+
+        return {
+            pagination,
+            departments,
+            searchQuery,
+            userImage,
+            userRole,
+            isModalOpen,
+            selectedDepartment,
+            showTooltip,
+            filteredDepartments,
+            fetchDepartments,
+            handleSearch,
+            openModal,
+            closeModal,
+            prevPage,
+            nextPage,
+        };
     },
 };
 </script>
