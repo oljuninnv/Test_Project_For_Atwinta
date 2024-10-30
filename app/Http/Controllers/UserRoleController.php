@@ -18,25 +18,24 @@ class UserRoleController extends Controller
 
     // Добавление новой записи
     public function store(Request $request)
-{
-    $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'role_id' => 'required|exists:roles,id',
-    ]);
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
 
-    // Проверяем, существует ли запись в таблице user_roles для данного user_id
-    $existingUserRole = UserRole::where('user_id', $request->user_id)->first();
+        // Проверяем, существует ли запись в таблице user_roles для данного user_id
+        $existingUserRole = UserRole::where('user_id', $request->user_id)->first();
 
-    if ($existingUserRole) {
-        // Если запись существует, обновляем role_id на 1
-        $existingUserRole->update(['role_id' => 1]);
-        return response()->json($existingUserRole, 200); // Возвращаем обновлённую запись
+        if ($existingUserRole) {
+            // Если запись существует, обновляем role_id на 1
+            $existingUserRole->update(['role_id' => 1]);
+            return response()->json($existingUserRole, 200); // Возвращаем обновлённую запись
+        }
+
+        // Если записи не существует, создаём новую
+        $userRole = UserRole::create($request->all());
+        return response()->json($userRole, 201);
     }
-
-    // Если записи не существует, создаём новую
-    $userRole = UserRole::create($request->all());
-    return response()->json($userRole, 201);
-}
 
     // Получение конкретной записи
     public function show($id)
@@ -47,28 +46,19 @@ class UserRoleController extends Controller
 
     // Обновление конкретной записи
     public function update(Request $request, $id)
-{
-    $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'role_id' => 'required|exists:roles,id',
-    ]);
+    {
+        $request->validate(['name' => 'sometimes|required|string|max:255']);
 
-    // Проверяем, существует ли пользователь в таблице Worker
-    $isWorker = Worker::where('user_id', $request->user_id)->exists();
+        $userRole = UserRole::find($id);
 
-    // Устанавливаем role_id в зависимости от результата проверки
-    if ($isWorker) {
-        $roleId = Role::where('name', 'Worker')->value('id'); // Предполагаем, что роль "Worker" существует
-    } else {
-        $roleId = Role::where('name', 'User')->value('id'); // Предполагаем, что роль "User" существует
+        if (!$userRole) {
+            return response()->json(['message' => 'UserRole not found'], 404);
+        }
+
+        $userRole->update($request->all());
+
+        return response()->json($userRole);
     }
-
-    // Находим и обновляем UserRole
-    $userRole = UserRole::findOrFail($id);
-    $userRole->update(['role_id' => $roleId, 'user_id' => $request->user_id]);
-
-    return response()->json($userRole);
-}
 
     // Удаление конкретной записи
     public function destroy($id)

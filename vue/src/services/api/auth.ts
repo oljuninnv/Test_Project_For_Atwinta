@@ -32,6 +32,12 @@ export const GetUsers = async (page = 1, per_page = 5, name = null, params?: IGe
     return data.response; 
 };
 
+export const GetAdmins = async (page = 1, per_page = 5, name = null, params?: IGetUsersParams): Promise<IGetUsersResponse> => {
+    const { data } = await axios.get(`/api/get_admins?page=${page}&per_page=${per_page}`  + (name ? `&name=${name}` : ''));
+    console.log(data);    
+    return data.response; 
+};
+
 export const AddUser = async (params: IAddUserParams): Promise<IAddUserResponse> => {
     console.log('kjhkj');
     

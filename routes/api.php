@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\GetDepartmentInformationController;
 use App\Http\Controllers\Api\GetWorkersInformationFromDepartmentsController;
 use App\Http\Controllers\Api\GetUserInformationController;
 use App\Http\Controllers\Api\GetDataForWorkerController;
+use App\Http\Controllers\AdminController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -52,3 +53,6 @@ Route::get('/workers_information/{id}', [GetWorkersInformationFromDepartmentsCon
 Route::get('/user/{worker_id}', [GetUserInformationController::class, 'getUserInfo']);
 Route::get('/get_data_for_worker', [GetDataForWorkerController::class, 'get_informationWithUser']);
 Route::get('/get_data_for_worker_without_user', [GetDataForWorkerController::class, 'get_informationWithoutUser']);
+Route::get('/get_admins', [AdminController::class, 'get_admins']);
+Route::get('/get_others', [AdminController::class, 'get_others']);
+Route::delete('/delete_admin/{id}', [AdminController::class, 'delete_admin']);

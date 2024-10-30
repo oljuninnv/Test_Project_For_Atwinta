@@ -17,8 +17,6 @@ use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
 
-    private const POST_COUNT = 10;
-
     public function __construct(protected User $user, Role $role, Worker $worker)
     {
     }
