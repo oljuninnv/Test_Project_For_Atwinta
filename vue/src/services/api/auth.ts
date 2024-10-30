@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import axios from '../../libs/axios';
 import { ILoginParams, ILoginResponse, IRegisterParams, IRegisterResponse, IResetLinkParams,IResetLinkResponse,IResetPasswordParams, IResetPasswordResponse, IAddUserParams, IAddUserResponse,IGetUsersParams,IGetUsersResponse, IDeleteUserParams, IDeleteUserResponse, IUpdateParams,IUpdateResponse} from '../types/auth';
 
@@ -25,8 +26,8 @@ export const ResetPassword = async (params: IResetPasswordParams): Promise<IRese
     return data.response
 };
 
-export const GetUsers = async (params: IGetUsersParams): Promise<IGetUsersResponse> => {
-    const { data } = await axios.get('/api/users');
+export const GetUsers = async (page = 1, per_page = 5, name = null, params?: IGetUsersParams): Promise<IGetUsersResponse> => {
+    const { data } = await axios.get(`/api/users?page=${page}&per_page=${per_page}`  + (name ? `&name=${name}` : ''));
     console.log(data);    
     return data.response; 
 };

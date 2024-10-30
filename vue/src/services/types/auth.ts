@@ -22,6 +22,27 @@ export interface IRegisterResponse {
     token: string;
 }
 
+
+export type PaginationData<T> = {
+    current_page: number;
+    data: T[];
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: {
+        url: string;
+        label: string;
+        active: boolean;
+    }[];
+    next_page_url: string;
+    path: string;
+    per_page: number;
+    prev_page_url: string;
+    to: number;
+    total: number;
+}
+
 export interface IUser {
     name: string;
     login: string;
@@ -94,12 +115,11 @@ export interface IGetUsersParams {
     about: string;
     image: string;
     is_finished: boolean;
-    password: string;
 };
 
 export interface IGetUsersResponse {
-    data: IUser [];
-    msg: string;
+   success: boolean;
+   response: PaginationData<IUser>;
 }
 
 export interface IDeleteUserParams {

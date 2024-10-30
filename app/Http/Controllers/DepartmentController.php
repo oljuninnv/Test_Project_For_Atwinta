@@ -7,20 +7,22 @@ use App\Models\Department;
 
 class DepartmentController extends Controller
 {
+    private int $POST_COUNT = 10;
+
+    public function __construct(protected Department $department)
+    {
+    }
+
     public function index()
     {
-        return Department::all();
+        return $this->successResponse($this->paginate(Department::all()->toArray())); 
+        
     }
 
     public function show($id)
     {
-        $department = Department::find($id);
 
-        if (!$department) {
-            return response()->json(['message' => 'Department not found'], 404);
-        }
-
-        return response()->json($department);
+        return $this->successResponse($this->department::find($id));
     }
 
     public function store(Request $request)

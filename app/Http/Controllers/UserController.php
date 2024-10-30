@@ -16,127 +16,152 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $users = User::all();
 
-        return $this->successResponse(UserResource::collection($users));
+    private const POST_COUNT = 10;
+
+    public function __construct(protected User $user, Role $role, Worker $worker)
+    {
     }
 
-        public function show(User $user)
+    public function index(Request $request)
     {
-        return response([ 'user' => new 
-        UserResource($user), 'message' => 'Success'], 200);
+        $name = $request->get('name');
+
+        if(!!$name) {
+            $users = User::where('name', 'like', "%$name%")->orWhere('name')->get();
+        } 
+        else {
+            $users = User::all();        
+        }
+        return $this->successResponse(
+            $this->paginate(
+                collect(
+                    UserResource::collection(
+                        $users,
+                    )
+                )
+                    ->toArray()
+            )
+        );
+    }
+
+    public function show(User $user)
+    {
+        return response([
+            'user' => new
+                UserResource($user),
+            'message' => 'Success'
+        ], 200);
 
     }
 
     public function update(Request $request, User $user)
-{
-    if (!$user) {
-        return response()->json(['message' => 'User not found'], 404);
-    }
-
-    // Валидация данных
-    $validator = Validator::make($request->all(), [
-        'name' => 'nullable|string|max:255',
-        'login' => 'nullable|string|max:255|unique:users,login,' . $user->id,
-        'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
-        'phone' => 'nullable|string|max:15',
-        'city' => 'nullable|string|max:100',
-        'birthday' => 'nullable|date',
-        'github' => 'nullable|string|max:255',
-        'about' => 'nullable|string',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
-        'is_finished' => 'nullable|boolean', // Добавьте это правило валидации
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()], 422);
-    }
-
-    // Сохраняем старый логин и путь к изображению
-    $oldLogin = $user->login;
-    $oldImagePath = $user->image;
-
-    // Обновление данных пользователя
-    $user->name = $request->get('name');
-    $user->login = $request->get('login');
-    $user->email = $request->get('email');
-    $user->phone = $request->get('phone');
-    $user->city = $request->get('city');       
-    $user->github = $request->get('github');
-    $user->about = $request->get('about');
-    $user->type = $request->get('type');
-
-    // Устанавливаем значение is_finished, если оно передано в запросе
-    if ($request->has('is_finished')) {
-        $user->is_finished = $request->get('is_finished');
-    }
-
-    // Устанавливаем значение birthday, если оно передано в запросе
-    if ($request->has('birthday') && $user->birthday == null) {
-        $user->birthday = $request->get('birthday');
-    }
-
-    // Проверяем, изменился ли логин и загружено ли новое изображение
-    if ($request->hasFile('image')) {
-        // Получаем расширение загружаемого файла
-        $extension = $request->file('image')->getClientOriginalExtension();
-
-        // Формируем имя файла
-        $newImageName = $user->login . '.' . $extension;
-
-        // Удаляем старое изображение, если логин изменился
-        if ($oldLogin !== $user->login) {
-            if ($oldImagePath && Storage::exists($oldImagePath)) {
-                Storage::delete($oldImagePath);
-            }
-        } else {
-            // Если логин не изменился, но есть старое изображение
-            if ($oldImagePath && Storage::exists($oldImagePath)) {
-                Storage::delete($oldImagePath);
-            }
+    {
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
         }
 
-        // Сохраняем файл с новым именем
-        $imagePath = $request->file('image')->storeAs('users', $newImageName, 'public');
+        // Валидация данных
+        $validator = Validator::make($request->all(), [
+            'name' => 'nullable|string|max:255',
+            'login' => 'nullable|string|max:255|unique:users,login,' . $user->id,
+            'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:15',
+            'city' => 'nullable|string|max:100',
+            'birthday' => 'nullable|date',
+            'github' => 'nullable|string|max:255',
+            'about' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'is_finished' => 'nullable|boolean', // Добавьте это правило валидации
+        ]);
 
-        // Сохраняем путь к изображению в базе данных
-        $user->image = $imagePath;
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        // Сохраняем старый логин и путь к изображению
+        $oldLogin = $user->login;
+        $oldImagePath = $user->image;
+
+        // Обновление данных пользователя
+        $user->name = $request->get('name');
+        $user->login = $request->get('login');
+        $user->email = $request->get('email');
+        $user->phone = $request->get('phone');
+        $user->city = $request->get('city');
+        $user->github = $request->get('github');
+        $user->about = $request->get('about');
+        $user->type = $request->get('type');
+
+        // Устанавливаем значение is_finished, если оно передано в запросе
+        if ($request->has('is_finished')) {
+            $user->is_finished = $request->get('is_finished');
+        }
+
+        // Устанавливаем значение birthday, если оно передано в запросе
+        if ($request->has('birthday') && $user->birthday == null) {
+            $user->birthday = $request->get('birthday');
+        }
+
+        // Проверяем, изменился ли логин и загружено ли новое изображение
+        if ($request->hasFile('image')) {
+            // Получаем расширение загружаемого файла
+            $extension = $request->file('image')->getClientOriginalExtension();
+
+            // Формируем имя файла
+            $newImageName = $user->login . '.' . $extension;
+
+            // Удаляем старое изображение, если логин изменился
+            if ($oldLogin !== $user->login) {
+                if ($oldImagePath && Storage::exists($oldImagePath)) {
+                    Storage::delete($oldImagePath);
+                }
+            } else {
+                // Если логин не изменился, но есть старое изображение
+                if ($oldImagePath && Storage::exists($oldImagePath)) {
+                    Storage::delete($oldImagePath);
+                }
+            }
+
+            // Сохраняем файл с новым именем
+            $imagePath = $request->file('image')->storeAs('users', $newImageName, 'public');
+
+            // Сохраняем путь к изображению в базе данных
+            $user->image = $imagePath;
+        }
+
+        // Сохраняем обновленные данные
+        $user->save();
+
+        return response()->json([
+            'user' => new UserResource($user),
+            'message' => 'Успешно обновлено'
+        ], 200);
     }
-
-    // Сохраняем обновленные данные
-    $user->save();
-
-    return response()->json([
-        'user' => new UserResource($user),
-        'message' => 'Успешно обновлено'
-    ], 200);
-}
 
     public function destroy(User $user)
-{
-    $imagePath = $user->image;
+    {
+        $imagePath = $user->image;
 
-    // Удаляем запись работника, если она существует
-    $worker = Worker::where('user_id', $user->id)->first();
-    if ($worker) {
-        $worker->delete();
+        // Удаляем запись работника, если она существует
+        $worker = Worker::where('user_id', $user->id)->first();
+        if ($worker) {
+            $worker->delete();
+        }
+
+        // Удаляем записи в таблице UserRole
+        UserRole::where('user_id', $user->id)->delete();
+
+        // Удаляем пользователя
+        $user->delete();
+
+        // Удаляем изображение, если оно существует
+        if ($imagePath && Storage::exists($imagePath)) {
+            Storage::delete($imagePath);
+        }
+
+        return response(['message' => 'Пользователь удалён']);
     }
-
-    // Удаляем записи в таблице UserRole
-    UserRole::where('user_id', $user->id)->delete();
-
-    // Удаляем пользователя
-    $user->delete();
-
-    // Удаляем изображение, если оно существует
-    if ($imagePath && Storage::exists($imagePath)) {
-        Storage::delete($imagePath);
-    }
-
-    return response(['message' => 'Пользователь удалён']);
-}
 
     public function store(Request $request)
     {
@@ -149,7 +174,7 @@ class UserController extends Controller
             'city' => 'nullable|string|max:100',
             'birthday' => 'nullable|date',
             'github' => 'nullable|string|max:255',
-            'password' => 'required|string|min:8', 
+            'password' => 'required|string|min:8',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp'
         ]);
 
@@ -165,15 +190,15 @@ class UserController extends Controller
         $user->phone = $request->get('phone');
         $user->city = $request->get('city');
         $user->type = $request->get('type');
-        $user->birthday = $request->get('birthday'); 
+        $user->birthday = $request->get('birthday');
         $user->github = $request->get('github');
         $user->about = $request->get('about');
         $user->password = Hash::make($request->get('password'));
         $user->is_finished = false; // Убедитесь, что это значение корректно
-        
+
         if ($request->hasFile('image')) {
             // Получаем логин пользователя
-            $login = $user->login; 
+            $login = $user->login;
 
             // Получаем расширение загружаемого файла
             $extension = $request->file('image')->getClientOriginalExtension();
