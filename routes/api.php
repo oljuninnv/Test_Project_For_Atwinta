@@ -12,6 +12,7 @@ use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\Api\GetDepartmentInformationController;
 use App\Http\Controllers\Api\GetWorkersInformationFromDepartmentsController;
 use App\Http\Controllers\Api\GetUserInformationController;
+use App\Http\Controllers\Api\GetDataForWorkerController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -49,3 +50,4 @@ Route::apiResource('/positions', WorkPositionController::class);
 Route::get('/departments_information', [GetDepartmentInformationController::class, 'index']);
 Route::get('/workers_information/{id}', [GetWorkersInformationFromDepartmentsController::class, 'show']);
 Route::get('/user/{worker_id}', [GetUserInformationController::class, 'getUserInfo']);
+Route::get('/get_data_for_worker', [GetDataForWorkerController::class, 'index']);

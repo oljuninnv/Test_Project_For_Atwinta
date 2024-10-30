@@ -102,7 +102,6 @@ export default {
       this.userRole = userData.roles;
       this.userImage = userData.user.image;
       this.departmentID = this.route.params.department_id;
-      console.log(this.userRole);
       try {
         const response = await axios.get(`/api/workers_information/${this.departmentID}`); // Исправлено на правильный синтаксис
         const data = await response.data;

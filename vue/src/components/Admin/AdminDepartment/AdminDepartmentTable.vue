@@ -19,7 +19,7 @@
         <thead class="thead">
           <tr>
             <th class="px-6 py-3">Название отдела</th>
-            <th class="px-6 py-3">Доступные должности</th>
+            <th class="px-6 py-3">Текущие должности</th>
             <th scope="col" class="px-6 py-3"><span>Действия</span></th>
           </tr>
         </thead>

@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="submitForm" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded">
     <div>
-      <label for="user" class="block text-sm font-medium leading-6 text-gray-900">Работник</label>
+      <label for="user" class="block text-sm font-medium leading-6 text-gray-900">Пользователь</label>
       <div class="relative mt-2">
         <input
           type="text"
@@ -96,7 +96,7 @@
 
 <script>
 import axios from '../../../libs/axios';
-import { ref, onMounted, defineEmits} from 'vue';
+import { ref, onMounted } from 'vue';
 
 export default {
   setup() {
@@ -107,8 +107,9 @@ export default {
       adopted_at: ''
     });
 
-    
     const users = ref([]);
+    const positions = ref([]);
+    const departments = ref([]);
     const searchTerm = ref('');
     const positionSearchTerm = ref('');
     const departmentSearchTerm = ref('');
@@ -119,29 +120,30 @@ export default {
     const isPositionDropdownOpen = ref(false);
     const isDepartmentDropdownOpen = ref(false);
 
-    const fetchUsers = async () => {
-      const usersResponse = await axios.get('/api/users');
-      const allUsers = usersResponse.data.response; // Сохраняем всех пользователей
-      
-      // Фильтруем пользователей, у которых worker_id пуст или равен null/undefined
-      filteredUsers.value = allUsers.filter(user => !user.worker_id || user.worker_id === null || user.worker_id === undefined);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/get_data_for_worker');
+        users.value = response.data.users; 
+        departments.value = response.data.departments; 
+        positions.value = response.data.positions; 
+
+        filteredUsers.value = users.value;
+        filteredPositions.value = positions.value;
+        filteredDepartments.value = departments.value;
+      } catch (error) {
+        console.error('Ошибка при загрузке данных:', error);
+      }
     };
 
-    const fetchPositions = async () => {
-      const response = await axios.get('/api/positions'); 
-      filteredPositions.value = response.data;
-    };
-
-    const fetchDepartments = async () => {
-      const response = await axios.get('/api/departments'); 
-      filteredDepartments.value = response.data;
-    };
+    onMounted(() => {
+      fetchData(); 
+    });
 
     const selectUser = (user) => {
       formData.value.user_id = user.id;
       searchTerm.value = user.name;
       isDropdownOpen.value = false;
-      filteredUsers.value = []; // Очистим отфильтрованный массив
+      filteredUsers.value = []; 
     };
 
     const selectPosition = (position) => {
@@ -159,22 +161,25 @@ export default {
     };
 
     const submitForm = async () => {
-  try {
-    console.log(formData.value);
-    await axios.post('/api/workers', formData.value);
+      try {
+        console.log(formData.value);
+        await axios.post('/api/workers', formData.value);
 
-    // Уведомление об успешном добавлении
-    alert('Работник успешно добавлен! Перезагрузите страницу, чтобы данные в таблице обновились.');
-    // Очистка данных формы
-    this.SearchTerm.value = '';
-      this.positionSearchTerm.value = '';
-      this.departmentSearchTerm.value = '';
-  } catch (error) {
-    // Обработка ошибок
-    console.error('Ошибка при добавлении работника:', error);
-    alert('Произошла ошибка при добавлении работника. Пожалуйста, попробуйте еще раз.');
-  }
-};
+        alert('Работник успешно добавлен! Перезагрузите страницу, чтобы данные в таблице обновились.');
+        
+        // Очистка данных формы
+        formData.value.user_id = null;
+        formData.value.position_id = null;
+        formData.value.department_id = null;
+        formData.value.adopted_at = '';
+        
+        // Обновление данных после добавления работника
+        await fetchData();
+      } catch (error) {
+        console.error('Ошибка при добавлении работника:', error);
+        alert('Произошла ошибка при добавлении работника. Пожалуйста, попробуйте еще раз.');
+      }
+    };
 
     const filterUsers = () => {
       const term = searchTerm.value.toLowerCase();
@@ -184,58 +189,16 @@ export default {
         );
         isDropdownOpen.value = filteredUsers.value.length > 0;
       } else {
-        filteredUsers.value = users.value; // Вернуть всех пользователей, если нет термина поиска
+        filteredUsers.value = users.value;
         isDropdownOpen.value = false;
       }
     };
 
-    const filterPositions = () => {
-      const term = positionSearchTerm.value.toLowerCase();
-      if (term) {
-        filteredPositions.value = positions.value.filter(position =>
-          position.name.toLowerCase().includes(term)
-        );
-        isPositionDropdownOpen.value = filteredPositions.value.length > 0;
-      } else {
-        filteredPositions.value = positions.value;
-        isPositionDropdownOpen.value = false;
-      }
-    };
-
-    const filterDepartments = () => {
-      const term = departmentSearchTerm.value.toLowerCase();
-      if (term) {
-        filteredDepartments.value = departments.value.filter(department =>
-          department.name.toLowerCase().includes(term)
-        );
-        isDepartmentDropdownOpen.value = filteredDepartments.value.length > 0;
-      } else {
-        filteredDepartments.value = departments.value;
-        isDepartmentDropdownOpen.value = false;
-      }
-    };
-
-    const closeDropdown = () => {
-      isDropdownOpen.value = false;
-    };
-
-    const closePositionDropdown = () => {
-      isPositionDropdownOpen.value = false;
-    };
-
-    const closeDepartmentDropdown = () => {
-      isDepartmentDropdownOpen.value = false;
-    };
-
-    // Запускаем получение данных
-    onMounted(() => {
-    fetchUsers();
-    fetchPositions();
-    fetchDepartments();
-});
-
     return {
       formData,
+      users,
+      positions,
+      departments,
       searchTerm,
       positionSearchTerm,
       departmentSearchTerm,
@@ -245,17 +208,13 @@ export default {
       isDropdownOpen,
       isPositionDropdownOpen,
       isDepartmentDropdownOpen,
+      fetchData,
       selectUser,
       selectPosition,
       selectDepartment,
       submitForm,
-      filterUsers,
-      filterPositions,
-      filterDepartments,
-      closeDropdown,
-      closePositionDropdown,
-      closeDepartmentDropdown
+      filterUsers
     };
   }
-}
+};
 </script>

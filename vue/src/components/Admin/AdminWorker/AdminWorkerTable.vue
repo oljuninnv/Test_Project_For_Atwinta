@@ -1,7 +1,7 @@
 <template class="w-full">
   <div class="flex flex-wrap items-center w-full p-4 justify-center">
     <h1 class="mb-5">
-      <span class="text-xl font-semibold whitespace-nowrap dark:text-white">Работники:</span>
+      <span class="text-xl font-semibold whitespace-nowrap dark:text-white">Сотрудники:</span>
     </h1>
     <SearchInput @search="filterWorkers" class="search_input" />
     <button v-if="!showForm" @click="showForm = !showForm" class="btn">Добавить запись</button>
@@ -166,11 +166,4 @@ function filterWorkers(query) {
   searchQuery.value = query;
     currentPage.value = 1; // Сброс на первую страницу при новом поиске
 }
-
-function toggleForm() {
-      this.showForm = !this.showForm;
-      if (!this.showForm) {
-        this.fetchWorkers(); // Обновляем данные, если форма закрыта
-      }
-    };
 </script>

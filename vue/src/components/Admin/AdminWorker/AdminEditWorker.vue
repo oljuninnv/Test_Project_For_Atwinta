@@ -74,7 +74,7 @@
        type: Boolean,
        required: true,
      },
-     workerData: { // Измените с worker на workerData
+     workerData: { 
        type: Object,
        required: true,
      },
@@ -103,7 +103,7 @@
   // Функция получения должностей
   const fetchPositions = async () => {
     try {
-      const response = await axios.get('/api/positions'); // Укажите ваш API
+      const response = await axios.get('/api/positions'); 
       filteredPositions.value = response.data;
     } catch (error) {
         console.error('Ошибка при получении должностей:', error);
@@ -113,7 +113,7 @@
 // Функция получения отделов
 const fetchDepartments = async () => {
   try {
-    const response = await axios.get('/api/departments'); // Укажите ваш API
+    const response = await axios.get('/api/departments'); 
     filteredDepartments.value = response.data;
   } catch (error) {
     console.error('Ошибка при получении отделов:', error);
