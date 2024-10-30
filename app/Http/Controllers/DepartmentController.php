@@ -7,8 +7,6 @@ use App\Models\Department;
 
 class DepartmentController extends Controller
 {
-    private int $POST_COUNT = 10;
-
     public function __construct(protected Department $department)
     {
     }

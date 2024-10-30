@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios';
 import axios from '../../libs/axios';
 import { ILoginParams, ILoginResponse, IRegisterParams, IRegisterResponse, IResetLinkParams,IResetLinkResponse,IResetPasswordParams, IResetPasswordResponse, IAddUserParams, IAddUserResponse,IGetUsersParams,IGetUsersResponse, IDeleteUserParams, IDeleteUserResponse, IUpdateParams,IUpdateResponse} from '../types/auth';
 

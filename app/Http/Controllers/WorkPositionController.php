@@ -7,9 +7,24 @@ use App\Models\Position;
 
 class WorkPositionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Position::all();
+        $name = $request->get('name');
+
+        if(!!$name) {
+            $positions = Position::where('name', 'like', "%$name%")->orWhere('name')->get();
+        } 
+        else {
+            $positions = Position::all();        
+        }
+        return $this->successResponse(
+            $this->paginate(
+                collect(
+                    $positions,
+                )
+                    ->toArray()
+            )
+        );
     }
 
     public function show($id)
