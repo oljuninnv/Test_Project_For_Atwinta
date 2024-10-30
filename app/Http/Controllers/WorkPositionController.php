@@ -11,11 +11,10 @@ class WorkPositionController extends Controller
     {
         $name = $request->get('name');
 
-        if(!!$name) {
+        if (!!$name) {
             $positions = Position::where('name', 'like', "%$name%")->orWhere('name')->get();
-        } 
-        else {
-            $positions = Position::all();        
+        } else {
+            $positions = Position::all();
         }
         return $this->successResponse(
             $this->paginate(

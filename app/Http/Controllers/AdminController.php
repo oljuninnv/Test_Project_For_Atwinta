@@ -54,44 +54,52 @@ class AdminController extends Controller
         $users = $usersQuery->get();
 
         return $this->successResponse(
-                collect(
-                    UserResource::collection(
-                        $users,
-                    )
+            collect(
+                UserResource::collection(
+                    $users,
                 )
-                    ->toArray()
+            )
+                ->toArray()
         );
     }
 
     public function delete_admin($id)
     {
-        // Проверяем, существует ли пользователь в таблице Worker
-        $user = User::where('id', $id)->first();
-        $roleAdminId = Role::where('name', '=', 'Admin')->first()->id;
-        $roleWorkerId = Role::where('name', '=', 'Worker')->first()->id;
-        $roleUserId = Role::where('name', '=', 'User')->first()->id;
+        // Находим пользователя по ID
+        $user = User::find($id);
 
+        // Проверяем, существует ли пользователь
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
 
-        // Устанавливаем role_i;d в зависимости от результата проверки
-        if (collect($user->roles)->pluck('name')->contains('Admin')) {
-            UserRole::where('role_id', '=', $roleAdminId)->where('user_id', '=', $user->id)->delete();
+        // Получаем идентификаторы ролей
+        $roleAdminId = Role::where('name', 'Admin')->value('id');
+        $roleWorkerId = Role::where('name', 'Worker')->value('id');
+        $roleUserId = Role::where('name', 'User')->value('id');
+
+        // Проверяем наличие роли Admin у пользователя
+        if ($user->roles->contains('name', 'Admin')) {
+            // Удаляем роль Admin
+            UserRole::where('role_id', $roleAdminId)
+                ->where('user_id', $user->id)
+                ->delete();
+
+            // Устанавливаем новую роль в зависимости от наличия worker_id
             if ($user->worker_id) {
-                UserRole::create([
-                    'user_id' => $user->id,
-                    'role_id' => $roleWorkerId,
-                ]);
-            } else if (!UserRole::where('role_id', '=', $roleUserId)->exists()) {
+                UserRole::updateOrCreate(
+                    ['user_id' => $user->id, 'role_id' => $roleWorkerId]
+                );
+            } elseif (!UserRole::where('user_id', $user->id)->where('role_id', $roleUserId)->exists()) {
                 UserRole::create([
                     'user_id' => $user->id,
                     'role_id' => $roleUserId,
                 ]);
             }
 
-            $this->successResponse('Role deleted successfully');
+            return $this->successResponse('Role deleted successfully');
         }
 
-        // Находим и обновляем UserRole
-
-        return response()->json('failrue');
+        return response()->json(['error' => 'User does not have Admin role'], 400);
     }
 }

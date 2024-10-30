@@ -25,11 +25,10 @@ class UserController extends Controller
     {
         $name = $request->get('name');
 
-        if(!!$name) {
+        if (!!$name) {
             $users = User::where('name', 'like', "%$name%")->orWhere('name')->get();
-        } 
-        else {
-            $users = User::all();        
+        } else {
+            $users = User::all();
         }
         return $this->successResponse(
             $this->paginate(

@@ -11,8 +11,12 @@ class GetWorkersInformationFromDepartmentsController extends Controller
     public function show($id)
     {
         // Находим работника по ID
-        $workers = Worker::with(['user', 'position', 'department'])->whereRelation('department', 
-        'id', '=', $id)->get();
+        $workers = Worker::with(['user', 'position', 'department'])->whereRelation(
+            'department',
+            'id',
+            '=',
+            $id
+        )->get();
 
         // Если работник не найден, возвращаем 404
         if (collect(($workers))->isEmpty()) {

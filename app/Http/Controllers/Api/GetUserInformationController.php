@@ -22,7 +22,7 @@ class GetUserInformationController extends Controller
         }
 
         // Получаем пользователя, связанного с работником
-        $user = User::find($worker->user_id); 
+        $user = User::find($worker->user_id);
 
         // Если пользователь не найден, возвращаем ошибку 404
         if (!$user) {

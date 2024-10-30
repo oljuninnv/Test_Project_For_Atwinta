@@ -1,9 +1,13 @@
 <template>
     <section class="p-10">
-        <div class="bg-zinc-100 rounded-xl relative mx-auto flex h-full w-full max-w-[900px] flex-col items-center p-[16px]">
-            <div class="relative mt-1 flex h-32 w-full justify-center rounded-xl bg-cover" style="background-image: url('../../public/bg-profile.jpg');">
-                <div class="absolute -bottom-12 flex h-[88px] w-[88px] items-center justify-center rounded-full border-[4px] border-white bg-pink-400">
-                    <img v-if="user.image" class="h-full w-full rounded-full" :src="`http://127.0.0.1:8000/storage/${user.image}`" alt="User image" />
+        <div
+            class="bg-zinc-100 rounded-xl relative mx-auto flex h-full w-full max-w-[900px] flex-col items-center p-[16px]">
+            <div class="relative mt-1 flex h-32 w-full justify-center rounded-xl bg-cover"
+                style="background-image: url('../../public/bg-profile.jpg');">
+                <div
+                    class="absolute -bottom-12 flex h-[88px] w-[88px] items-center justify-center rounded-full border-[4px] border-white bg-pink-400">
+                    <img v-if="user.image" class="h-full w-full rounded-full"
+                        :src="`http://127.0.0.1:8000/storage/${user.image}`" alt="User image" />
                     <img v-else class="h-full w-full rounded-full" src="../../public/default.png" alt="User image" />
                 </div>
             </div>
@@ -41,7 +45,7 @@
 </template>
 
 <script>
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 import axios from '../../libs/axios';
 
 export default {

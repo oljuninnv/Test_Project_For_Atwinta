@@ -1,12 +1,13 @@
 <template>
-    <section class="p-5">        
+    <section class="p-5">
         <div>
             <div v-if="isAuthorized && hasWorkerId">
-                <DepartmentCard ></DepartmentCard>
+                <DepartmentCard></DepartmentCard>
             </div>
-            <div v-else-if="!isAuthorized || !hasWorkerId" class="text-center text-xl">Ошибка 404: Страница не найдена</div>
+            <div v-else-if="!isAuthorized || !hasWorkerId" class="text-center text-xl">Ошибка 404: Страница не найдена
+            </div>
         </div>
-        
+
     </section>
 </template>
 

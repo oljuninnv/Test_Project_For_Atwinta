@@ -9,34 +9,23 @@
         <div>
           <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Пароль</label>
           <div class="mt-2">
-            <input
-              type="password"
-              v-model="formData.password"
-              placeholder="Введите новый пароль"
-              required
-              class="input_text"
-            />
+            <input type="password" v-model="formData.password" placeholder="Введите новый пароль" required
+              class="input_text" />
           </div>
         </div>
 
         <div class="mt-4">
-          <label for="confirmPassword" class="block text-sm font-medium leading-6 text-gray-900">Подтверждение пароля</label>
+          <label for="confirmPassword" class="block text-sm font-medium leading-6 text-gray-900">Подтверждение
+            пароля</label>
           <div class="mt-2">
-            <input
-              type="password"
-              v-model="formData.password_confirmation"
-              placeholder="Подтвердите новый пароль"
-              required
-              class="input_text"
-            />
+            <input type="password" v-model="formData.password_confirmation" placeholder="Подтвердите новый пароль"
+              required class="input_text" />
           </div>
         </div>
 
         <div>
-          <button
-            type="submit"
-            class="mt-5 flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
+          <button type="submit"
+            class="mt-5 flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             Изменить пароль
           </button>
         </div>
@@ -65,9 +54,9 @@ export default {
   },
   mounted() {
     this.formData.token = this.$route.query.token;
-     if (!this.formData.token) {
-       this.errorMessage = 'Токен не найден в URL.';
-     }
+    if (!this.formData.token) {
+      this.errorMessage = 'Токен не найден в URL.';
+    }
   },
   methods: {
     async changePassword() {
@@ -84,7 +73,7 @@ export default {
         const response = await ResetPassword(this.formData);
 
         console.log(response.success);
-        
+
         if (response.success) {
           this.message = response.msg; // Сообщение об успешном изменении пароля
           this.$router.push({ name: 'Login' }); // Переход на страницу входа

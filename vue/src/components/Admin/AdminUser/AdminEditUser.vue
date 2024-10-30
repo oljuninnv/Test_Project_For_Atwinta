@@ -54,22 +54,18 @@
 
         <div>
           <label for="image" class="block text-sm font-medium leading-6 text-gray-900">Изображение профиля</label>
-          <input id="image" name="image" type="file"  @change="handleFileUpload" accept=".jpg, .jpeg, .png, .webp" class="mt-2"/>
+          <input id="image" name="image" type="file" @change="handleFileUpload" accept=".jpg, .jpeg, .png, .webp"
+            class="mt-2" />
         </div>
 
         <div v-if="props.user.is_finished == false">
           <label for="image" class="block text-sm font-medium leading-6 text-gray-900">Было ли закончено задание</label>
-          <input 
-            id="is_finished" 
-            name="is_finished" 
-            type="checkbox" 
-            v-model="formData.is_finished" 
-            class="mt-2"
-          />
-      </div>
+          <input id="is_finished" name="is_finished" type="checkbox" v-model="formData.is_finished" class="mt-2" />
+        </div>
 
         <div class="flex justify-end mt-4">
-          <button type="button" @click="$emit('close')" class="mr-2 bg-gray-300 hover:bg-gray-400 rounded px-4 py-2">Отмена</button>
+          <button type="button" @click="$emit('close')"
+            class="mr-2 bg-gray-300 hover:bg-gray-400 rounded px-4 py-2">Отмена</button>
           <button type="submit" class="bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700">Сохранить</button>
         </div>
       </form>
@@ -92,7 +88,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close', 'user-updated']);
-const formData = ref({'image':null});
+const formData = ref({ 'image': null });
 
 // Инициализация formData при изменении props.user
 watch(() => props.user, (newUser) => {
@@ -100,9 +96,9 @@ watch(() => props.user, (newUser) => {
 }, { immediate: true });
 
 function updateUser() {
-  if (!props.user.is_finished){
+  if (!props.user.is_finished) {
     formData.value.is_finished = formData.value.is_finished ? 1 : 0;
-  } 
+  }
   console.log(formData.value.about);
   emit('user-updated', formData.value); // Передаем данные для обновления
 }

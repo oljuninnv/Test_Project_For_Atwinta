@@ -42,10 +42,15 @@ class Controller extends BaseController
         $page = request()->page ?: (LengthAwarePaginator::resolveCurrentPage() ?: 1);
 
         $currentItems = array_slice($items, $perPage * ($page - 1), $perPage);
-        return new LengthAwarePaginator($currentItems, count($items), $perPage, $page,
+        return new LengthAwarePaginator(
+            $currentItems,
+            count($items),
+            $perPage,
+            $page,
             [
                 'path' => LengthAwarePaginator::resolveCurrentPath(),
                 'query' => request()->query(),
-            ]);
+            ]
+        );
     }
-} 
+}

@@ -8,17 +8,18 @@ use Mail;
 use App\Models\User;
 use App\Models\PasswordReset;
 use Illuminate\Support\Facades\URL;
-Use Illuminate\Support\Str;
+use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class ResetPasswordController extends Controller
 {
-    public function forgetPassword(Request $request){
-        try{
+    public function forgetPassword(Request $request)
+    {
+        try {
             $user = User::where('email', $request->email)->get();
 
-            if(count($user) > 0){
+            if (count($user) > 0) {
                 $token = Str::random(40);
                 // $domain = URL::to('/');
                 // $url = $domain.'/auth/restore/confirm?token='.$token;
@@ -30,45 +31,43 @@ class ResetPasswordController extends Controller
                 $data['title'] = 'Смена пароля';
                 $data['body'] = "Пожалуйста, нажмите ниже, чтобы сменить пароль";
 
-                Mail::send('password',['data' => $data],function($message) use ($data){
+                Mail::send('password', ['data' => $data], function ($message) use ($data) {
                     $message->to($data['email'])->subject($data['title']);
                 });
 
                 $datetime = Carbon::now()->format('Y-m-d H:i:s');
                 PasswordReset::updateOrCreate(
                     ['email' => $request->email],
-                [
-                    'email' => $request->email,
-                    'token' => $token,
-                    'created_at' => $datetime
-                ]);
+                    [
+                        'email' => $request->email,
+                        'token' => $token,
+                        'created_at' => $datetime
+                    ]
+                );
 
-                return response()->json(['success' => true,'msg'=>'Please check your mail to reset your password!']);
+                return response()->json(['success' => true, 'msg' => 'Please check your mail to reset your password!']);
+            } else {
+                return response()->json(['success' => false, 'msg' => 'User not found!']);
             }
-            else{
-                return response()->json(['success' => false,'msg'=>'User not found!']);
-            }
-        }
-        catch (\Exception $e){
-            return response()->json(['success' => false,'msg'=>$e->getMessage()]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'msg' => $e->getMessage()]);
         }
     }
 
     public function resetPasswordLoad(Request $request)
     {
         $resetData = PasswordReset::where('token', $request->token)->get();
-        if (isset($request->token) && count($resetData) > 0)
-        {
-            $user = User::where('email',$resetData[0]['email'])->get();
+        if (isset($request->token) && count($resetData) > 0) {
+            $user = User::where('email', $resetData[0]['email'])->get();
             // return view('resetPassword', compact('user'));
 
             if ($user) {
-                return response()->json(['msg' => 'User found','success' => true], 200);
+                return response()->json(['msg' => 'User found', 'success' => true], 200);
             } else {
-                return response()->json(['msg' => 'User not found','success' => false], 404);
+                return response()->json(['msg' => 'User not found', 'success' => false], 404);
             }
         } else {
-            return response()->json(['msg' => 'Invalid token','success' => false], 404);
+            return response()->json(['msg' => 'Invalid token', 'success' => false], 404);
         }
     }
 
@@ -94,8 +93,8 @@ class ResetPasswordController extends Controller
     //     // return "<h1>Пароль успешно сменён</h1>";
     // }
 
-        public function resetPassword(Request $request)
-    {   
+    public function resetPassword(Request $request)
+    {
         // Проверка на наличие токена
         $resetData = PasswordReset::where('token', $request->get('token'))->first();
 

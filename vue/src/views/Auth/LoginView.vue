@@ -9,15 +9,8 @@
         <div>
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email-адрес</label>
           <div class="mt-2">
-            <input
-              id="email"
-              name="email"
-              type="email"
-              v-model="formData.email"
-              autocomplete="email"
-              required
-              class="input_text"
-            />
+            <input id="email" name="email" type="email" v-model="formData.email" autocomplete="email" required
+              class="input_text" />
           </div>
         </div>
 
@@ -25,32 +18,28 @@
           <div class="flex items-center justify-between">
             <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Пароль</label>
             <div class="text-sm">
-              <router-link class="font-semibold text-red-600 hover:text-neutral-400" to="/auth/restore">Забыли пароль?</router-link>
+              <router-link class="font-semibold text-red-600 hover:text-neutral-400" to="/auth/restore">Забыли
+                пароль?</router-link>
             </div>
           </div>
           <div class="mt-2">
-            <input
-              id="password"
-              name="password"
-              type="password"
-              v-model="formData.password"
-              autocomplete="current-password"
-              required
-              class="input_text"
-            />
+            <input id="password" name="password" type="password" v-model="formData.password"
+              autocomplete="current-password" required class="input_text" />
             <span v-if="errorMessage.password" class="text-red-500">{{ errorMessage.password }}</span>
           </div>
         </div>
 
         <div>
-          <button type="submit" class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Войти</button>
+          <button type="submit"
+            class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Войти</button>
         </div>
       </form>
 
       <p class="mt-10 text-center text-sm text-gray-500">
         Ещё не зарегистрированы?
         {{ ' ' }}
-        <router-link class="font-semibold leading-6 text-red-600 hover:text-neutral-400" to="/auth/register">Регистрация</router-link>
+        <router-link class="font-semibold leading-6 text-red-600 hover:text-neutral-400"
+          to="/auth/register">Регистрация</router-link>
       </p>
     </div>
   </div>
@@ -87,15 +76,15 @@ export default {
             console.log(response.data);
             localStorage.setItem('token', response.token);
             localStorage.setItem('UserData', JSON.stringify(response.data));
-            if (response.data.roles == "Worker"){
+            if (response.data.roles == "Worker") {
               this.$router.push('/users');
             }
-            else if (response.data.roles == "Admin"){
+            else if (response.data.roles == "Admin") {
               this.$router.push('/departments');
-            } 
-            else{
+            }
+            else {
               this.$router.push('/departments');
-            }           
+            }
           }
         } catch (error) {
           if (error.response) {

@@ -58,7 +58,8 @@
         </div>
 
         <div>
-          <button type="submit" class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400">Далее</button>
+          <button type="submit"
+            class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400">Далее</button>
         </div>
       </form>
 
@@ -77,14 +78,16 @@
         </div>
 
         <div>
-          <button type="submit" class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400">Зарегистрироваться</button>
+          <button type="submit"
+            class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400">Зарегистрироваться</button>
         </div>
       </form>
 
       <p class="mt-10 text-center text-sm text-gray-500">
         Уже зарегистрированы?
         {{ ' ' }}
-        <router-link class="font-semibold leading-6 text-red-600 hover:text-neutral-400" to="/auth/login">Войти</router-link>
+        <router-link class="font-semibold leading-6 text-red-600 hover:text-neutral-400"
+          to="/auth/login">Войти</router-link>
       </p>
     </div>
   </div>
@@ -120,9 +123,9 @@ export default {
         const response = await registerUser(this.formData);
         console.log(response);
         if (response.access_token) {
-            localStorage.setItem('token', response.access_token);
-            this.$router.push('/auth/login');
-          }
+          localStorage.setItem('token', response.access_token);
+          this.$router.push('/auth/login');
+        }
       } catch (error) {
         if (error.response) {
           const statusCode = error.response.status;
