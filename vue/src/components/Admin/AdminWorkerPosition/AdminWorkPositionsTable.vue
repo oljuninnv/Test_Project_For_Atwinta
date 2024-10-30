@@ -3,7 +3,7 @@
       <h1 class="mb-5">
         <span class="text-xl font-semibold whitespace-nowrap dark:text-white">Должности:</span>
       </h1>
-      <SearchInput @search="filterPositions" class="w-full max-w-md mb-4" />
+      <SearchInput @search="filterPositions" class="search_input" />
       <button @click="openAddPositionModal" class="btn">Добавить запись</button>
     </div>
 
@@ -19,8 +19,8 @@
     </div>
   
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-[5%]">
-      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <table class="table">
+        <thead class="thead">
           <tr>
             <th class="px-6 py-3">ID</th>
             <th class="px-6 py-3">Название</th>
@@ -33,8 +33,8 @@
             <td class="px-6 py-4">{{ position.name }}</td>
             <td class="px-6 py-4 text-right">
               <ul class="flex gap-5 text-right">
-                <li><a href="#" @click.prevent="editPosition(position)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a></li>
-                <li><a href="#" @click.prevent="removePosition(position.id)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</a></li>
+                <li><a href="#" @click.prevent="editPosition(position)" class="action_href">Edit</a></li>
+                <li><a href="#" @click.prevent="removePosition(position.id)" class="action_href">Delete</a></li>
               </ul>                     
             </td>
           </tr>
@@ -43,7 +43,7 @@
     </div>
   
     <!-- Пагинация -->
-    <div class="flex justify-center mt-4">
+    <div class="pagination">
       <button @click="prevPage" :disabled="currentPage === 1" class="btn">Назад</button>
       <span class="mx-2">Страница {{ currentPage }} из {{ totalPages }}</span>
       <button @click="nextPage" :disabled="currentPage === totalPages" class="btn">Вперед</button>
@@ -148,18 +148,3 @@ function refreshPositions() {
   }
 
 </script>
-
-<style scoped>
-.btn {
-  padding: 0.5rem 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-}
-.btn:disabled {
-  background-color: #ccc;
-}
-</style>
-  

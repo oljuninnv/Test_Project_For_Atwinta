@@ -15,72 +15,40 @@
           </div>
         </div>
 
-        <div>
-          <label for="positions" class="block text-sm font-medium leading-6 text-gray-900">Выберите должности</label>
-          <div class="mt-2">
-            <select
-              id="positions"
-              v-model="formData.selectedPositions"
-              multiple
-              class="input_text"
-            >
-              <option
-                v-for="position in positions"
-                :key="position.id"
-                :value="position.title"
-              >
-                {{ position.title }}
-              </option>
-            </select>
-          </div>
-        </div>
-
         <button type="submit" class="mt-4 bg-blue-500 text-white p-2 rounded">Создать отдел</button>
-
-        <h3 class="mt-5 text-lg font-medium">Текущие данные отдела:</h3>
-        <p><strong>Название:</strong> {{ formData.departmentName }}</p>
-        <p><strong>Выбранные должности:</strong> {{ selectedPositionTitles.join(', ') }}</p>
       </form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, defineEmits } from 'vue';
+import { ref, defineEmits } from 'vue';
+import axios from '../../../libs/axios';
 
 const emit = defineEmits(['department-added']);
 
 const formData = ref({
   departmentName: '',
-  selectedPositions: [],
 });
 
-const positions = [
-  { id: 1, title: 'Разработчик' },
-  { id: 2, title: 'Дизайнер' },
-  { id: 3, title: 'Менеджер' },
-  { id: 4, title: 'Аналитик' }
-];
-
-const selectedPositionTitles = computed(() => {
-  return formData.value.selectedPositions.map(id => {
-    const position = positions.find(pos => pos.id === id);
-    return position ? position.title : '';
-  });
-});
-
-function submitForm() {
+async function submitForm() {
   const newDepartment = {
     name: formData.value.departmentName,
-    positions: formData.value.selectedPositions
   };
-  
-  console.log('Создан новый отдел:', newDepartment);
-  
-  emit('department-added', newDepartment);
 
-  // Сброс формы после отправки
-  formData.value.departmentName = '';
-  formData.value.selectedPositions = [];
+  try {
+    // Отправка POST запроса для добавления нового отдела
+    const response = await axios.post('api/departments', newDepartment);
+    
+    console.log('Создан новый отдел:', response.data);
+    
+    // Эмитируем событие с новым отделом
+    emit('department-added', response.data);
+
+    // Сброс формы после успешной отправки
+    formData.value.departmentName = '';
+  } catch (error) {
+    console.error('Ошибка при добавлении отдела:', error);
+  }
 }
 </script>

@@ -1,7 +1,12 @@
 <template>
     <div>
-        <header class="flex justify-between items-center">
+        <header class="flex justify-between items-center mb-5">
       <h1 class="text-xl font-bold">ATWINTA</h1>
+      <div v-if="userRole == 'Admin'" class="relative">
+        <router-link to="/admin" class="text-xl font-bold">
+          AdminPanel
+        </router-link>
+      </div>
       <div class="relative">
         <router-link to="/profile" >
       <img 

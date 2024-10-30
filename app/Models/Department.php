@@ -11,7 +11,7 @@ class Department extends Model
 
     public $table = 'departments';
 
-    public $filables = ['name'];
+    public $fillable = ['name'];
 
     public function workers()
     {

@@ -1,7 +1,12 @@
 <template>
   <div class="container mx-auto">
-    <header class="flex justify-between items-center">
+    <header class="flex justify-between items-center mb-5">
       <h1 class="text-xl font-bold">ATWINTA</h1>
+      <div v-if="userRole == 'Admin'" class="relative">
+        <router-link to="/admin" class="text-xl font-bold">
+          AdminPanel
+        </router-link>
+      </div>
       <div class="relative">
         <router-link to="/profile">
       <img 
@@ -52,6 +57,9 @@
     </div>
     <div v-else>
       <h2 class="text-2xl font-bold mb-4 text-center">Сотрудники не найдены</h2>
+      <button @click="goBack" class="m-0 px-4 py-2 hover:text-white hover:bg-red-500 rounded mx-auto block">
+        Назад
+    </button>
     </div>
   </div>
 </template>
@@ -91,9 +99,10 @@ export default {
   methods: {
     async fetchWorkerInformation() {
       const userData = JSON.parse(localStorage.getItem('UserData'));
+      this.userRole = userData.roles;
       this.userImage = userData.user.image;
       this.departmentID = this.route.params.department_id;
-      console.log(this.departmentID);
+      console.log(this.userRole);
       try {
         const response = await axios.get(`/api/workers_information/${this.departmentID}`); // Исправлено на правильный синтаксис
         const data = await response.data;
