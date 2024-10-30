@@ -68,12 +68,10 @@
   import AdminWorkPositionModal from "./AdminWorkPositionModal.vue";
   import { GetPositions} from '../../../services/api/position';
   import AdminEditPosition from "./AdminEditPosition.vue";
-  
+
   const isAddModalVisible = ref(false);
   const showForm = ref(false);
   const positions = ref([]);
-  const currentPage = ref(1);
-  const itemsPerPage = 2; // Количество позиций на странице
   const isModalVisible = ref(false);
   const selectedPosition = ref(null);
   
@@ -107,15 +105,9 @@ const loading = ref(false);
     }
   }
   
-  function filterPositions(searchTerm) {
-    if (searchTerm) {
-      filteredPositions.value = positions.value.filter(position =>
-        position.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    } else {
-      filteredPositions.value = positions.value;
-    }
-    currentPage.value = 1; // Сбрасываем на первую страницу при новом поиске
+  async function filterPositions(query) {
+  console.log("Search Query:", query);
+  await fetchPositions(1, query);
   }
   
   function handlePositionAdded() {
@@ -132,7 +124,7 @@ const loading = ref(false);
   async function removePosition(id) {
     try {
         await axios.delete(`/api/positions/${id}`);
-    fetchPositions(); // Обновляем список после удаления
+    fetchPositions(1); // Обновляем список после удаления
   } catch (error) {
     console.error('Ошибка при удалении должности:', error);
   }
@@ -167,7 +159,7 @@ function openAddPositionModal(){
 
 function refreshPositions() {
     isAddModalVisible.value = false;
-    fetchPositions();
+    fetchPositions(1);
   }
 
 </script>
