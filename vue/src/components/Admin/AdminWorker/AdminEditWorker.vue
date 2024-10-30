@@ -80,7 +80,7 @@
      },
    });
   
-  const emit = defineEmits(['close', 'position-updated']);
+  const emit = defineEmits(['close', 'worker-updated']);
   const formData = ref({ 
     worker_id: null, 
     position_id: null, 
@@ -96,27 +96,16 @@
   
   // Получение данных о должностях и отделах при монтировании компонента
   onMounted(async () => {
-    await fetchPositions();
-    await fetchDepartments();
+    await fetchData();
   });
   
-  // Функция получения должностей
-  const fetchPositions = async () => {
-    try {
-      const response = await axios.get('/api/positions'); 
-      filteredPositions.value = response.data;
-    } catch (error) {
-        console.error('Ошибка при получении должностей:', error);
-  }
-};
-
-// Функция получения отделов
-const fetchDepartments = async () => {
+const fetchData = async () => {
   try {
-    const response = await axios.get('/api/departments'); 
-    filteredDepartments.value = response.data;
+    const response = await axios.get('/api/get_data_for_worker_without_user'); 
+    filteredPositions.value = response.data.positions;
+    filteredDepartments.value = response.data.departments;
   } catch (error) {
-    console.error('Ошибка при получении отделов:', error);
+    console.error('Ошибка при получении данных:', error);
   }
 };
 
@@ -171,7 +160,7 @@ async function updatePosition() {
         ...formData.value,
       });
       alert('Сотрудник обновлен');
-      emit('position-updated', response.data); 
+      emit('worker-updated', response.data); 
       emit('close'); 
     } catch (error) {
       console.error('Ошибка при обновлении должности:', error);

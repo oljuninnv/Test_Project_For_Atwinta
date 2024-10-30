@@ -15,7 +15,12 @@ class GetDepartmentInformationController extends Controller
                 'department_id' => $department->id,
                 'department_name' => $department->name,
                 'employee_count' => $department->workers->count(),
-                'positions' => $department->workers->pluck('position.name')->unique(),
+                'positions' => $department->workers->map(function ($worker) {
+                    return [
+                        'id' => $worker->position->id,
+                        'name' => $worker->position->name,
+                    ];
+                })->unique('id')->values()->toArray(), // Удаляем дубликаты по id
             ];
         });
 

@@ -55,7 +55,13 @@
                 <h2 class="text-lg font-semibold text-gray-900">Название отдела: {{ selectedDepartment?.department_name }}</h2>
                 <div class="mt-4">
                     <p><strong>Количество сотрудников:</strong> {{ selectedDepartment?.employee_count }}</p>
-                    <p><strong>Текущие должности:</strong> {{ selectedDepartment?.positions.join(', ') }}</p>
+                    <p><strong>Текущие должности:</strong></p>
+                    <ul v-if="selectedDepartment && selectedDepartment.positions.length">
+                        <li v-for="position in selectedDepartment.positions" :key="position.id">
+                            {{ position.name }};
+                        </li>
+                    </ul>
+                    <p v-else>Нет текущих должностей.</p>
                 </div>
                 <div class="flex justify-end mt-4">
                     <button type="button" @click="closeModal" class="bg-gray-300 hover:bg-gray-400 rounded px-4 py-2">Закрыть</button>

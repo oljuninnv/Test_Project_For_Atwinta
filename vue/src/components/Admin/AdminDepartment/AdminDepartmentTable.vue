@@ -27,7 +27,11 @@
           <tr v-for="department in filteredDepartments" :key="department.id" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ department.department_name }}</th>
             <td class="px-6 py-4">
-              {{ department.positions.join(', ') }}
+              <ul class="flex gap-1">
+                <li v-for="position in department.positions" :key="position.id">
+                  {{ position.name }};
+                </li>
+              </ul>             
             </td>
             <td class="px-6 py-4 text-right">
               <ul class="flex gap-5 text-right">
@@ -109,7 +113,7 @@ function nextPage() {
 async function fetchDepartments() {
   try {
     const response = await axios.get('api/departments_information');
-    departments.value = response.data; // Предполагается, что данные приходят в нужном формате
+    departments.value = response.data; 
     console.log(departments.value);
   } catch (error) {
     console.error('Ошибка при получении данных:', error);

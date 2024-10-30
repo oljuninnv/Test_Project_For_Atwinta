@@ -50,4 +50,5 @@ Route::apiResource('/positions', WorkPositionController::class);
 Route::get('/departments_information', [GetDepartmentInformationController::class, 'index']);
 Route::get('/workers_information/{id}', [GetWorkersInformationFromDepartmentsController::class, 'show']);
 Route::get('/user/{worker_id}', [GetUserInformationController::class, 'getUserInfo']);
-Route::get('/get_data_for_worker', [GetDataForWorkerController::class, 'index']);
+Route::get('/get_data_for_worker', [GetDataForWorkerController::class, 'get_informationWithUser']);
+Route::get('/get_data_for_worker_without_user', [GetDataForWorkerController::class, 'get_informationWithoutUser']);
