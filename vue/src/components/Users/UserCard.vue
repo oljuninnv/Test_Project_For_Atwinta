@@ -41,14 +41,14 @@
         </div>
       </div>
       <div class="flex items-center justify-center mt-5">
-        <button @click="goBack" class="m-0 px-4 py-2 hover:text-white hover:bg-red-500 rounded">
+        <button v-if="userRole == 'Admin'" @click="goBack"  class="m-0 px-4 py-2 hover:text-white hover:bg-red-500 rounded">
           Назад
         </button>
       </div>
     </div>
     <div v-else>
       <h2 class="text-2xl font-bold mb-4 text-center">Сотрудники не найдены</h2>
-      <button @click="goBack" class="m-0 px-4 py-2 hover:text-white hover:bg-red-500 rounded mx-auto block">
+      <button v-if="userRole == 'Admin'" @click="goBack"  class="m-0 px-4 py-2 hover:text-white hover:bg-red-500 rounded">
         Назад
       </button>
     </div>
@@ -107,7 +107,7 @@ export default {
       this.searchQuery = query;
     },
     goBack() {
-      this.$router.go(-1); // Возвращаемся на предыдущую страницу
+      this.$router.push('/departments'); // Возвращаемся на предыдущую страницу
     }
   },
 };

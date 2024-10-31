@@ -77,7 +77,7 @@ export default {
             localStorage.setItem('token', response.token);
             localStorage.setItem('UserData', JSON.stringify(response.data));
             if (response.data.roles == "Worker") {
-              this.$router.push('/users');
+              this.$router.push(`/users/${response.data.department_id}`);
             }
             else if (response.data.roles == "Admin") {
               this.$router.push('/departments');

@@ -1,6 +1,6 @@
 <template>
     <section v-if="isAuthenticated" class="p-10">
-        <router-link v-if="user.user.worker_id" :to="`/users/${depId}`"
+        <router-link v-if="userRole == 'Worker' || user.user.worker_id" :to="`/users/${depId}`"
             class="return flex items-center text-black text-lg">
             Назад
         </router-link>
@@ -61,19 +61,21 @@ import axios from '../../libs/axios';
 
 const user = ref({});
 const isAuthenticated = ref(false);
-const depId = ref('');
 const departmentName = ref('');
 const positionName = ref('');
+const userRole = ref('');
+const depId = ref('');
 
 const checkAuthentication = () => {
     const storedUser = localStorage.getItem('UserData');
     if (storedUser) {
         try {
             user.value = JSON.parse(storedUser);
-            // Проверяем, существует ли user и worker_id
-            if (user.value && user.value.user && user.value.user.worker_id) {
+            userRole.value = user.value.role;
+            if (userRole.value == "Worker" || user.value.user.worker_id) {
                 console.log('Worker: ' + user.value.user.worker_id);
                 isAuthenticated.value = true;
+                depId.value = user.value.department_id;
                 fetchWorkerData(user.value.user.worker_id); // Получаем данные работника по worker_id
             } else {
                 isAuthenticated.value = true;
@@ -104,9 +106,8 @@ const fetchDepartmentAndPosition = async (departmentId, positionId) => {
             axios.get(`api/departments/${departmentId}`),
             axios.get(`api/positions/${positionId}`)
         ]);
-
-        departmentName.value = departmentResponse.data.name;
-        depId.value = departmentResponse.data.id;
+        console.log(departmentResponse.data);
+        departmentName.value = departmentResponse.data.response.name;
         positionName.value = positionResponse.data.name;
         user.value.user.position = positionName.value;
     } catch (error) {

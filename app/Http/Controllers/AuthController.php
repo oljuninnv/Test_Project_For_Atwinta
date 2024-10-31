@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Role;
+use App\Models\Worker;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -20,11 +21,25 @@ class AuthController extends Controller
             // Получаем роли пользователя
             $roles = $user->roles()->pluck('name'); // Получаем названия ролей
 
-            // Добавляем роли в данные ответа
+            $worker = Worker::where('user_id', $user->id)->first();
+            if($worker){
+                $departmentId = $worker ? $worker->department_id : null; // Получаем department_id
+
+                // Добавляем роли в данные ответа
+                $success['data'] = [
+                    'user' => $user,
+                    'roles' => $roles,
+                    'department_id' => $departmentId,
+                ];
+            }
+            else{
+        // Добавляем роли в данные ответа
             $success['data'] = [
                 'user' => $user,
                 'roles' => $roles,
             ];
+            }
+            
 
             return $this->successResponse($success);
         }
