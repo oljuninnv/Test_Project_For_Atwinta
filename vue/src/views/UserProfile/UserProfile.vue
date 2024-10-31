@@ -13,8 +13,10 @@
                 style="background-image: url('../../public/bg-profile.jpg');">
                 <div
                     class="absolute -bottom-12 flex h-[88px] w-[88px] items-center justify-center rounded-full border-[4px] border-white bg-pink-400">
-                    <img class="h-full w-full rounded-full bg-white"
+                    <img v-if="user.user.image"class="h-full w-full rounded-full bg-white"
                         :src="`http://127.0.0.1:8000/storage/${user.user.image}`" alt="avatar" />
+                        <img v-else class="h-full w-full rounded-full bg-white"
+                        src="../../../public/default.png" alt="avatar" />
                 </div>
             </div>
             <div class="mt-16 flex flex-col items-center">

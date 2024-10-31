@@ -12,7 +12,7 @@
                     <img v-if="userImage" class="h-[60px] w-[60px] rounded-full cursor-pointer"
                         :src="`http://127.0.0.1:8000/storage/${userImage}`" alt="User's Face"
                         @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
-                    <img v-else class="h-[60px] w-[60px] rounded-full cursor-pointer" src="../../public/default.png"
+                    <img v-else class="h-[60px] w-[60px] rounded-full cursor-pointer" src="../../../public/default.png"
                         alt="User's Face" @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
                 </router-link>
                 <div v-if="showTooltip"

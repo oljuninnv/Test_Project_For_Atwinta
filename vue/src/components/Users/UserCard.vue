@@ -34,7 +34,7 @@
         <img v-if="employee.image" class="h-[88px] w-[88px] block mx-auto rounded-full sm:mx-0 sm:shrink-0"
           :src="`http://127.0.0.1:8000/storage/${employee.image}`" alt="User's Face">
         <img v-else class="h-[88px] w-[88px] block mx-auto rounded-full sm:mx-0 sm:shrink-0"
-          src="../../public/default.png" alt="User's Face">
+          src="../../../public/default.png" alt="User's Face">
         <div class="text-center space-y-4 sm:text-left">
           <div class="space-y-1">
             <p class="text-lg text-black font-semibold">{{ employee.name }}</p>
