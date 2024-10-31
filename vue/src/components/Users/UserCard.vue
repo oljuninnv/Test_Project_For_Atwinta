@@ -55,6 +55,11 @@
           Вперед
         </button>
       </div>
+      <div class="flex justify-center">
+    <button v-if="userRole == 'Admin'" @click="goBack" class="m-0 px-4 py-2 hover:text-white hover:bg-red-500 rounded block">
+        Назад
+    </button>
+</div>
     </div>
     <div v-else>
       <h2 class="text-2xl font-bold mb-4 text-center">Сотрудники не найдены</h2>
