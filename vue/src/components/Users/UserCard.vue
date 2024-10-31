@@ -3,9 +3,7 @@
     <header class="flex justify-between items-center mb-5">
       <h1 class="text-xl font-bold">ATWINTA</h1>
       <div v-if="userRole == 'Admin'" class="relative">
-        <router-link to="/admin" class="text-xl font-bold">
-          AdminPanel
-        </router-link>
+        <router-link to="/admin" class="text-xl font-bold">AdminPanel</router-link>
       </div>
       <div class="relative">
         <router-link to="/profile">
@@ -21,6 +19,14 @@
       </div>
     </header>
     <SearchInput @search="handleSearch" />
+    
+    <div class="flex justify-center mb-4">
+      <label for="per_page" class="mr-2">Количество записей на странице:</label>
+      <select v-model="pagination.per_page" @change="fetchWorkers(currentPage)">
+        <option v-for="option in perPageOptions" :key="option" :value="option">{{ option }}</option>
+      </select>
+    </div>
+
     <div v-if="filteredEmployees.length">
       <h2 class="text-2xl font-bold mb-4 text-center">Название отдела: {{ department }}</h2>
       <div v-for="employee in filteredEmployees" :key="employee.worker_id"
@@ -40,15 +46,19 @@
           </router-link>
         </div>
       </div>
-      <div class="flex items-center justify-center mt-5">
-        <button v-if="userRole == 'Admin'" @click="goBack"  class="m-0 px-4 py-2 hover:text-white hover:bg-red-500 rounded">
+      <div class="flex justify-center mt-5">
+        <button @click="fetchWorkers(currentPage - 1)" :disabled="currentPage === 1" class="btn">
           Назад
+        </button>
+        <span class="mx-4">Страница {{ currentPage }} из {{ totalPages }}</span>
+        <button @click="fetchWorkers(currentPage + 1)" :disabled="currentPage === totalPages" class="btn">
+          Вперед
         </button>
       </div>
     </div>
     <div v-else>
       <h2 class="text-2xl font-bold mb-4 text-center">Сотрудники не найдены</h2>
-      <button v-if="userRole == 'Admin'" @click="goBack"  class="m-0 px-4 py-2 hover:text-white hover:bg-red-500 rounded">
+      <button v-if="userRole == 'Admin'" @click="goBack" class="m-0 px-4 py-2 hover:text-white hover:bg-red-500 rounded">
         Назад
       </button>
     </div>
@@ -66,15 +76,19 @@ export default {
   },
   data() {
     return {
-      department: '',
+      department: {},
       searchQuery: '',
-      departmentID: '',
       userRole: '',
       userImage: '',
       employees: [],
-      route: useRoute(),
-      router: useRouter(), // Инициализируем router
+      currentPage: 1,
+      departmentName: '',
+      totalPages: 1,
       showTooltip: false,
+      pagination: {
+        per_page: 3, // Количество записей на странице по умолчанию
+      },
+      perPageOptions: [2, 3, 5, 10], // Опции для выбора количества записей на странице
     };
   },
   computed: {
@@ -85,26 +99,29 @@ export default {
     },
   },
   created() {
-    this.fetchWorkerInformation();
+    this.departmentID = this.$route.params.department_id; // Инициализация departmentID из параметров маршрута
+    this.fetchWorkers(this.currentPage);
   },
   methods: {
-    async fetchWorkerInformation() {
+    async fetchWorkers(page) {
       const userData = JSON.parse(localStorage.getItem('UserData'));
       this.userRole = userData.roles;
       this.userImage = userData.user.image;
-      this.departmentID = this.route.params.department_id;
       try {
-        const response = await axios.get(`/api/workers_information/${this.departmentID}`); // Исправлено на правильный синтаксис
+        const response = await axios.get(`/api/workers_information/${this.departmentID}?per_page=${this.pagination.per_page}&page=${page}&name=${this.searchQuery}`);
         const data = await response.data;
-        console.log(data);
         this.department = data.department;
-        this.employees = data.employees;
+        console.log(data.department);
+        this.employees = data.employees.data; // Получаем массив работников
+        this.currentPage = data.employees.current_page; // Текущая страница
+        this.totalPages = data.employees.last_page; // Общее количество страниц
       } catch (error) {
         console.error('Ошибка при получении данных:', error);
       }
     },
     handleSearch(query) {
       this.searchQuery = query;
+      this.fetchWorkers(1); // Сбрасываем на первую страницу при новом поиске
     },
     goBack() {
       this.$router.push('/departments'); // Возвращаемся на предыдущую страницу
