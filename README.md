@@ -21,6 +21,7 @@
 Перед началом работы убедитесь, что у вас установлены следующие компоненты:
 - PHP (версия 8.0 или выше);
 - Composer (менеджер зависимостей для PHP);
+- Установленный Git;
 - Установленная база данных MySQL;
 - Node.js и npm (для работы с фронтенд-зависимостями);
 
@@ -30,12 +31,71 @@
 
 Сначала клонируйте репозиторий проекта с GitHub:
 ```
-git clone https://github.com/username/repository-name.git
-cd repository-name
+git clone https://github.com/oljuninnv/Test_Project_For_Atwinta.git
+cd Test_Project_For_Atwinta
 ```
 
 ### 2. Установка зависимостей
+После клонирования репозитория установите зависимости проекта с помощью Composer:
+```
+composer install
+```
+если не работает, то попробовать
+```
+composer install --ignore-platform-req=ext-sodium
+```
 
+### 3. Настройка окружения
+Скопируйте файл .env.example в .env:
+```
+cp .env.example .env
+```
+Откройте файл .env и настройте параметры подключения к базе данных:
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=<your_database_name>
+DB_USERNAME=<your_database_user>
+DB_PASSWORD=<your_database_password>
+```
 
+### 4. Генерация ключа приложения
+Сгенерируйте ключ приложения Laravel:
+```
+php artisan key:generate
+```
+
+### 5. Миграция базы данных
+Выполните миграцию для создания таблиц в вашей базе данных:
+```
+php artisan migrate
+```
+для создания пользователя с ролью "Администратор", необходимо выполнить команду:
+```
+php artisan db:seed
+```
+Данные авторизации:
+- email: admin@example.com
+- password: password
+
+### 6. Установка фронтенд-зависимостей
+Перейдите в каталог, где находится Vue-приложение:
+```
+cd vue
+```
+Установите фронтенд-зависимости с помощью npm:
+```
+npm install
+```
+### 7. Запуск сервера
+Теперь вы можете запустить встроенный сервер Laravel:
+```
+php artisan serve
+```
+Сервер будет доступен по адресу: http://localhost:8000.
+
+## Заключение
+Заключение
 
 
