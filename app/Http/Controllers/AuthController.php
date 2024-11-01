@@ -9,10 +9,11 @@ use App\Models\Role;
 use App\Models\Worker;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\LoginRequest;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         if (Auth::attempt(['email' => $request->get('email'), 'password' => $request->get('password')])) {
             $user = Auth::user();
@@ -44,7 +45,7 @@ class AuthController extends Controller
             return $this->successResponse($success);
         }
 
-        return $this->failureResponse(['error' => 'Unauthorization or user is not found.']);
+        return $this->failureResponse(['error' => 'Ошибка в заполнении данных.'],409);
     }
 
     public function register(Request $request)

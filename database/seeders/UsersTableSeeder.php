@@ -29,7 +29,7 @@ class UsersTableSeeder extends Seeder
     ]);
 
         // Создание связи с ролью Admin в таблице UserRole
-        DB::table('user_role')->insert([
+        DB::table('user_roles')->insert([
             'user_id' => $userId,
             'role_id' => 1, // Предполагается, что ID роли Admin равен 1
         ]);

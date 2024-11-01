@@ -70,7 +70,6 @@ export default {
       if (Object.keys(this.errorMessage).length === 0) {
         try {
           const response = await loginUser(this.formData);
-          console.log(response);
           alert('Авторизация прошла успешно');
           if (response.data) {
             console.log(response.data);
