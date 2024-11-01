@@ -75,7 +75,7 @@ php artisan migrate
 ```
 php artisan db:seed
 ```
-Данные авторизации:
+Данные для авторизации тестового администратора:
 - email: admin@example.com
 - password: password
 
