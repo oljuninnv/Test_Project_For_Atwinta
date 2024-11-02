@@ -100,7 +100,7 @@ php artisan db:seed
 
 Также необходимо сгенерировать ключ для Laravel Passport через команду:
 ```
-composer require laravel/passport
+php artisan passport:install
 ```
 
 ### 6. Установка фронтенд-зависимостей
