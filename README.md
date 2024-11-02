@@ -59,6 +59,17 @@ DB_DATABASE=<your_database_name>
 DB_USERNAME=<your_database_user>
 DB_PASSWORD=<your_database_password>
 ```
+Также в файле .env можете настроить параметры для отправки электронных писем на электронную почту (данная функция используется для восстановления пароля по электронной почте):
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=465
+MAIL_USERNAME=<your_mail_username>
+MAIL_PASSWORD=<your_mail_password>
+MAIL_ENCRYPTION=ssl
+MAIL_FROM_ADDRESS=<your_mail_from_address>
+MAIL_FROM_NAME="${APP_NAME}"
+```
 
 ### 4. Генерация ключа приложения
 Сгенерируйте ключ приложения Laravel:
