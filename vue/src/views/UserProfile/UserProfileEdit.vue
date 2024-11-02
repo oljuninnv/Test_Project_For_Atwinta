@@ -29,6 +29,12 @@
                 </div>
 
                 <div class="mb-4">
+                    <label for="email" class="block text-gray-700 font-bold mb-2">Telegram:</label>
+                    <input type="text" id="email" v-model="userData.user.telegram"
+                        class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите telegram..." />
+                </div>
+
+                <div class="mb-4">
                     <label for="city" class="block text-gray-700 font-bold mb-2">Город:</label>
                     <input type="text" id="city" v-model="userData.user.city"
                         class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите город..." required />
@@ -60,6 +66,11 @@
                         class="border rounded w-full py-2 px-3 text-gray-700" />
                 </div>
 
+                <div v-if="!userData.user.is_finished">
+                    <label for="is_finished" class="block text-sm font-medium leading-6 text-gray-900">Было ли закончено задание</label>
+                    <input id="is_finished" name="is_finished" type="checkbox" v-model="userData.user.is_finished" class="mt-2" />
+                </div>
+
                 <button type="submit"
                     class="bg-bluePrimary font-bold py-2 px-4 rounded hover:bg-red-500 hover:text-white w-full">Сохранить
                     изменения</button>
@@ -87,6 +98,7 @@ const userData = ref({
     phone: '',
     github: '',
     type: '',
+    is_finished: false,
     image: null
 });
 const isAuthenticated = ref(false);
@@ -121,11 +133,14 @@ const saveChanges = async () => {
         formData.append('name', userData.value.user.name);
         formData.append('email', userData.value.user.email);
         formData.append('phone', userData.value.user.phone);
+        formData.append('telegram', userData.value.user.telegram);
         formData.append('city', userData.value.user.city);
         formData.append('github', userData.value.user.github);
         formData.append('about', userData.value.user.about);
         formData.append('type', userData.value.user.type);
         formData.append('login', userData.value.user.login);
+
+        formData.append('is_finished', userData.value.user.is_finished ? 1 : 0);
 
         if (userData.value.image) {
             formData.append('image', userData.value.image, userData.value.image.name);
@@ -142,7 +157,9 @@ const saveChanges = async () => {
             }
         });
 
-        // img.value = user.image;
+        if(img.value == ''){
+            img.value = formData.get('image'); // Обновляем изображение пользователя
+        }
 
         // Обновляем локальные данные пользователя
         localStorage.setItem('UserData', JSON.stringify({ ...userData.value, image: img.value }));

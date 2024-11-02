@@ -19,6 +19,11 @@
         </div>
 
         <div>
+          <label for="telegram" class="block text-sm font-medium leading-6 text-gray-900">Telegram</label>
+          <input id="telegram" name="telegram" type="text" v-model="formData.telegram" required class="input_text mt-2" />
+        </div>
+
+        <div>
           <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Телефон</label>
           <input id="phone" name="phone" v-model="formData.phone" required class="input_text mt-2" />
         </div>

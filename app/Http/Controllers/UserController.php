@@ -69,7 +69,7 @@ class UserController extends Controller
             'github' => 'nullable|string|max:255',
             'about' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
-            'is_finished' => 'nullable|boolean', // Добавьте это правило валидации
+            'is_finished' => 'nullable|boolean', 
         ]);
 
         if ($validator->fails()) {
@@ -85,6 +85,7 @@ class UserController extends Controller
         $user->login = $request->get('login');
         $user->email = $request->get('email');
         $user->phone = $request->get('phone');
+        $user->telegram = $request->get('telegram');
         $user->city = $request->get('city');
         $user->github = $request->get('github');
         $user->about = $request->get('about');
@@ -191,7 +192,7 @@ class UserController extends Controller
         $user->github = $request->get('github');
         $user->about = $request->get('about');
         $user->password = Hash::make($request->get('password'));
-        $user->is_finished = false; // Убедитесь, что это значение корректно
+        $user->is_finished = false; 
 
         if ($request->hasFile('image')) {
             // Получаем логин пользователя

@@ -33,6 +33,10 @@
                     <h5 class="text-bluePrimary text-xl font-bold">Email:</h5>
                     <p class="text-lightSecondary text-base font-normal">{{ user.user.email }}</p>
                 </div>
+                <div>
+                    <h5 class="text-bluePrimary text-xl font-bold">Telegram:</h5>
+                    <p class="text-lightSecondary text-base font-normal">{{ user.user.telegram }}</p>
+                </div>
                 <div v-if="user.user.worker_id">
                     <h5 class="text-bluePrimary text-xl font-bold">Отдел:</h5>
                     <p class="text-lightSecondary text-base font-normal">{{ departmentName }}</p>
@@ -40,6 +44,15 @@
                 <div v-if="user.user.worker_id">
                     <h5 class="text-bluePrimary text-xl font-bold">Зачислен:</h5>
                     <p class="text-lightSecondary text-base font-normal">{{ user.user.adopted_at }}</p>
+                </div>
+                <div>
+                    <h5 class="text-bluePrimary text-xl font-bold">Сделанное тестовое задание:</h5>
+                    <div v-if="user.user.is_finished">
+                        <p class="text-lightSecondary text-base font-normal">Сдано</p>
+                    </div>
+                    <div v-else>
+                        <p class="text-lightSecondary text-base font-normal">Не сдано</p>
+                    </div>
                 </div>
                 <div>
                     <h5 class="text-bluePrimary text-xl font-bold">О себе:</h5>

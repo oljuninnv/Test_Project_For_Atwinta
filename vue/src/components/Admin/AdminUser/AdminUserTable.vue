@@ -165,11 +165,12 @@ const fetchUsers = async (updatedUser) => {
     formData.append('phone', updatedUser.phone);
     formData.append('city', updatedUser.city);
     formData.append('birthday', updatedUser.birthday);
+    formData.append('telegram', updatedUser.telegram);
     formData.append('github', updatedUser.github);
     formData.append('type', updatedUser.type);
     formData.append('about', updatedUser.about);
     formData.append('login', updatedUser.login);
-    console.log('biba', updatedUser.is_finished);
+   
     if (updatedUser.is_finished) {
       formData.append('is_finished', updatedUser.is_finished);
     }

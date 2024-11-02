@@ -18,6 +18,13 @@
         </div>
 
         <div>
+          <label for="telegram" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
+          <div class="mt-2">
+            <input id="telegram" name="telegram" type="text" v-model="formData.telegram" required class="input_text" />
+          </div>
+        </div>
+
+        <div>
           <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Телефон</label>
           <div class="mt-2">
             <input id="phone" name="phone" v-model="formData.phone" required class="input_text" />
@@ -118,6 +125,7 @@ async function addUser() {
   formData.value.append('birthday', formData.value.birthday);
   formData.value.append('github', formData.value.github);
   formData.value.append('type', formData.value.type);
+  formData.value.append('telegram', formData.value.telegram);
   formData.value.append('about', formData.value.about);
   formData.value.append('login', formData.value.login);
   formData.value.append('password', formData.value.password);
