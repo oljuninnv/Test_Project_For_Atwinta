@@ -50,6 +50,7 @@ export interface IUser {
     phone: string;
     city: string;
     birthday: string;
+    telegram: string;
     github: string;
     type: string;
     about: string;
@@ -110,6 +111,7 @@ export interface IGetUsersParams {
     phone: string;
     city: string;
     birthday: string;
+    telegram: string;
     github: string;
     type: string;
     about: string;

@@ -48,6 +48,8 @@
             <th class="px-6 py-3">Изображение</th>
             <th class="px-6 py-3">Город</th>
             <th class="px-6 py-3">Телефон</th>
+            <th class="px-6 py-3">Telegram</th>
+            <th class="px-6 py-3">Закончено ли тестовое задание?</th>
             <th class="px-6 py-3">День рождения</th>
             <th class="px-6 py-3">Тип</th>
             <th class="px-6 py-3">GitHub</th>
@@ -65,6 +67,8 @@
             </td>
             <td class="px-6 py-4">{{ user.city }}</td>
             <td class="px-6 py-4">{{ user.phone }}</td>
+            <td class="px-6 py-4">{{ user.telegram }}</td>
+            <td class="px-6 py-4">{{ user.is_finished===1 ? 'True' : 'False'}}</td>
             <td class="px-6 py-4">{{ user.birthday }}</td>
             <td class="px-6 py-4">{{ user.type }}</td>
             <td class="px-6 py-4">{{ user.github }}</td>
