@@ -79,6 +79,11 @@ php artisan db:seed
 - email: admin@example.com
 - password: password
 
+Также необходимо сгенерировать ключ для Laravel Passport через команду:
+```
+composer require laravel/passport
+```
+
 ### 6. Установка фронтенд-зависимостей
 Перейдите в каталог "vue", в котором находится Vue-приложение:
 ```
@@ -97,8 +102,12 @@ npm install axios
 ```
 php artisan serve
 ```
-Сервер будет доступен по адресу: http://localhost:8000.
-
+Backend-сервер будет доступен по адресу: http://localhost:8000.
+А также для взаимодействия с сайтомм запустите Vue-приложение:
+```
+npm run dev
+```
+Frontend-сервер будет доступен по адресу: http://localhost:5173/
 ## Заключение
 Теперь тестовый проект на Laravel с Vue.js запущен и готов к использованию. Спасибо за внимание.
 
