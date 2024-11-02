@@ -82,13 +82,21 @@ php artisan key:generate
 ```
 php artisan migrate
 ```
-для создания пользователя с ролью "Администратор", необходимо выполнить команду:
+для создания тестовых пользователей с ролями (Admin,User,Worker), а также для заполнения базы данных тестовыми данными (отделы и должности) необходимо выполнить команду:
 ```
 php artisan db:seed
 ```
 Данные для авторизации тестового администратора:
 - email: admin@example.com
 - password: password
+
+Данные для авторизации тестового пользователя:
+- email: user@example.com
+- password: user_password
+
+Данные для авторизации тестового сотрудника:
+- email: worker@example.com
+- password: worker_password
 
 Также необходимо сгенерировать ключ для Laravel Passport через команду:
 ```
