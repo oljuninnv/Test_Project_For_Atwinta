@@ -8,7 +8,7 @@
                     class="absolute -bottom-12 flex h-[88px] w-[88px] items-center justify-center rounded-full border-[4px] border-white bg-pink-400">
                     <img v-if="user.image" class="h-full w-full rounded-full"
                         :src="`http://127.0.0.1:8000/storage/${user.image}`" alt="User image" />
-                    <img v-else class="h-full w-full rounded-full" src="../../public/default.png" alt="User image" />
+                    <img v-else class="h-full w-full rounded-full" src="../../../public/default.png" alt="User image" />
                 </div>
             </div>
             <div class="mt-16 flex flex-col items-center">

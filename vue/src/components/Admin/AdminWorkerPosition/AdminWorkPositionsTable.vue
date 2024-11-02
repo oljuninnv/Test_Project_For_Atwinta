@@ -115,7 +115,7 @@ async function filterPositions(query) {
 }
 
 function handlePositionAdded() {
-  fetchPositions(); // Обновляем список после добавления
+  fetchPositions(); 
 }
 
 // Функции редактирования и удаления
@@ -128,7 +128,7 @@ function editPosition(position) {
 async function removePosition(id) {
   try {
     await axios.delete(`/api/positions/${id}`);
-    fetchPositions(); // Обновляем список после удаления
+    fetchPositions(1);
   } catch (error) {
     console.error('Ошибка при удалении должности:', error);
   }
@@ -148,12 +148,6 @@ async function nextPage() {
     pagination.value.page = pagination.value.page + 1;
   }
 }
-
-// Вычисляем позиции для отображения на текущей странице
-const paginatedPositions = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  return filteredPositions.value.slice(start, start + itemsPerPage);
-});
 
 function openAddPositionModal() {
   isAddModalVisible.value = true;

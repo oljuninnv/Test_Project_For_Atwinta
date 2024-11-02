@@ -89,7 +89,7 @@ const searchQuery = ref('');
 
 const pagination = ref({
   page: 1,
-  per_page: 2,
+  per_page: 10,
   total: 1,
   last_page: 1,
 });
@@ -97,17 +97,23 @@ const pagination = ref({
 const loading = ref(false);
 
 const filteredDepartments = computed(() => {
-  return departments.value.filter(department =>
-    department.department_name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
+  if (!Array.isArray(departments.value)) {
+    fetchDepartments()
+  }
+  
+  return departments.value.filter(department => {
+    const departmentName = department.name || '';
+    return departmentName.toLowerCase().includes(searchQuery.value.toLowerCase());
+  });
 });
+
 async function filterDepartments(query) {
   console.log("Search Query:", query);
   await fetchDepartments(1, query);
 }
 
-function handleDepartmentAdded(department) {
-  departments.value.push(department);
+function handleDepartmentAdded() {
+  fetchDepartments(1)
 }
 
 async function deleteDepartment(id) {
@@ -163,5 +169,7 @@ function handleUpdateDepartment(updatedDepartment) {
   }
   isModalVisible.value = false;
 }
+
+
 
 </script>

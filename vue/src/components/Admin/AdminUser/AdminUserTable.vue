@@ -122,16 +122,12 @@ onMounted(async () => {
   await loadUsers();
 });
 
-const currentPage = ref(1);
-const itemsPerPage = 2;
-const searchQuery = ref('');
-
 async function filterUsers(query) {
   console.log("Search Query:", query);
   await loadUsers(1, query);
 }
 
-async function handleUserAdded(user) {
+async function handleUserAdded() {
   await loadUsers(1);
 }
 
