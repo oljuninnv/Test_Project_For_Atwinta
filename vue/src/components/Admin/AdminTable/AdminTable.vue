@@ -9,6 +9,17 @@
 
   <AdminAdd v-if="isAddModalVisible" @close="isAddModalVisible = false" @user-added="refreshUsers" />
 
+  <div class="flex justify-center">
+        <label for="itemsPerPage">Элементов на странице:</label>
+        <select id="itemsPerPage" @change="updateItemsPerPage">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+        </select>
+    </div>
+
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
     <div role="status" v-if="loading"
       class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2 w-full flex h-full flex-wrap justify-center items-center bg-[#fff] overflow-hidden	">
@@ -67,10 +78,15 @@ import axios from '../../../libs/axios';
 
 const pagination = ref({
   page: 1,
-  per_page: 5,
+  per_page: 3,
   total: 1,
   last_page: 1,
 });
+
+const updateItemsPerPage = (event) => {
+    pagination.value.per_page = parseInt(event.target.value);
+    loadUsers(1);
+};
 
 
 const loading = ref(false);

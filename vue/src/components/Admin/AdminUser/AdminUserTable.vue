@@ -13,6 +13,17 @@
     <AdminAddUser @UserAdd="handleUserAdded"></AdminAddUser>
   </div>
 
+  <div class="flex justify-center">
+        <label for="itemsPerPage">Элементов на странице:</label>
+        <select id="itemsPerPage" @change="updateItemsPerPage">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+        </select>
+    </div>
+
   <div class="relative overflow-hidden shadow-md sm:rounded-lg mt-[5%]">
     <div role="status" v-if="loading"
       class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2 w-full flex h-full flex-wrap justify-center items-center bg-[#fff] overflow-hidden	">
@@ -71,12 +82,13 @@
   </div>
 
   <!-- Пагинация -->
-  <div class="pagination">
-    <button @click="prevPage" :disabled="pagination.page === 1 || loading == true" class="btn">Назад</button>
-    <span class="mx-2">Страница {{ pagination.page }} из {{ pagination.last_page }}</span>
-    <button @click="nextPage" :disabled="pagination.page === pagination.last_page || loading === true"
-      class="btn">Вперед</button>
-  </div>
+  <div class="flex justify-center flex-col items-center mb-4 mt-5">
+    <div class="pagination">
+        <button @click="prevPage" :disabled="pagination.page === 1 || loading" class="btn">Назад</button>
+        <span class="mx-2">Страница {{ pagination.page }} из {{ pagination.last_page }}</span>
+        <button @click="nextPage" :disabled="pagination.page === pagination.last_page || loading" class="btn">Вперед</button>
+    </div>
+</div>
 
   <AdminEditUser :user="selectedUser" :isVisible="isModalVisible" @close="isModalVisible = false"
     @user-updated="fetchUsers" />
@@ -97,7 +109,7 @@ const loading = ref(false);
 
 const pagination = ref({
   page: 1,
-  per_page: 5,
+  per_page: 3,
   total: 1,
   last_page: 1,
 });
@@ -121,6 +133,11 @@ const loadUsers = async (page = 1, name = null) => {
 onMounted(async () => {
   await loadUsers();
 });
+
+const updateItemsPerPage = (event) => {
+    pagination.value.per_page = parseInt(event.target.value);
+    loadUsers(1);
+};
 
 async function filterUsers(query) {
   console.log("Search Query:", query);

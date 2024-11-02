@@ -22,6 +22,17 @@
             </div>
         </header>
         <SearchInput @search="handleSearch" />
+
+        <div class="flex justify-center mb-4">
+        <label for="itemsPerPage">Элементов на странице:</label>
+        <select id="itemsPerPage" @change="updateItemsPerPage">
+            <option value="3">2</option>
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+        </select>
+        </div>
+
         <h2 class="text-bluePrimary text-xl font-bold text-center mb-5">Страница со списком отделов</h2>
         <div v-for="department in filteredDepartments" :key="department.id" @click="openModal(department)"
             class="py-8 mt-5 px-8 max-w-sm mx-auto bg-white rounded-xl drop-shadow-2xl space-y-2 sm:py-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-6 cursor-pointer">
@@ -60,14 +71,13 @@
                 </div>
             </div>
         </div>
+
         <!-- Пагинация -->
         <div class="pagination">
-                    <button @click="prevPage" :disabled="pagination.page === 1 || loading == true"
-                        class="btn">Назад</button>
-                    <span class="mx-2">Страница {{ pagination.page }} из {{ pagination.last_page }}</span>
-                    <button @click="nextPage" :disabled="pagination.page === pagination.last_page || loading === true"
-                        class="btn">Вперед</button>
-                </div>
+            <button @click="prevPage" :disabled="pagination.page === 1 || loading == true" class="btn">Назад</button>
+            <span class="mx-2">Страница {{ pagination.page }} из {{ pagination.last_page }}</span>
+            <button @click="nextPage" :disabled="pagination.page === pagination.last_page || loading === true" class="btn">Вперед</button>
+        </div>
     </div>
 </template>
 
@@ -109,15 +119,15 @@ export default {
                 userRole.value = userData.roles;
                 const response = await GetDepartments(page, pagination.value.per_page, name);
                 departments.value = response.data;
-                pagination.value.total = response.total; // Обновляем общее количество
-                pagination.value.last_page = response.last_page; // Обновляем последнюю страницу
+                pagination.value.total = response.total;
+                pagination.value.last_page = response.last_page;
             } catch (error) {
                 console.error('Ошибка при получении данных:', error);
             }
         };
 
         const handleSearch = (query) => {
-            searchQuery.value = query; // Здесь query - это строка, введенная пользователем
+            searchQuery.value = query;
             fetchDepartments(1, query);
         };
 
@@ -145,6 +155,11 @@ export default {
             }
         };
 
+        const updateItemsPerPage = (event) => {
+            pagination.value.per_page = parseInt(event.target.value);
+            fetchDepartments(1);
+        };
+
         onMounted(() => {
             fetchDepartments();
         });
@@ -165,6 +180,7 @@ export default {
             closeModal,
             prevPage,
             nextPage,
+            updateItemsPerPage,
         };
     },
 };
