@@ -114,7 +114,7 @@ const loading = ref(false);
 
 const filteredDepartments = computed(() => {
   if (!Array.isArray(departments.value)) {
-    fetchDepartments()
+    return departments.value = [];
   }
   
   return departments.value.filter(department => {

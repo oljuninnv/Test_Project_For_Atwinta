@@ -26,7 +26,7 @@
         <div class="flex justify-center mb-4">
         <label for="itemsPerPage">Элементов на странице:</label>
         <select id="itemsPerPage" @change="updateItemsPerPage">
-            <option value="3">2</option>
+            <option value="2">2</option>
             <option value="3">3</option>
             <option value="5">5</option>
             <option value="10">10</option>
@@ -94,7 +94,7 @@ export default {
     setup() {
         const pagination = ref({
             page: 1,
-            per_page: 3,
+            per_page: 2,
             total: 1,
             last_page: 1,
         });
@@ -107,6 +107,9 @@ export default {
         const showTooltip = ref(false);
 
         const filteredDepartments = computed(() => {
+            if (!Array.isArray(departments.value)) {
+                    return departments.value = [];
+            }
             return departments.value.filter(department =>
                 department.department_name.toLowerCase().startsWith(searchQuery.value.toLowerCase())
             );

@@ -18,7 +18,7 @@
         </div>
 
         <div>
-          <label for="telegram" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
+          <label for="telegram" class="block text-sm font-medium leading-6 text-gray-900">Telegram</label>
           <div class="mt-2">
             <input id="telegram" name="telegram" type="text" v-model="formData.telegram" required class="input_text" />
           </div>

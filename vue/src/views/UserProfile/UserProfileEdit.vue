@@ -140,7 +140,13 @@ const saveChanges = async () => {
         formData.append('type', userData.value.user.type);
         formData.append('login', userData.value.user.login);
 
-        formData.append('is_finished', userData.value.user.is_finished ? 1 : 0);
+        if (!userData.value.user.is_finished) {
+            formData.append('is_finished', 0);
+        }
+        else{
+            formData.append('is_finished', 1);
+        }
+       
 
         if (userData.value.image) {
             formData.append('image', userData.value.image, userData.value.image.name);
