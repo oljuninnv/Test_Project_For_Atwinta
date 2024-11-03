@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RestoreConfirmRequest;
 use Illuminate\Http\Request;
 use Mail;
 use App\Models\User;
@@ -93,7 +94,7 @@ class ResetPasswordController extends Controller
     //     // return "<h1>Пароль успешно сменён</h1>";
     // }
 
-    public function resetPassword(Request $request)
+    public function resetPassword(RestoreConfirmRequest $request)
     {
         // Проверка на наличие токена
         $resetData = PasswordReset::where('token', $request->get('token'))->first();
@@ -108,11 +109,6 @@ class ResetPasswordController extends Controller
         if (!$user) {
             return response()->json(['msg' => 'User not found', 'success' => false], 404);
         }
-
-        // Валидация пароля
-        $request->validate([
-            'password' => 'required|string|min:6|confirmed'
-        ]);
 
         // Изменение пароля
         $user->password = Hash::make($request->get('password'));

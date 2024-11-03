@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use App\Http\Requests\FilterRequest;
 
 class GetDepartmentInformationController extends Controller
 {
-    public function index(Request $request)
+    public function index(FilterRequest $request)
     {
         $name = $request->get('name');
 

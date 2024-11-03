@@ -72,7 +72,7 @@ export default {
       try {
         const response = await ResetPassword(this.formData);
 
-        console.log(response.success);
+        console.log(response);
 
         if (response.success) {
           this.message = response.msg; // Сообщение об успешном изменении пароля
@@ -81,7 +81,8 @@ export default {
           this.errorMessage = response.msg; // Сообщение об ошибке
         }
       } catch (error) {
-        this.errorMessage = 'Произошла ошибка при изменении пароля.'; // Обработка ошибок
+        console.log(error);
+        // this.errorMessage = 'Произошла ошибка при изменении пароля.'; // Обработка ошибок
       }
     }
   }

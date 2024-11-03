@@ -5,7 +5,8 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form v-if="step === 1" class="space-y-6" @submit.prevent="nextStep">
+      <form class="space-y-6" @submit.prevent="register">
+        <!-- Поля формы -->
         <div>
           <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Имя</label>
           <div class="mt-2">
@@ -58,13 +59,6 @@
         </div>
 
         <div>
-          <button type="submit"
-            class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400">Далее</button>
-        </div>
-      </form>
-
-      <form v-if="step === 2" class="space-y-6" @submit.prevent="register">
-        <div>
           <label for="login" class="block text-sm font-medium leading-6 text-gray-900">Логин</label>
           <div class="mt-2">
             <input id="login" name="login" v-model="formData.login" required class="input_text" />
@@ -73,22 +67,35 @@
           <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Пароль</label>
           <div class="mt-2">
             <input id="password" name="password" type="password" v-model="formData.password" class="input_text" />
-            <span v-if="errorMessage.password" class="text-red-500">{{ errorMessage.password }}</span>
           </div>
         </div>
 
         <div>
-          <button type="submit"
-            class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400">Зарегистрироваться</button>
+          <button type="submit" class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400">Зарегистрироваться</button>
         </div>
       </form>
 
       <p class="mt-10 text-center text-sm text-gray-500">
         Уже зарегистрированы?
         {{ ' ' }}
-        <router-link class="font-semibold leading-6 text-red-600 hover:text-neutral-400"
-          to="/auth/login">Войти</router-link>
+        <router-link class="font-semibold leading-6 text-red-600 hover:text-neutral-400" to="/auth/login">Войти</router-link>
       </p>
+    </div>
+
+    <!-- Модальное окно для ошибок -->
+    <div v-if="errorMessages.length > 0" class="flex justify-center mt-4">
+  <div class="shadow-1 dark:bg-dark-2 flex w-full max-w-md rounded-lg border-l-[6px] border-transparent bg-white px-7 py-8 md:p-9">
+    <div class="w-full">
+      <h5 class="mb-3 text-base font-semibold text-[#BC1C21]">
+        Обнаружены ошибки:
+      </h5>
+      <ul class="list-inside list-disc">
+        <li v-for="(message, index) in errorMessages" :key="index" class="text-red-light text-base leading-relaxed">
+          {{ message }}
+        </li>
+      </ul>
+    </div>
+  </div>
     </div>
   </div>
 </template>
@@ -99,7 +106,6 @@ import { registerUser } from '../../services/api/auth';
 export default {
   data() {
     return {
-      step: 1,
       formData: {
         name: '',
         email: '',
@@ -111,13 +117,11 @@ export default {
         password: '',
         type: ''
       },
-      errorMessage: {}
+      errorMessages: [],
+      showErrorModal: false
     };
   },
   methods: {
-    nextStep() {
-      this.step = 2;
-    },
     async register() {
       try {
         const response = await registerUser(this.formData);
@@ -127,33 +131,20 @@ export default {
           this.$router.push('/auth/login');
         }
       } catch (error) {
+        this.errorMessages = []; // Сброс ошибок перед добавлением новых
         if (error.response) {
-          const statusCode = error.response.status;
           const errorData = error.response.data;
 
-          switch (statusCode) {
-            case 400:
-              this.errorMessage = { password: errorData.message };
-              break;
-            case 408:
-              alert('Слишком много пользователей было зарегистрировано за последний час');
-              break;
-            case 409:
-              alert('Пользователь с такой почтой уже существует');
-              break;
-            case 500:
-              if (errorData.validations && errorData.validations.type) {
-                this.errorMessage.type = errorData.validations.type[0];
-              } else {
-                alert(errorData.message);
-              }
-              break;
-            default:
-              alert('Произошла неизвестная ошибка. Пожалуйста, попробуйте позже.');
+          if (errorData.messages) {
+            for (const [key, messages] of Object.entries(errorData.messages)) {
+              this.errorMessages.push(...messages);
+            }
+          } else {
+            this.errorMessages.push('Произошла неизвестная ошибка. Пожалуйста, попробуйте позже.');
           }
-        } else {
-          alert('Ошибка сети или сервера. Пожалуйста, проверьте подключение.');
         }
+
+        this.showErrorModal = true; // Показать модальное окно
       }
     }
   }

@@ -9,7 +9,7 @@ class RestoreConfirmRequest extends FormRequest
     public function rules()
     {
         return [
-            'token' => 'required|string|regex:/^\d+-[a-zA-Z0-9]+$/', // Формат токена: %d-%s
+            'token' => 'required|string|regex:/^[a-zA-Z0-9]+$/', // Формат токена: %d-%s
             'password' => 'required|string|min:6',
             'password_confirmation' => 'required|string|same:password',
         ];

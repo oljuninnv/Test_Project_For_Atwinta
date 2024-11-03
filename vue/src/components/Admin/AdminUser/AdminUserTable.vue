@@ -95,7 +95,7 @@
 </div>
 
   <AdminEditUser :user="selectedUser" :isVisible="isModalVisible" @close="isModalVisible = false"
-    @user-updated="fetchUsers" />
+    @user-updated="fetchUsers" :errors="errors" />
 
 </template>
 
@@ -110,6 +110,7 @@ import axios from '../../../libs/axios';
 const showForm = ref(false);
 const users = ref([]);
 const loading = ref(false);
+const errors = ref([]);
 
 const pagination = ref({
   page: 1,
@@ -182,6 +183,8 @@ const fetchUsers = async (updatedUser) => {
       formData.append('image', updatedUser.image, updatedUser.image.name);
     }
     formData.append('_method', 'put');
+
+    errors.value =[];
     const response = await axios.post(`/api/users/${updatedUser.id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -191,7 +194,22 @@ const fetchUsers = async (updatedUser) => {
 
     isModalVisible.value = false;
   } catch (error) {
-    console.error('Ошибка при изменении пользователя:', error);
+    console.log(error);
+    if (error.response) {
+            switch (error.response.status) {
+              case 422:
+                for (const [key, messages] of Object.entries(error.response.data.errors)) {
+                  errors.value.push(...messages);
+              }
+                break;
+              default:
+                alert('Произошла неизвестная ошибка. Попробуйте позже.');
+                console.error('Произошла ошибка:', error);
+            }
+          } else {
+            alert('Проблема с сетью. Проверьте подключение к интернету.');
+            console.error('Ошибка сети:', error);
+          }
   }
   await loadUsers();
 };
@@ -210,6 +228,11 @@ async function prevPage() {
     await loadUsers(pagination.value.page - 1);
     pagination.value.page = pagination.value.page - 1;
   }
+}
+
+function getErrors (){
+  console.log(errors.value);
+  return errors.value;
 }
 
 async function nextPage() {

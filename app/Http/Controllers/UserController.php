@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\UserRole;
 use App\Models\Role;
 use App\Models\Worker;
@@ -52,28 +54,10 @@ class UserController extends Controller
 
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
-        }
-
-        // Валидация данных
-        $validator = Validator::make($request->all(), [
-            'name' => 'nullable|string|max:255',
-            'login' => 'nullable|string|max:255|unique:users,login,' . $user->id,
-            'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:15',
-            'city' => 'nullable|string|max:100',
-            'birthday' => 'nullable|date',
-            'github' => 'nullable|string|max:255',
-            'about' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
-            'is_finished' => 'nullable|boolean', 
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         // Сохраняем старый логин и путь к изображению
@@ -161,25 +145,8 @@ class UserController extends Controller
         return response(['message' => 'Пользователь удалён']);
     }
 
-    public function store(Request $request)
+    public function store(RegisterRequest $request)
     {
-        // Валидация данных
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'login' => 'required|string|max:255|unique:users',
-            'email' => 'required|email|max:255|unique:users',
-            'phone' => 'nullable|string|max:15',
-            'city' => 'nullable|string|max:100',
-            'birthday' => 'nullable|date',
-            'github' => 'nullable|string|max:255',
-            'password' => 'required|string|min:8',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
         // Создание нового пользователя
         $user = new User();
         $user->name = $request->get('name');

@@ -25,7 +25,6 @@
           <div class="mt-2">
             <input id="password" name="password" type="password" v-model="formData.password"
               autocomplete="current-password" required class="input_text" />
-            <span v-if="errorMessage.password" class="text-red-500">{{ errorMessage.password }}</span>
           </div>
         </div>
 
@@ -54,8 +53,7 @@ export default {
       formData: {
         email: '',
         password: ''
-      },
-      errorMessage: {}
+      }
     };
   },
   methods: {
@@ -67,7 +65,6 @@ export default {
     },
     async login() {
       this.validateInput();
-      if (Object.keys(this.errorMessage).length === 0) {
         try {
           const response = await loginUser(this.formData);
           alert('Авторизация прошла успешно');
@@ -84,18 +81,12 @@ export default {
             else {
               this.$router.push('/departments');
             }
-          }
-        } catch (error) {
+        }} catch (error) {
+          console.log(error);
           if (error.response) {
             switch (error.response.status) {
-              case 406:
-                alert('Пользователь не подтвердил почту');
-                break;
-              case 408:
-                alert('Ошибка в заполнении данных');
-                break;
-              case 500:
-                alert('Неправильный логин или пароль. Попробуйте заново');
+              case 409:
+                alert(error.response.data.response.error);
                 break;
               default:
                 alert('Произошла неизвестная ошибка. Попробуйте позже.');
@@ -109,5 +100,5 @@ export default {
       }
     }
   }
-};
+
 </script>

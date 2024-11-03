@@ -35,16 +35,21 @@ Route::post('auth/login', [AuthController::class,'login']);
 Route::post('/auth/restore', [ResetPasswordController::class, 'forgetPassword']);
 Route::post('/auth/restore/confirm', [ResetPasswordController::class, 'resetPassword']);
 
-Route::apiResource('/users', UserController::class); // ->middleware('auth:api')
+Route::apiResource('/users', UserController::class) ->middleware('auth:api');
 Route::apiResource('/user_roles', UserRoleController::class);
 
+
+// Контроллеры для работников
 Route::get('/workers', [WorkerController::class, 'index']);
 Route::post('/workers', [WorkerController::class, 'store']);
 Route::get('/workers/{id}', [WorkerController::class, 'show']);
 Route::put('/workers/{id}', [WorkerController::class, 'update']);
 Route::delete('/workers/{id}', [WorkerController::class, 'destroy']);
 
+//Контроллеры для отделов
 Route::apiResource('/departments', DepartmentController::class);
+
+// Контроллеры для позиций
 Route::apiResource('/positions', WorkPositionController::class);
 
 // Данные, которые мы получаем на страницах с контентом

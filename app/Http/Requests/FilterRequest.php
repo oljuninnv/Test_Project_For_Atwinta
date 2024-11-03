@@ -9,9 +9,7 @@ class FilterRequest extends FormRequest
     public function rules()
     {
         return [
-            'query' => 'nullable|string',
-            'department_id' => 'nullable|integer',
-            'position_id' => 'nullable|integer',
+            'name' => 'nullable|string',
         ];
     }
 

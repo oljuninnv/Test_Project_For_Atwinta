@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Worker;
+use App\Http\Requests\FilterRequest;
 
 class GetWorkersInformationFromDepartmentsController extends Controller
 {
@@ -48,7 +49,7 @@ class GetWorkersInformationFromDepartmentsController extends Controller
     //     ]);
     // }
 
-    public function show(Request $request, $id)
+    public function show(FilterRequest $request, $id)
 {
     $name = $request->get('name');
 

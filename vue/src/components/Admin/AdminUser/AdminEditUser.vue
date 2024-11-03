@@ -73,6 +73,10 @@
             class="mr-2 bg-gray-300 hover:bg-gray-400 rounded px-4 py-2">Отмена</button>
           <button type="submit" class="bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700">Сохранить</button>
         </div>
+
+        <ul v-if="errors.length" class="mt-4 text-red-600">
+          <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
+        </ul>
       </form>
     </div>
   </div>
@@ -89,6 +93,11 @@ const props = defineProps({
   user: {
     type: Object,
     default: () => ({})
+  },
+  errors:{
+    type:Array,
+    default: () => [],
+    required: false
   }
 });
 
@@ -104,7 +113,6 @@ function updateUser() {
   if (!props.user.is_finished) {
     formData.value.is_finished = formData.value.is_finished ? 1 : 0;
   }
-  console.log(formData.value.about);
   emit('user-updated', formData.value); // Передаем данные для обновления
 }
 

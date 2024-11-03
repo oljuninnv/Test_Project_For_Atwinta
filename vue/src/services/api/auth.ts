@@ -9,7 +9,7 @@ export const loginUser = async (params: ILoginParams): Promise<ILoginResponse> =
 
 export const registerUser = async (params: IRegisterParams): Promise<IRegisterResponse> => {
     const { data} = await axios.post('/api/auth/register', params);
-    return data.response
+    return data
 }
 
 export const ResetLink = async (params: IResetLinkParams): Promise<IResetLinkResponse> => {
@@ -22,6 +22,7 @@ export const ResetLink = async (params: IResetLinkParams): Promise<IResetLinkRes
 
 export const ResetPassword = async (params: IResetPasswordParams): Promise<IResetPasswordResponse> => {
     const { data } = await axios.post('/api/auth/restore/confirm', params);
+    console.log(data);
     return data.response
 };
 
@@ -38,8 +39,6 @@ export const GetAdmins = async (page = 1, per_page = 5, name = null, params?: IG
 };
 
 export const AddUser = async (params: IAddUserParams): Promise<IAddUserResponse> => {
-    console.log('kjhkj');
-    
     const { data } = await axios.post('/api/users', params);
     return data.response
 };

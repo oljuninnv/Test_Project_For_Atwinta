@@ -18,13 +18,6 @@
         </div>
 
         <div>
-          <label for="telegram" class="block text-sm font-medium leading-6 text-gray-900">Telegram</label>
-          <div class="mt-2">
-            <input id="telegram" name="telegram" type="text" v-model="formData.telegram" required class="input_text" />
-          </div>
-        </div>
-
-        <div>
           <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Телефон</label>
           <div class="mt-2">
             <input id="phone" name="phone" v-model="formData.phone" required class="input_text" />
@@ -96,7 +89,12 @@
           <button type="submit"
             class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-neutral-400">Добавить</button>
         </div>
-      </form>
+
+        <ul v-if="errors.length" class="mt-4 text-red-600">
+          <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
+        </ul>
+
+      </form> 
     </div>
   </div>
 </template>
@@ -107,6 +105,7 @@ import { AddUser } from '../../../services/api/auth';
 
 const emit = defineEmits(['UserAdd']);
 const showForm = ref(true);
+const errors = ref([]);
 
 const formData = ref(new FormData());
 
@@ -118,23 +117,46 @@ function handleFileUpload(event) {
 }
 
 async function addUser() {
-  formData.value.append('name', formData.value.name);
+  try{
+    formData.value.append('name', formData.value.name);
   formData.value.append('email', formData.value.email);
   formData.value.append('phone', formData.value.phone);
   formData.value.append('city', formData.value.city);
   formData.value.append('birthday', formData.value.birthday);
   formData.value.append('github', formData.value.github);
   formData.value.append('type', formData.value.type);
-  formData.value.append('telegram', formData.value.telegram);
   formData.value.append('about', formData.value.about);
   formData.value.append('login', formData.value.login);
   formData.value.append('password', formData.value.password);
 
   console.log('sss', formData.value);
-  emit('UserAdd', formData.value); // Передаем данные родительскому компоненту
+  
+  errors.value = [];
   await AddUser(formData.value);
+  emit('UserAdd', formData.value); // Передаем данные родительскому компоненту
 
   // Очищаем форму после добавления пользователя
   formData.value = new FormData();
+  }
+  catch (error) {
+    console.log(error);
+          if (error.response) {
+            switch (error.response.status) {
+              case 422:
+                alert(error.response.data.error);
+                for (const [key, messages] of Object.entries(error.response.data.messages)) {
+                  errors.value.push(...messages);
+              }
+                break;
+              default:
+                alert('Произошла неизвестная ошибка. Попробуйте позже.');
+                console.error('Произошла ошибка:', error);
+            }
+          } else {
+            alert('Проблема с сетью. Проверьте подключение к интернету.');
+            console.error('Ошибка сети:', error);
+          }
+        
+  }
 }
 </script>
