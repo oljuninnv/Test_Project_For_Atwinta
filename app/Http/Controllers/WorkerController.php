@@ -86,12 +86,17 @@ class WorkerController extends Controller
 
             $role = UserRole::where('user_id', $user->id)->first();
             if ($role) {
-                if ($role->role_id == Role::where('name', RoleEnum::ADMIN->value)->first()->id) {
+                if ($role->role_id == Role::where('name', RoleEnum::WORKER->value)->first()->id) {
                     return response()->json($worker, 201);
                 }
-                $user->roles()->attach(Role::where('name', RoleEnum::WORKER->value)->first()->id);
+                else if ($role->role_id == Role::where('name', RoleEnum::ADMIN->value)->first()->id){
+                    $user->roles()->attach(Role::where('name', RoleEnum::WORKER->value)->first()->id);
+                }
+                else{
+                    $user->roles()->update(['role_id' => Role::where('name', RoleEnum::WORKER->value)->first()->id]);
+                }
             } else {
-                $user->roles()->attach(Role::where('name', RoleEnum::USER->value)->first()->id);
+                $user->roles()->attach(Role::where('name', RoleEnum::WORKER->value)->first()->id);
             }
         }
 
@@ -150,11 +155,26 @@ class WorkerController extends Controller
             $user->save(); // Сохраняем изменения          
         }
 
-        $userRole = UserRole::where('user_id', $user->id)->first(); // Получаем первую роль пользователя
+        // Получаем все роли пользователя
+        $userRoles = UserRole::where('user_id', $user->id)->get();
 
-        if ($userRole && $userRole->role_id != Role::where('name', RoleEnum::ADMIN->value)->first()->id) {
-            $user->roles()->attach(Role::where('name', RoleEnum::WORKER->value)->first()->id);
+        foreach ($userRoles as $userRole) {
+            // Проверяем, является ли роль администратора
+            if ($userRole->role_id != Role::where('name', RoleEnum::ADMIN->value)->first()->id) {
+                $user->roles()->detach($userRole->role_id); // Удаляем роль пользователя
+                $user->roles()->attach(Role::where('name', RoleEnum::USER->value)->first()->id); // Добавляем роль USER
+            }
         }
+
+        $hasAdminRole = $userRoles->contains(function ($userRole) {
+            return $userRole->role_id == Role::where('name', RoleEnum::ADMIN->value)->first()->id;
+        });
+    
+        // Если роли ADMIN нет, добавляем роль USER
+        if (!$hasAdminRole) {
+            $user->roles()->attach(Role::where('name', RoleEnum::USER->value)->first()->id);
+        }
+
 
         $worker->delete();
 
