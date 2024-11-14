@@ -212,4 +212,10 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'frontend-url' => [
+
+        '' => env('FRONTEND_URL', 'http://localhost:5173'),
+        'restore-password' => env('FRONTEND_URL', 'http://localhost:5173') . '/auth/restore/confirm'
+    ]
+
 ];

@@ -82,7 +82,7 @@ export default {
         }
       } catch (error) {
         console.log(error);
-        // this.errorMessage = 'Произошла ошибка при изменении пароля.'; // Обработка ошибок
+        this.errorMessage = 'Произошла ошибка при изменении пароля.'; // Обработка ошибок
       }
     }
   }

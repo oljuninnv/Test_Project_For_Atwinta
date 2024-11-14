@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\UserResource;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\UserRole;
@@ -15,11 +13,15 @@ use App\Models\Worker;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
+enum RoleEnum: string
+{
+    case USER = 'User';
+}
 
 class UserController extends Controller
 {
 
-    public function __construct(protected User $user, Role $role, Worker $worker)
+    public function __construct(protected User $user)
     {
     }
 
@@ -180,16 +182,7 @@ class UserController extends Controller
 
         $user->save();
 
-        // Получение role_id для роли "User"
-        $role = Role::where('name', 'User')->first();
-
-        if ($role) {
-            // Запись в UserRole
-            UserRole::create([
-                'user_id' => $user->id,
-                'role_id' => $role->id,
-            ]);
-        }
+        $user->roles()->attach(Role::where('name', RoleEnum::USER->value)->first()->id);
 
         return response()->json([
             'user' => new UserResource($user),

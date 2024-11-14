@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\UserRole;
-use App\Models\Worker;
-use App\Models\Role;
 
 class UserRoleController extends Controller
 {

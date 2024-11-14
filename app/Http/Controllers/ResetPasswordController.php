@@ -22,9 +22,13 @@ class ResetPasswordController extends Controller
 
             if (count($user) > 0) {
                 $token = Str::random(40);
-                // $domain = URL::to('/');
-                // $url = $domain.'/auth/restore/confirm?token='.$token;
-                $url = 'http://localhost:5173/auth/restore/confirm?token=' . $token;
+
+                $url = config('app.frontend-url.restore-password') . '?' .
+                http_build_query(
+                    [
+                        'token' => $token
+                    ]
+                );
 
                 $data['url'] = $url;
                 $data['email'] = $request->email;
@@ -32,7 +36,7 @@ class ResetPasswordController extends Controller
                 $data['title'] = 'Смена пароля';
                 $data['body'] = "Пожалуйста, нажмите ниже, чтобы сменить пароль";
 
-                Mail::send('password', ['data' => $data], function ($message) use ($data) {
+                Mail::send('orderMail', ['data' => $data], function ($message) use ($data) {
                     $message->to($data['email'])->subject($data['title']);
                 });
 
@@ -60,7 +64,6 @@ class ResetPasswordController extends Controller
         $resetData = PasswordReset::where('token', $request->token)->get();
         if (isset($request->token) && count($resetData) > 0) {
             $user = User::where('email', $resetData[0]['email'])->get();
-            // return view('resetPassword', compact('user'));
 
             if ($user) {
                 return response()->json(['msg' => 'User found', 'success' => true], 200);
@@ -71,28 +74,6 @@ class ResetPasswordController extends Controller
             return response()->json(['msg' => 'Invalid token', 'success' => false], 404);
         }
     }
-
-    // public function resetPassword(Request $request)
-    // {
-    //     $request->validate([
-    //         'password' => 'required|string|min:6|confirmed'
-    //     ]);
-
-    //     $user = User::find($request->id);
-    //     $user->password =  Hash::make($request->password);
-    //     $user->save();
-
-    //     PasswordReset::where('email',$user->email)->delete();
-
-    //     // $data = [
-    //     //     'password' => $user->password,
-    //     //     'email' => $user->email,
-    //     //     'message' => 'Password changed successfully!'
-    //     // ];
-
-    //     return response()->json(['msg' => 'Password changed successfully!','success' => true], 200);
-    //     // return "<h1>Пароль успешно сменён</h1>";
-    // }
 
     public function resetPassword(RestoreConfirmRequest $request)
     {

@@ -39,7 +39,7 @@ class RegisterRequest extends FormRequest
         throw new ValidationException($validator, response()->json([
             'error' => 'Ошибка в заполнении данных.',
             'messages' => $validator->errors(),
-        ], 422)); // Изменен код на 422 для валидационных ошибок
+        ]));
     }
 
     /**

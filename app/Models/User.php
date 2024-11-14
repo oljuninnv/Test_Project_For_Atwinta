@@ -18,19 +18,6 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    // protected $fillable = [
-    //     'name',
-    //     'email',
-    //     'password',
-    //     'login',
-    //     'image',
-    //     'about',
-    //     'type',
-    //     'github',
-    //     'city',
-    //     'phone',
-    //     'birthday',
-    // ];
 
     protected $guarded = [];
 
@@ -57,7 +44,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'user_roles');
     }
 
-    public function worker() {
+    public function worker()
+    {
         return $this->belongsTo(Worker::class, 'id', 'user_id');
     }
 }

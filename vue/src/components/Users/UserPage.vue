@@ -62,7 +62,7 @@ export default {
             console.log(this.$route.params.id)
             try {
                 const workerId = this.$route.params.id; // Получаем workerId из параметров маршрута
-                const response = await axios.get(`api/user/${workerId}`); // Исправлено: добавлены обратные слэши для строки
+                const response = await axios.get(`api/user/${workerId}`);
                 this.user = response.data;
             } catch (error) {
                 console.error('Ошибка при получении данных пользователя:', error);

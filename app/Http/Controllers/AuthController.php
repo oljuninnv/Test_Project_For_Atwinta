@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\UserRole;
 use App\Models\Role;
 use App\Models\Worker;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +11,12 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\JsonResponse;
 
+enum RoleEnum: string
+{
+    case ADMIN = 'Admin';
+    case USER = 'User';
+    case WORKER = 'Worker';
+}
 class AuthController extends Controller
 {
     public function login(LoginRequest $request)
@@ -41,7 +45,6 @@ class AuthController extends Controller
             return $this->successResponse($success);
         }
 
-        // Если аутентификация не удалась, возвращаем ошибку с кодом 408
         return $this->failureResponse(['error' => 'Ошибка в заполнении данных.']);
     }
 
@@ -63,16 +66,8 @@ class AuthController extends Controller
             $user->is_finished = false;
             $user->save();
 
-            // Получение role_id для роли "User"
-            $role = Role::where('name', 'User')->first();
-
-            if ($role) {
-                // Запись в UserRole
-                UserRole::create([
-                    'user_id' => $user->id,
-                    'role_id' => $role->id,
-                ]);
-            }
+            // // Получение role_id для роли "User"
+            $user->roles()->attach(Role::where('name', RoleEnum::USER->value)->first()->id);
 
             // Генерация токена доступа
             $token = $user->createToken('Access Token')->accessToken;
