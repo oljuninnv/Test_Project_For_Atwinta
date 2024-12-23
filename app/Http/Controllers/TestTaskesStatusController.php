@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\TestTask;
+use App\Http\Requests\UpdateTestTaskesStatusRequest;
 use App\Models\TestTaskStatus;
 
 class TestTaskesStatusController extends Controller
@@ -41,26 +40,21 @@ class TestTaskesStatusController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(UpdateTestTaskesStatusRequest $request, $id)
     {
         // Находим тестовое задание по ID
         $testTask = TestTaskStatus::find($id);
 
         // Проверяем, существует ли тестовое задание
         if (!$testTask) {
-            return response()->json(['message' => 'Test task Status not found'], 404);
+            return response()->json(['message' => 'Test task status not found'], 404);
         }
-
-        // Валидация входящих данных
-        $request->validate([
-            'status' => 'required|string|max:255', // Валидация для поля status
-            'end_date' => 'required|date', // Валидация для поля end_date (может быть пустым)
-        ]);
 
         // Обновляем поля status и end_date
         $testTask->update($request->only('status', 'end_date'));
 
-        return response()->json($testTask);
+        // Возвращаем обновленное задание
+        return response()->json($testTask, 200);
     }
     public function destroy($id)
     {

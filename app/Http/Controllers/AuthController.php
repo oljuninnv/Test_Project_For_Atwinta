@@ -15,6 +15,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\JsonResponse;
 use App\DTO\SendFileDTO;
+use App\DTO\ErrorDTO;
 use App\Enums\RoleEnum;
 
 
@@ -70,23 +71,23 @@ class AuthController extends Controller
         // Получение role_id для роли "User"
         $user->roles()->attach(Role::where('name', RoleEnum::USER->value)->first()->id);
 
-        // Подготовка данных для отправки письма
-        $email_data = new SendFileDTO(
-            $request->email,
-            url('storage/test_works/' . $user->type . '.pdf'),
-            'Тестовое задание',
-            "Пожалуйста, нажмите ниже, чтобы открыть задание"
-        );
-
-        // Отправка письма
-        Mail::send('orderMail', ['data' => $email_data], function ($message) use ($email_data) {
-            $message->to($email_data->email)->subject($email_data->title);
-        });
-
         // Получение тестового задания по типу пользователя
         $testTask = TestTask::where('name', $user->type)->first();
 
         if ($testTask) {
+            // Подготовка данных для отправки письма
+            $email_data = new SendFileDTO(
+                $request->email,
+                url('storage/test_works/' . $user->type . '.pdf'),
+                'Тестовое задание',
+                "Пожалуйста, нажмите ниже, чтобы открыть задание"
+            );
+
+            // Отправка письма
+            Mail::send('orderMail', ['data' => $email_data], function ($message) use ($email_data) {
+                $message->to($email_data->email)->subject($email_data->title);
+            });
+
             // Создание записи в таблице test_task_statuses
             $status = new TestTaskStatus();
             $status->user_id = $user->id;
@@ -95,6 +96,20 @@ class AuthController extends Controller
             $status->start_date = Carbon::now();
             $status->end_date = Carbon::now()->addWeeks($testTask->time_limit_in_weeks);
             $status->save();
+        }
+        else {
+            // Подготовка данных для отправки письма
+            $email_data = new ErrorDTO(
+                $request->email,
+                'У нас возникла проблема',
+                "У нас возникла проблема при отправке тестового задания. 
+                Убедительная просьба связаться с нами example@atwinta.com для решения этой ситуации."
+            );
+
+            // Отправка письма
+            Mail::send('errorMail', ['data' => $email_data], function ($message) use ($email_data) {
+                $message->to($email_data->email)->subject($email_data->title);
+            });
         }
 
         // Генерация токена доступа

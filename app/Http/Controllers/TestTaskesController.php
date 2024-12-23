@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TestTask;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\AddTestTaskesRequest;
+use App\Http\Requests\UpdateTestTaskesRequest;
 
 class TestTaskesController extends Controller
 {
@@ -23,43 +25,24 @@ class TestTaskesController extends Controller
         return $this->successResponse($this->testTask::find($id));
     }
 
-    public function store(Request $request)
+    public function store(AddTestTaskesRequest $request)
     {
-        // Валидация входящих данных
-        $request->validate([
-            'name' => 'required|string|max:255|min:1',
-            'file' => 'required|file|mimes:pdf|max:2048',
-            'time_limit_in_weeks' => 'required|integer|min:1|max:52',
-        ], [
-            'name.required' => 'Поле имени обязательно для заполнения.',
-            'name.string' => 'Имя должно быть строкой.',
-            'name.max' => 'Имя не должно превышать 255 символов.',
-            'name.min' => 'Имя должно содержать более 1 символа.',
-            
-            'file.required' => 'Файл обязателен для загрузки.',
-            'file.file' => 'Загруженный объект должен быть файлом.',
-            'file.mimes' => 'Файл должен иметь расширение PDF.',
-            'file.max' => 'Максимальный размер файла не должен превышать 2 МБ.',
-            
-            'time_limit_in_weeks.required' => 'Поле ограничения по времени обязательно для заполнения.',
-            'time_limit_in_weeks.integer' => 'Ограничение по времени должно быть целым числом.',
-            'time_limit_in_weeks.min' => 'Ограничение по времени должно быть не менее 1 недели.',
-            'time_limit_in_weeks.max' => 'Ограничение по времени не должно превышать 52 недели.',
-        ]);
+
+        $values = $request->all();
 
         // Проверка, был ли загружен файл
         if ($request->hasFile('file')) {
-            // Сохранение файла в storage/test_tasks
-            $newFileName = $request->name.'.pdf'; // Используем str_slug для создания безопасного имени
+            
+            $newFileName =  $values['name'].'.pdf';
 
             // Сохранение файла в storage/test_works с новым именем
             $filePath = $request->file('file')->storeAs('test_works', $newFileName, 'public');
 
             // Создание нового задания
             $testTask = TestTask::create([
-                'name' => $request->name,
+                'name' => $values['name'],
                 'file' => $filePath, // Сохраняем путь к файлу
-                'time_limit_in_weeks' => $request->time_limit_in_weeks
+                'time_limit_in_weeks' =>  $values['time_limit_in_weeks']
             ]);
 
             return response()->json($testTask, 201);
@@ -68,15 +51,9 @@ class TestTaskesController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateTestTaskesRequest $request, $id)
     {
-        // dd($request->all());
-        // Валидация входящих данных
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'file' => 'nullable|file|mimes:pdf|max:2048', // Обязательный файл с расширением .pdf
-            'time_limit_in_weeks' => 'required|integer|min:1|max:52', // Обязательное поле с числом недель до окончания теста
-        ]);
+        $values = $request->all();
 
         $testTask = TestTask::find($id);
 
@@ -91,7 +68,7 @@ class TestTaskesController extends Controller
                 Storage::disk('public')->delete($testTask->file);
             }
 
-            $newFileName = $request->name.'.pdf';
+            $newFileName = $values['name'].'.pdf';
             // Сохраняем новый файл
             $filePath = $request->file('file')->storeAs('test_works', $newFileName, 'public');
             $testTask->file = $filePath; // Обновляем путь к файлу

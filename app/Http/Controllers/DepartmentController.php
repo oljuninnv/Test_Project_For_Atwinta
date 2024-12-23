@@ -14,7 +14,6 @@ class DepartmentController extends Controller
     public function index()
     {
         return $this->successResponse($this->paginate(Department::all()->toArray()));
-
     }
 
     public function show($id)

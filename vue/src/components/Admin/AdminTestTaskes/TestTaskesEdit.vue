@@ -73,6 +73,7 @@
     () => props.test_task,
     (newTestTask) => {
       formData.value = { ...newTestTask };
+      formData.value.file = null; 
     },
     { immediate: true }
   );
@@ -80,7 +81,7 @@
   // Заполнение полей при монтировании компонента
   onMounted(() => {
     formData.value.name = props.test_task?.name;
-    formData.value.file = null; // Загружаем файл, если он есть
+    formData.value.file = null; 
     formData.value.time_limit_in_weeks = props.test_task?.time_limit_in_weeks;
   });
   
