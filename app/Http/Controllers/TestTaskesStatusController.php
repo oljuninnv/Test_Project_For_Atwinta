@@ -19,37 +19,39 @@ class TestTaskesStatusController extends Controller
 
     public function show($id)
     {
+        $testTaskStatus = TestTaskStatus::find($id);
 
-        return $this->successResponse($this->testTaskStatus::find($id));
+        if (!$testTaskStatus) {
+            return response()->json(['message' => 'Test task status not found'], 404);
+        }
+
+        return (new TestTaskesStatusResource($testTaskStatus))->additional(['success' => true]);
     }
 
 
     public function update(UpdateTestTaskesStatusRequest $request, $id)
     {
-        // Находим тестовое задание по ID
-        $testTask = TestTaskStatus::find($id);
+        $testTaskStatus = TestTaskStatus::find($id);
 
-        // Проверяем, существует ли тестовое задание
-        if (!$testTask) {
+        if (!$testTaskStatus) {
             return response()->json(['message' => 'Test task status not found'], 404);
         }
 
         // Обновляем поля status и end_date
-        $testTask->update($request->only('status', 'end_date'));
+        $testTaskStatus->update($request->only('status', 'end_date'));
 
         // Возвращаем обновленное задание
-        return response()->json($testTask, 200);
+        return (new TestTaskesStatusResource($testTaskStatus))->additional(['success' => true]);
     }
     public function destroy($id)
     {
-        $testTask = TestTaskStatus::find($id);
+        $testTaskStatus = TestTaskStatus::find($id);
 
-        if (!$testTask) {
+        if (!$testTaskStatus) {
             return response()->json(['message' => 'Test task Status not found'], 404);
         }
 
-        // Удаление задания из базы данных
-        $testTask->delete();
+        $testTaskStatus->delete();
 
         return response()->json(['message' => 'Test task status deleted successfully']);
     }

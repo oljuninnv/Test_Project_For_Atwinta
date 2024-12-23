@@ -38,32 +38,29 @@ class AdminController extends Controller
             $usersQuery->where('name', 'like', "%$name%");
         }
 
-        return UserResource::collection($usersQuery->paginate($request->get('per_page')));
+        return UserResource::collection($usersQuery->get());
     }
 
     public function delete_admin($id)
     {
-        // Находим пользователя по ID
         $user = User::find($id);
 
-        // Проверяем, существует ли пользователь
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            return response()->json(['error' => 'Пользователя не существует'], 404);
         }
-        foreach ($user->roles as $i) {
-            if ($i->name == RoleEnum::ADMIN->value) {
-                $user->roles()->detach($i->id);
+
+        foreach ($user->roles as $role) {
+            if ($role->name == RoleEnum::ADMIN->value) {
+                $user->roles()->detach($role->id);
 
                 if ($user->worker_id) {
                     $user->roles()->attach(Role::where('name', RoleEnum::WORKER->value)->first()->id);
-                } else if (!$user->roles->contains('name', RoleEnum::USER)) {
+                } else if (!$user->roles->contains('name', RoleEnum::USER->value)) {
                     $user->roles()->attach(Role::where('name', RoleEnum::USER->value)->first()->id);
                 }
-                return $this->successResponse('Role deleted successfully');
-
+                return $this->successResponse('Администратор был успешно удалён');
             }
         }
-
-        return response()->json(['error' => 'User does not have Admin role'], 400);
+        return response()->json(['error' => 'Пользователь не является администратором'], 400);
     }
 }

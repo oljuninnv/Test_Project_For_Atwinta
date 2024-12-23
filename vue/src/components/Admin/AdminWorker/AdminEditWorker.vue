@@ -66,6 +66,7 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'worker-updated']);
 const formData = ref({
+  user_id:null,
   worker_id: null,
   position_id: null,
   department_id: null,
@@ -97,7 +98,8 @@ const fetchData = async () => {
 watch(() => props.workerData, (newWorker) => {
   if (newWorker) {
     console.log('Данные работника перед заполнением:', newWorker);
-    formData.value.worker_id = newWorker.worker_id;
+    formData.value.user_id = newWorker.user.id;
+    formData.value.worker_id = newWorker.id;
     formData.value.position_id = newWorker.position.id;
     formData.value.department_id = newWorker.department.id;
     formData.value.adopted_at = newWorker.adopted_at || new Date().toISOString().split('T')[0];

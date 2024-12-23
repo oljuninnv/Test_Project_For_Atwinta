@@ -18,10 +18,10 @@ class WorkPositionController extends Controller
         $position = Position::find($id);
 
         if (!$position) {
-            return response()->json(['message' => 'Position not found'], 404);
+            return response()->json(['message' => 'Должность не найдена'], 404);
         }
 
-        return response()->json($position);
+        return (new PositionResource($position))->additional(['success' => true]);
     }
 
     public function store(Request $request)
@@ -30,7 +30,7 @@ class WorkPositionController extends Controller
 
         $position = Position::create($request->all());
 
-        return response()->json($position, 201);
+        return (new PositionResource($position))->additional(['success' => true]);
     }
 
     public function update(Request $request, $id)
@@ -40,12 +40,12 @@ class WorkPositionController extends Controller
         $position = Position::find($id);
 
         if (!$position) {
-            return response()->json(['message' => 'Position not found'], 404);
+            return response()->json(['message' => 'Должность не найдена'], 404);
         }
 
         $position->update($request->all());
 
-        return response()->json($position);
+        return (new PositionResource($position))->additional(['success' => true]);
     }
 
     public function destroy($id)
@@ -53,11 +53,11 @@ class WorkPositionController extends Controller
         $position = Position::find($id);
 
         if (!$position) {
-            return response()->json(['message' => 'Position not found'], 404);
+            return response()->json(['message' => 'Должность не найдена'], 404);
         }
 
         $position->delete();
 
-        return response()->json(['message' => 'Position deleted successfully']);
+        return response()->json(['message' => 'Должность удалена успешно'], 204);
     }
 }

@@ -94,11 +94,6 @@ class ResetPasswordController extends Controller
         // Удаление записи о сбросе пароля
         PasswordReset::where('email', $user->email)->delete();
 
-        $data = [
-            'msg' => 'Password changed successfully!',
-            'success' => true,
-        ];
-
-        return $this->successResponse($data);
+        return response()->json(['success' => true, 'msg' => 'Пароль успешно сменён']);
     }
 }

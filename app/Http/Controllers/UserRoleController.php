@@ -4,42 +4,52 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\UserRole;
+use App\Models\Role;
+use App\Http\Resources\UserRoleResource;
+use App\Enums\RoleEnum;
 
 class UserRoleController extends Controller
 {
     // Получение всех записей
-    public function index()
+    public function index(Request $request)
     {
-        $userRoles = UserRole::with(['user', 'role'])->get();
-        return response()->json($userRoles);
+        $userRoles = UserRole::with(['user', 'role'])->paginate($request->get('per_page'));
+        return UserRoleResource::collection($userRoles); 
     }
 
-    // Добавление новой записи
     public function store(Request $request)
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
         ]);
 
-        // Проверяем, существует ли запись в таблице user_roles для данного user_id
+        $adminRole = Role::where('name', RoleEnum::ADMIN->value)->first();
+
+        if (!$adminRole) {
+            return response()->json(['message' => 'Роль Администратор, не найден'], 404);
+        }
+
         $existingUserRole = UserRole::where('user_id', $request->user_id)->first();
 
         if ($existingUserRole) {
-            // Если запись существует, обновляем role_id на 1
-            $existingUserRole->update(['role_id' => 1]);
-            return response()->json($existingUserRole, 200); // Возвращаем обновлённую запись
+            $existingUserRole->update(['role_id' => $adminRole->id]);
+            return (new UserRoleResource($existingUserRole))->additional(['success' => true]); 
         }
 
-        // Если записи не существует, создаём новую
-        $userRole = UserRole::create($request->all());
-        return response()->json($userRole, 201);
+        // Создаем новую запись с role_id Admin
+        $userRole = UserRole::create([
+            'user_id' => $request->user_id,
+            'role_id' => $adminRole->id,
+        ]);
+
+        return (new UserRoleResource($userRole))->additional(['success' => true]); 
     }
 
     // Получение конкретной записи
     public function show($id)
     {
         $userRole = UserRole::with(['user', 'role'])->findOrFail($id);
-        return response()->json($userRole);
+        return (new UserRoleResource($userRole))->additional(['success' => true]); 
     }
 
     // Обновление конкретной записи
@@ -55,7 +65,7 @@ class UserRoleController extends Controller
 
         $userRole->update($request->all());
 
-        return response()->json($userRole);
+        return (new UserRoleResource($userRole))->additional(['success' => true]); 
     }
 
     // Удаление конкретной записи
@@ -63,6 +73,6 @@ class UserRoleController extends Controller
     {
         $userRole = UserRole::findOrFail($id);
         $userRole->delete();
-        return response()->json(null, 204);
+        return response()->json(['message' => 'UserRole deleted succesfully']);
     }
 }

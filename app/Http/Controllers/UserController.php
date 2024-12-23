@@ -26,28 +26,24 @@ class UserController extends Controller
     {
         $name = $request->get('name');
 
-        // Создаем запрос к модели User
         $query = User::query();
         
-        // Если указано имя, добавляем условие поиска
         if ($name) {
             $query->where('name', 'like', "%$name%");
         }
 
-        // Пагинация
-        $users = $query->paginate($request->get('per_page'));
-
-        // Возвращаем пагинированный ответ с использованием JsonResource
-        return UserResource::collection($users);
+        return UserResource::collection($query->paginate($request->get('per_page')));
     }
 
-    public function show(User $user)
+    public function show($id)
     {
-        return response([
-            'user' => new
-                UserResource($user),
-            'message' => 'Success'
-        ], 200);
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        return (new UserResource($user))->additional(['success' => true]);
 
     }
 
@@ -83,7 +79,6 @@ class UserController extends Controller
                     ->orderBy('created_at', 'desc') // Получаем последний статус
                     ->first();
 
-                // Если статус найден, обновляем его
                 if ($status) {
                     $status->status = 'выполнен';
                     $status->save();
@@ -126,10 +121,7 @@ class UserController extends Controller
         // Сохраняем обновленные данные
         $user->save();
 
-        return response()->json([
-            'user' => new UserResource($user),
-            'message' => 'Успешно обновлено'
-        ], 200);
+        return UserResource::collection(collect([$user]))->additional(['success' => true]);
     }
 
     public function destroy(User $user)
@@ -159,7 +151,7 @@ class UserController extends Controller
     public function store(RegisterRequest $request)
     {
         $values = $request->all();
-        // dd($values);
+
         // Создание нового пользователя
         $user = new User();
         $user->name = $values['name'];
@@ -178,25 +170,19 @@ class UserController extends Controller
             // Получаем логин пользователя
             $login = $user->login;
 
-            // Получаем расширение загружаемого файла
             $extension = $request->file('image')->getClientOriginalExtension();
 
-            // Формируем имя файла
             $imageName = $login . '.' . $extension;
 
-            // Сохраняем файл с новым именем
             $imagePath = $request->file('image')->storeAs('users', $imageName, 'public'); // Сохраняем на диск public
 
-            // Сохраняем путь к изображению в базе данных
             $user->image = $imagePath;
         }
+        
         $user->save();
 
         $user->roles()->attach(Role::where('name', RoleEnum::USER->value)->first()->id);
 
-        return response()->json([
-            'user' => new UserResource($user),
-            'message' => 'Новый пользователь создан'
-        ], 201);
+        return UserResource::collection(collect([$user]))->additional(['success' => true]);
     }
 }

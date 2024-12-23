@@ -60,7 +60,7 @@
           <td class="px-6 py-4 text-right">
             <ul class="flex gap-5 text-right">
               <li><a href="#" @click.prevent="editWorker(worker)" class="action_href">Edit</a></li>
-              <li><a href="#" @click.prevent="deleteWorker(worker.worker_id)" class="action_href">Delete</a></li>
+              <li><a href="#" @click.prevent="deleteWorker(worker.id)" class="action_href">Delete</a></li>
             </ul>
           </td>
         </tr>

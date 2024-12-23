@@ -17,7 +17,9 @@ use Illuminate\Http\JsonResponse;
 use App\DTO\SendFileDTO;
 use App\DTO\ErrorDTO;
 use App\Enums\RoleEnum;
-
+use App\Http\Resources\UserResource;
+use App\Http\Resources\RoleResource;
+use App\Http\Resources\DepartmentResource;
 
 class AuthController extends Controller
 {

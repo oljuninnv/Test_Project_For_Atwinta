@@ -19,8 +19,13 @@ class DepartmentController extends Controller
 
     public function show($id)
     {
+        $department = Department::find($id);
 
-        return $this->successResponse($this->department::find($id));
+        if (!$department) {
+            return response()->json(['message' => 'Отдел не найден'], 404);
+        }
+
+        return (new DepartmentResource($department))->additional(['success' => true]);
     }
 
     public function store(Request $request)
@@ -29,7 +34,7 @@ class DepartmentController extends Controller
 
         $department = Department::create($request->all());
 
-        return response()->json($department, 201);
+        return (new DepartmentResource($department))->additional(['success' => true]);
     }
 
     public function update(Request $request, $id)
@@ -39,12 +44,12 @@ class DepartmentController extends Controller
         $department = Department::find($id);
 
         if (!$department) {
-            return response()->json(['message' => 'Department not found'], 404);
+            return response()->json(['message' => 'Отдел не найден'], 404);
         }
 
         $department->update($request->all());
 
-        return response()->json($department);
+        return (new DepartmentResource($department))->additional(['success' => true]);
     }
 
     public function destroy($id)
@@ -52,11 +57,11 @@ class DepartmentController extends Controller
         $department = Department::find($id);
 
         if (!$department) {
-            return response()->json(['message' => 'Department not found'], 404);
+            return response()->json(['message' => 'Отдел не найден'], 404);
         }
 
         $department->delete();
 
-        return response()->json(['message' => 'Department deleted successfully']);
+        return response()->json(['message' => 'Отдел успешно удалён'], 204); // Успешное удаление
     }
 }

@@ -46,7 +46,8 @@ async function fetchUsers() {
   try {
     const response = await axios.get('/api/get_others');
     users.value = response.data;
-    filteredUsers.value = users.value.response;
+    console.log(response.data);
+    filteredUsers.value = users.value.data;
     console.log(filteredUsers.value);
   } catch (error) {
     console.error('Ошибка при получении пользователей:', error);

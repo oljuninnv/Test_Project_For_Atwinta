@@ -9,6 +9,7 @@ use App\Models\UserRole;
 use App\Models\Role;
 use App\Enums\RoleEnum;
 use App\Http\Resources\WorkerResource;
+use App\Http\Requests\WorkerRequest;
 
 class WorkerController extends Controller
 {
@@ -27,32 +28,21 @@ class WorkerController extends Controller
             });
         }
 
-        // Пагинация
-        $workers = $query->paginate($request->get('per_page'));
-
         // Возвращаем пагинированный ответ с использованием JsonResource
-        return WorkerResource::collection($workers);
+        return WorkerResource::collection($query->paginate($request->get('per_page')));
     }
 
     // Добавить нового работника
-    public function store(Request $request)
+    public function store(WorkerRequest $request)
     {
         try {
-            $request->validate([
-                'user_id' => 'nullable|exists:users,id',
-                'department_id' => 'nullable|exists:departments,id',
-                'position_id' => 'nullable|exists:work_positions,id',
-                'adopted_at' => 'required|date',
-            ]);
-
-            // Проверяем, указан ли user_id и существует ли работник с таким user_id
             if ($request->user_id) {
                 $existingWorker = Worker::where('user_id', $request->user_id)->first();
 
                 if ($existingWorker) {
                     $user = User::where('id', $request->user_id)->first();
                     if ($user && $user->worker_id) {
-                        return response()->json(['error' => 'Пользователь с таким user_id уже имеет назначенного работника.'], 409);
+                        return response()->json(['error' => 'Пользователь с таким user_id уже является работником.'], 409);
                     }
                 }
             }
@@ -78,7 +68,7 @@ class WorkerController extends Controller
                 }
             }
 
-            return response()->json($worker, 201);
+            return (new WorkerResource($worker))->additional(['success' => true]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -93,19 +83,12 @@ class WorkerController extends Controller
             return response()->json(['message' => 'Работник не найден'], 404);
         }
 
-        return response()->json($worker);
+        return (new WorkerResource($worker))->additional(['success' => true]);
     }
 
     // Обновить поля работника
-    public function update(Request $request, $id)
+    public function update(WorkerRequest $request, $id)
     {
-        $request->validate([
-            'user_id' => 'nullable|exists:users,id',
-            'department_id' => 'nullable|exists:departments,id',
-            'position_id' => 'nullable|exists:work_positions,id',
-            'adopted_at' => 'date',
-        ]);
-
         $worker = Worker::find($id);
 
         if (!$worker) {
@@ -114,7 +97,7 @@ class WorkerController extends Controller
 
         $worker->update($request->all());
 
-        return response()->json($worker);
+        return (new WorkerResource($worker))->additional(['success' => true]);
     }
 
     // Удалить работника по ID
@@ -126,14 +109,13 @@ class WorkerController extends Controller
             return response()->json(['message' => 'Работник не найден'], 404);
         }
 
-        $user = User::where('worker_id', $id)->first(); // Найдите пользователя с соответствующим worker_id
+        $user = User::where('worker_id', $id)->first();
 
         if ($user) {
             $user->worker_id = null; // Обнуляем worker_id
             $user->save(); // Сохраняем изменения          
         }
 
-        // Получаем все роли пользователя
         $userRoles = UserRole::where('user_id', $user->id)->get();
 
         foreach ($userRoles as $userRole) {
@@ -148,7 +130,6 @@ class WorkerController extends Controller
             return $userRole->role_id == Role::where('name', RoleEnum::ADMIN->value)->first()->id;
         });
 
-        // Если роли ADMIN нет, добавляем роль USER
         if (!$hasAdminRole) {
             $user->roles()->attach(Role::where('name', RoleEnum::USER->value)->first()->id);
         }

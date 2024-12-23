@@ -22,19 +22,22 @@ class TestTaskesController extends Controller
 
     public function show($id)
     {
+        $position = TestTask::find($id);
 
-        return $this->successResponse($this->testTask::find($id));
+        if (!$position) {
+            return response()->json(['message' => 'Тестовое задание не найдено'], 404);
+        }
+
+        return (new TestTaskesResource($position))->additional(['success' => true]);
     }
 
     public function store(AddTestTaskesRequest $request)
     {
-
         $values = $request->all();
 
         // Проверка, был ли загружен файл
         if ($request->hasFile('file')) {
-            
-            $newFileName =  $values['name'].'.pdf';
+            $newFileName = $values['name'] . '.pdf';
 
             // Сохранение файла в storage/test_works с новым именем
             $filePath = $request->file('file')->storeAs('test_works', $newFileName, 'public');
@@ -42,11 +45,11 @@ class TestTaskesController extends Controller
             // Создание нового задания
             $testTask = TestTask::create([
                 'name' => $values['name'],
-                'file' => $filePath, // Сохраняем путь к файлу
-                'time_limit_in_weeks' =>  $values['time_limit_in_weeks']
+                'file' => $filePath,
+                'time_limit_in_weeks' => $values['time_limit_in_weeks']
             ]);
 
-            return response()->json($testTask, 201);
+            return (new TestTaskesResource($testTask)->additional(['success' => true]));
         } else {
             return response()->json(['message' => 'Файл не загружен.'], 400);
         }
@@ -59,9 +62,9 @@ class TestTaskesController extends Controller
         $testTask = TestTask::find($id);
 
         if (!$testTask) {
-            return response()->json(['message' => 'Test task not found'], 404);
+            return response()->json(['message' => 'Тестовое задание не найдено'], 404);
         }
-        
+
         // Если файл загружен, сохраняем его
         if ($request->hasFile('file')) {
             // Удаляем старый файл, если он существует
@@ -69,33 +72,30 @@ class TestTaskesController extends Controller
                 Storage::disk('public')->delete($testTask->file);
             }
 
-            $newFileName = $values['name'].'.pdf';
-            // Сохраняем новый файл
+            $newFileName = $values['name'] . '.pdf';
             $filePath = $request->file('file')->storeAs('test_works', $newFileName, 'public');
-            $testTask->file = $filePath; // Обновляем путь к файлу
+            $testTask->file = $filePath; 
         }
 
-        // Обновляем остальные поля
         $testTask->update($request->only('name', 'time_limit_in_weeks'));
 
-        return response()->json($testTask);
+        return (new TestTaskesResource($testTask)->additional(['success' => true]));
     }
+
     public function destroy($id)
     {
         $testTask = TestTask::find($id);
 
         if (!$testTask) {
-            return response()->json(['message' => 'Test task not found'], 404);
+            return response()->json(['message' => 'Тестовое задание не найдено'], 404);
         }
 
-        // Удаление файла из storage/test_tasks
         if ($testTask->file) {
             Storage::disk('public')->delete($testTask->file);
         }
 
-        // Удаление задания из базы данных
         $testTask->delete();
 
-        return response()->json(['message' => 'Test task deleted successfully']);
+        return response()->json(['message' => 'Тестовое задание удалено'], 204); // Успешное удаление
     }
 }
