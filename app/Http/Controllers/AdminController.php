@@ -43,7 +43,8 @@ class AdminController extends Controller
 
     public function delete_admin($id)
     {
-        $user = User::find($id);
+        
+        $user = User::with('roles')->find($id);
 
         if (!$user) {
             return response()->json(['error' => 'Пользователя не существует'], 404);
@@ -54,13 +55,17 @@ class AdminController extends Controller
                 $user->roles()->detach($role->id);
 
                 if ($user->worker_id) {
-                    $user->roles()->attach(Role::where('name', RoleEnum::WORKER->value)->first()->id);
-                } else if (!$user->roles->contains('name', RoleEnum::USER->value)) {
-                    $user->roles()->attach(Role::where('name', RoleEnum::USER->value)->first()->id);
+                    $workerRoleId = Role::where('name', RoleEnum::WORKER->value)->first()->id;
+                    $user->roles()->attach($workerRoleId);
+                } elseif (!$user->roles->contains('name', RoleEnum::USER->value)) {
+                    $userRoleId = Role::where('name', RoleEnum::USER->value)->first()->id;
+                    $user->roles()->attach($userRoleId);
                 }
+
                 return $this->successResponse('Администратор был успешно удалён');
             }
         }
+
         return response()->json(['error' => 'Пользователь не является администратором'], 400);
     }
 }
