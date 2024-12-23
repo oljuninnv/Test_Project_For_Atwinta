@@ -125,9 +125,9 @@ const loadUsers = async (page = 1, name = null) => {
     const response = await GetUsers(page, pagination.value.per_page, name);
     console.log(response);
     users.value = response.data;
-    pagination.value.total = response.total;
-    pagination.value.last_page = response.last_page;
-    console.log(users.value);
+    pagination.value.total = response.meta.total;
+    pagination.value.last_page = response.meta.last_page;
+    console.log(pagination.value.last_page);
     loading.value = false; // Скрываем загрузку
 
   } catch (error) {

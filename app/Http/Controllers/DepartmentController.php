@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Department;
+use App\Http\Resources\DepartmentResource;
 
 class DepartmentController extends Controller
 {
@@ -11,9 +12,9 @@ class DepartmentController extends Controller
     {
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->successResponse($this->paginate(Department::all()->toArray()));
+        return DepartmentResource::collection(Department::paginate($request->get('per_page')));
     }
 
     public function show($id)

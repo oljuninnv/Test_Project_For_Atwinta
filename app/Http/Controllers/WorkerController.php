@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Role;
 use App\Enums\RoleEnum;
+use App\Http\Resources\WorkerResource;
 
 class WorkerController extends Controller
 {
@@ -16,7 +17,7 @@ class WorkerController extends Controller
     {
         $name = $request->get('name');
 
-        // Получаем всех работников с пользователями, позициями и отделами
+        // Создаем запрос к модели Worker с загрузкой связанных данных
         $query = Worker::with(['user', 'position', 'department']);
 
         // Если есть поисковый запрос, добавляем условие
@@ -26,26 +27,11 @@ class WorkerController extends Controller
             });
         }
 
-        // Получаем результаты
-        $workers = $query->get()->map(function ($worker) {
-            return [
-                'worker_id' => $worker->id,
-                'adopted_at' => $worker->adopted_at,
-                'user' => $worker->user,
-                'position' => [
-                    'id' => $worker->position->id,
-                    'name' => $worker->position->name,
-                ],
-                'department' => [
-                    'id' => $worker->department->id,
-                    'name' => $worker->department->name,
-                ],
-            ];
-        });
+        // Пагинация
+        $workers = $query->paginate($request->get('per_page'));
 
-        return $this->successResponse(
-            $this->paginate($workers->toArray()) // Пагинация результатов
-        );
+        // Возвращаем пагинированный ответ с использованием JsonResource
+        return WorkerResource::collection($workers);
     }
 
     // Добавить нового работника

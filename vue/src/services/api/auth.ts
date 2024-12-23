@@ -29,7 +29,7 @@ export const ResetPassword = async (params: IResetPasswordParams): Promise<IRese
 export const GetUsers = async (page = 1, per_page = 5, name = null, params?: IGetUsersParams): Promise<IGetUsersResponse> => {
     const { data } = await axios.get(`/api/users?page=${page}&per_page=${per_page}`  + (name ? `&name=${name}` : ''));
     console.log(data);    
-    return data.response; 
+    return data; 
 };
 
 export const GetAdmins = async (page = 1, per_page = 5, name = null, params?: IGetUsersParams): Promise<IGetUsersResponse> => {
@@ -40,6 +40,7 @@ export const GetAdmins = async (page = 1, per_page = 5, name = null, params?: IG
 
 export const AddUser = async (params: IAddUserParams): Promise<IAddUserResponse> => {
     const { data } = await axios.post('/api/users', params);
+    console.log(data); 
     return data.response
 };
 

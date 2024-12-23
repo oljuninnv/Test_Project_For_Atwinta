@@ -26,21 +26,19 @@ class UserController extends Controller
     {
         $name = $request->get('name');
 
-        if (!!$name) {
-            $users = User::where('name', 'like', "%$name%")->orWhere('name')->get();
-        } else {
-            $users = User::all();
+        // Создаем запрос к модели User
+        $query = User::query();
+        
+        // Если указано имя, добавляем условие поиска
+        if ($name) {
+            $query->where('name', 'like', "%$name%");
         }
-        return $this->successResponse(
-            $this->paginate(
-                collect(
-                    UserResource::collection(
-                        $users,
-                    )
-                )
-                    ->toArray()
-            )
-        );
+
+        // Пагинация
+        $users = $query->paginate($request->get('per_page'));
+
+        // Возвращаем пагинированный ответ с использованием JsonResource
+        return UserResource::collection($users);
     }
 
     public function show(User $user)
@@ -160,18 +158,20 @@ class UserController extends Controller
 
     public function store(RegisterRequest $request)
     {
+        $values = $request->all();
+        // dd($values);
         // Создание нового пользователя
         $user = new User();
-        $user->name = $request->get('name');
-        $user->login = $request->get('login');
-        $user->email = $request->get('email');
-        $user->phone = $request->get('phone');
-        $user->city = $request->get('city');
-        $user->type = $request->get('type');
-        $user->birthday = $request->get('birthday');
-        $user->github = $request->get('github');
-        $user->about = $request->get('about');
-        $user->password = Hash::make($request->get('password'));
+        $user->name = $values['name'];
+        $user->login = $values['login'];
+        $user->email = $values['email'];
+        $user->phone = $values['phone'];
+        $user->city = $values['city'];
+        $user->type = $values['type'];
+        $user->birthday = $values['birthday'];
+        $user->github = $values['github'];
+        $user->about = $values['about'];
+        $user->password = Hash::make($values['password']);
         $user->is_finished = false;
 
         if ($request->hasFile('image')) {
@@ -190,7 +190,6 @@ class UserController extends Controller
             // Сохраняем путь к изображению в базе данных
             $user->image = $imagePath;
         }
-
         $user->save();
 
         $user->roles()->attach(Role::where('name', RoleEnum::USER->value)->first()->id);

@@ -180,8 +180,8 @@ async function fetchWorkers(page = 1, name = null) {
     console.log(response);
     workers.value = response.data;
     console.log(workers.value);
-    pagination.value.total = response.total;
-    pagination.value.last_page = response.last_page;
+    pagination.value.total = response.meta.total;
+    pagination.value.last_page = response.meta.last_page;
     console.log(workers.value);
     loading.value = false; // Скрываем загрузку
 
