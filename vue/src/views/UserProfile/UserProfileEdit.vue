@@ -29,8 +29,8 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="email" class="block text-gray-700 font-bold mb-2">Telegram:</label>
-                    <input type="text" id="email" v-model="userData.user.telegram"
+                    <label for="telegram" class="block text-gray-700 font-bold mb-2">Telegram:</label>
+                    <input type="text" id="telegram" v-model="userData.user.telegram"
                         class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите telegram..." />
                 </div>
 
@@ -46,11 +46,18 @@
                         class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите номер..." required />
                 </div>
 
-                <div class="mb-4">
+                <div v-if="!userData.user.is_finished" class="mb-4" >
                     <label for="github" class="block text-gray-700 font-bold mb-2">GitHub:</label>
                     <input type="text" id="github" v-model="userData.user.github"
                         class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите github..."
                         required />
+                </div>
+
+                <div v-else class="mb-4" >
+                    <label for="github" class="block text-gray-700 font-bold mb-2">GitHub:</label>
+                    <input type="text" id="github" v-model="userData.user.github"
+                        class="border rounded w-full py-2 px-3 text-gray-700" placeholder="Введите github..."
+                        required disabled/>
                 </div>
 
                 <div class="mb-4">

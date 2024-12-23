@@ -9,7 +9,7 @@ class LoginRequest extends FormRequest
 {
     public function authorize()
     {
-        return true; // Разрешаем всем пользователям использовать этот запрос
+        return true;
     }
 
     public function rules()

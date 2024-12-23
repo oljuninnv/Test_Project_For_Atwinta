@@ -15,6 +15,6 @@ class SendRequest extends FormRequest
 
     public function authorize()
     {
-        return true; // Разрешаем все запросы
+        return true; 
     }
 }

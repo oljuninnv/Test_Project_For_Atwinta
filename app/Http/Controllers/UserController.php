@@ -12,11 +12,8 @@ use App\Models\Role;
 use App\Models\Worker;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-
-enum RoleEnum: string
-{
-    case USER = 'User';
-}
+use App\Models\TestTaskStatus;
+use App\Enums\RoleEnum;
 
 class UserController extends Controller
 {
@@ -80,6 +77,20 @@ class UserController extends Controller
         // Устанавливаем значение is_finished, если оно передано в запросе
         if ($request->has('is_finished')) {
             $user->is_finished = $request->get('is_finished');
+
+            // Проверяем, если пользователь завершил задание
+            if ($user->is_finished) {
+                // Получаем последний статус тестового задания для пользователя
+                $status = TestTaskStatus::where('user_id', $user->id)
+                    ->orderBy('created_at', 'desc') // Получаем последний статус
+                    ->first();
+
+                // Если статус найден, обновляем его
+                if ($status) {
+                    $status->status = 'выполнен';
+                    $status->save();
+                }
+            }
         }
 
         // Устанавливаем значение birthday, если оно передано в запросе
@@ -161,7 +172,7 @@ class UserController extends Controller
         $user->github = $request->get('github');
         $user->about = $request->get('about');
         $user->password = Hash::make($request->get('password'));
-        $user->is_finished = false; 
+        $user->is_finished = false;
 
         if ($request->hasFile('image')) {
             // Получаем логин пользователя

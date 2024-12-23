@@ -39,6 +39,19 @@
         </li>
         <hr>
         <li>
+          <a href="#" @click.prevent="showTable('test_taskes')"
+            class="flex items-center space-x-3 text-gray-700 p-2 rounded-md font-medium hover:bg-gray-200 focus:bg-gray-200 focus:shadow-outline">
+            <span>Тестовые задания</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" @click.prevent="showTable('test_taskes_status')"
+            class="flex items-center space-x-3 text-gray-700 p-2 rounded-md font-medium hover:bg-gray-200 focus:bg-gray-200 focus:shadow-outline">
+            <span>Статус выполнения тестовых заданий</span>
+          </a>
+        </li>
+        <li>
+          <hr>
           <a href="#"
             class="flex items-center space-x-3 text-gray-700 p-2 rounded-md font-medium hover:bg-gray-200 focus:bg-gray-200 focus:shadow-outline">
             <router-link to="/departments" class="flex gap-2">
@@ -63,6 +76,8 @@
         <AdminDepartmentTable v-if="activeTable === 'departments'" />
         <AdminWorkPositionsTable v-if="activeTable === 'work-positions'" />
         <AdminTable v-if="activeTable === 'admins'" />
+        <AdminTestTaskes v-if="activeTable === 'test_taskes'" />
+        <AdminTestTaskesStatus v-if="activeTable === 'test_taskes_status'" />
       </div>
     </div>
   </div>
@@ -80,6 +95,8 @@ import AdminDepartmentTable from "../../components/Admin/AdminDepartment/AdminDe
 import AdminWorkerTable from "../../components/Admin/AdminWorker/AdminWorkerTable.vue";
 import AdminWorkPositionsTable from "../../components/Admin/AdminWorkerPosition/AdminWorkPositionsTable.vue";
 import AdminTable from "../../components/Admin/AdminTable/AdminTable.vue";
+import AdminTestTaskes from "../../components/Admin/AdminTestTaskes/TestTaskesTable.vue";
+import AdminTestTaskesStatus from "../../components/Admin/AdminTestTaskesStatus/TestTaskesStatusTable.vue";
 
 const activeTable = ref('users');
 

@@ -17,14 +17,14 @@ class UpdateUserRequest extends FormRequest
             'city' => 'required|string|max:255',
             'phone' => 'required|phone',
             'telegram' => 'required|regex:/^https?:\/\/t\.me\/[A-Za-z0-9_]+$/',
-            'birthday' => 'required|date_format:Y-m-d',
+            'birthday' => 'nullable|date_format:Y-m-d',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp'
         ];
     }
 
     public function authorize()
     {
-        return true; // Разрешаем все запросы
+        return true;
     }
 
     public function messages()

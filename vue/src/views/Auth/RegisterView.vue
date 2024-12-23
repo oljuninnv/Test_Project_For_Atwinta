@@ -41,17 +41,17 @@
           </div>
         </div>
 
-        <div>
+        <!-- <div>
           <label for="github" class="block text-sm font-medium leading-6 text-gray-900">Ссылка на GitHub</label>
           <div class="mt-2">
             <input id="github" name="github" v-model="formData.github" required class="input_text" />
           </div>
-        </div>
+        </div> -->
 
-        <label for="type" class="block text-sm font-medium leading-6 text-gray-900">Тип</label>
+        <label for="type" class="block text-sm font-medium leading-6 text-gray-900">Тип задания</label>
         <div class="mt-2">
           <select id="type" name="type" v-model="formData.type" class="input_text">
-            <option value="" disabled>Выберите тип</option>
+            <option value="" disabled>Выберите тип задания</option>
             <option value="front">Frontend</option>
             <option value="back">Backend</option>
           </select>
@@ -114,7 +114,6 @@ export default {
         phone: '',
         city: '',
         birthday: '',
-        github: '',
         login: '',
         password: '',
         type: ''
@@ -129,6 +128,7 @@ export default {
         const response = await registerUser(this.formData);
         console.log(response);
         if (response.access_token) {
+          alert('Регистрация прошла успешно. Проверьте почту, чтобы получить тестовое задание');
           localStorage.setItem('token', response.access_token);
           this.$router.push('/auth/login');
         }

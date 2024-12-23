@@ -17,13 +17,13 @@ class UsersTableSeeder extends Seeder
             'email' => 'admin@example.com',
             'image' => null,
             'about' => 'This is the admin user.',
-            'type' => 'back', // или 'front', в зависимости от ваших требований
+            'type' => 'worker', 
             'github' => null,
             'city' => null,
             'is_finished' => true,
             'phone' => null,
             'birthday' => null,
-            'password' => Hash::make('password'), // Не забудьте изменить на более безопасный пароль
+            'password' => Hash::make('password'), 
             'created_at' => now(),
             'updated_at' => now(),
     ]);
@@ -31,7 +31,7 @@ class UsersTableSeeder extends Seeder
         // Создание связи с ролью Admin в таблице UserRole
         DB::table('user_roles')->insert([
             'user_id' => $userId,
-            'role_id' => 1, // Предполагается, что ID роли Admin равен 1
+            'role_id' => 1, // ID роли Admin равен 1
         ]);
         // Создание второго пользователя (обычный пользователь)
         $userId2 = DB::table('users')->insertGetId([
@@ -46,7 +46,7 @@ class UsersTableSeeder extends Seeder
             'is_finished' => false,
             'phone' => null,
             'birthday' => null,
-            'password' => Hash::make('user_password'), // Не забудьте изменить на более безопасный пароль
+            'password' => Hash::make('user_password'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -54,7 +54,7 @@ class UsersTableSeeder extends Seeder
         // Создание связи с ролью User в таблице UserRole
         DB::table('user_roles')->insert([
             'user_id' => $userId2,
-            'role_id' => 2, // Предполагается, что ID роли User равен 2
+            'role_id' => 2, // ID роли User равна 2
         ]);
 
         // Создание третьего пользователя (работник отдела разработки)
@@ -70,7 +70,7 @@ class UsersTableSeeder extends Seeder
             'is_finished' => true,
             'phone' => null,
             'birthday' => null,
-            'password' => Hash::make('worker_password'), // Не забудьте изменить на более безопасный пароль
+            'password' => Hash::make('worker_password'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -78,14 +78,14 @@ class UsersTableSeeder extends Seeder
         // Создание связи с ролью Worker в таблице UserRole
         DB::table('user_roles')->insert([
             'user_id' => $userId3,
-            'role_id' => 3, // Предполагается, что ID роли Worker равен 3
+            'role_id' => 3, // ID роли Worker равен 3
         ]);
 
         // Добавление работника в таблицу workers
         $workerId = DB::table('workers')->insertGetId([
             'user_id' => $userId3, // Связываем с ID пользователя
-            'department_id' => 1, // Предполагается, что ID отдела разработки равен 1
-            'position_id' => 1, // Предполагается, что ID позиции 'Руководитель отдела' равен 1
+            'department_id' => 1, // ID отдела разработки равен 1
+            'position_id' => 1, // ID позиции 'Руководитель отдела' равен 1
             'adopted_at' => now(),
         ]);
 

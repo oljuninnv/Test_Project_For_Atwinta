@@ -49,6 +49,7 @@
             <option value="" disabled>Выберите тип</option>
             <option value="front">Frontend</option>
             <option value="back">Backend</option>
+            <option value="worker">Worker</option>
           </select>
         </div>
 

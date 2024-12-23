@@ -6,13 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use App\Http\Resources\UserResource;
-
-enum RoleEnum: string
-{
-    case ADMIN = 'Admin';
-    case USER = 'User';
-    case WORKER = 'Worker';
-}
+use App\Enums\RoleEnum;
 
 class AdminController extends Controller
 {
@@ -22,7 +16,7 @@ class AdminController extends Controller
 
         // Получаем пользователей с ролью Admin
         $usersQuery = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Admin');
+            $query->where('name', RoleEnum::ADMIN->value);
         });
 
         if ($name) {
@@ -49,7 +43,7 @@ class AdminController extends Controller
 
         // Получаем пользователей с ролью Admin
         $usersQuery = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Worker')->orWhere('name', 'User');
+            $query->where('name', RoleEnum::WORKER->value)->orWhere('name', RoleEnum::USER->value);
         });
 
         if ($name) {
@@ -77,7 +71,7 @@ class AdminController extends Controller
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
-        foreach($user->roles as $i) {
+        foreach ($user->roles as $i) {
             if ($i->name == RoleEnum::ADMIN->value) {
                 $user->roles()->detach($i->id);
 

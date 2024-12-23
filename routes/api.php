@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\GetWorkersInformationFromDepartmentsController;
 use App\Http\Controllers\Api\GetUserInformationController;
 use App\Http\Controllers\Api\GetDataForWorkerController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\TestTaskesController;
+use App\Http\Controllers\TestTaskesStatusController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -45,6 +47,19 @@ Route::post('/workers', [WorkerController::class, 'store']);
 Route::get('/workers/{id}', [WorkerController::class, 'show']);
 Route::put('/workers/{id}', [WorkerController::class, 'update']);
 Route::delete('/workers/{id}', [WorkerController::class, 'destroy']);
+
+// Контроллеры для тестовых заданий
+Route::get('/test_taskes', [TestTaskesController::class, 'index']);
+Route::post('/test_taskes', [TestTaskesController::class, 'store']);
+Route::get('/test_taskes/{id}', [TestTaskesController::class, 'show']);
+Route::put('/test_taskes/{id}', [TestTaskesController::class, 'update']);
+Route::delete('/test_taskes/{id}', [TestTaskesController::class, 'destroy']);
+
+// Контроллеры для статусов выполнения тестовых заданий
+Route::get('/test_taskes_status', [TestTaskesStatusController::class, 'index']);
+Route::get('/test_taskes_status/{id}', [TestTaskesStatusController::class, 'show']);
+Route::put('/test_taskes_status/{id}', [TestTaskesStatusController::class, 'update']);
+Route::delete('/test_taskes_status/{id}', [TestTaskesStatusController::class, 'destroy']);
 
 //Контроллеры для отделов
 Route::apiResource('/departments', DepartmentController::class);
