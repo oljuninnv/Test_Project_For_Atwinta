@@ -159,8 +159,8 @@ async function fetchDepartments(page = 1, name = null) {
     console.log(response);
     departments.value = response.data;
     console.log(departments.value);
-    pagination.value.total = response.total;
-    pagination.value.last_page = response.last_page;
+    pagination.value.total = response.meta.total;
+    pagination.value.last_page = response.meta.last_page;
     console.log(pagination.value);
     loading.value = false; // Скрываем загрузку
 
