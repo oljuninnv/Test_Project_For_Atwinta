@@ -23,20 +23,8 @@ class AdminController extends Controller
             $usersQuery->where('name', 'like', "%$name%");
         }
 
-        $users = $usersQuery->get();
-
-        return $this->successResponse(
-            $this->paginate(
-                collect(
-                    UserResource::collection(
-                        $users,
-                    )
-                )
-                    ->toArray()
-            )
-        );
+        return UserResource::collection($usersQuery->paginate($request->get('per_page')));
     }
-
     public function get_others(Request $request)
     {
         $name = $request->get('name');
@@ -50,16 +38,7 @@ class AdminController extends Controller
             $usersQuery->where('name', 'like', "%$name%");
         }
 
-        $users = $usersQuery->get();
-
-        return $this->successResponse(
-            collect(
-                UserResource::collection(
-                    $users,
-                )
-            )
-                ->toArray()
-        );
+        return UserResource::collection($usersQuery->paginate($request->get('per_page')));
     }
 
     public function delete_admin($id)

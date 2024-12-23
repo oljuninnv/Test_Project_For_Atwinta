@@ -5,32 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\UpdateTestTaskesStatusRequest;
 use App\Models\TestTaskStatus;
+use App\Http\Resources\TestTaskesStatusResource;
 
 class TestTaskesStatusController extends Controller
 {
     public function __construct(protected TestTaskStatus $testTaskStatus)
     {
     }
-    public function index()
+    public function index(Request $request)
     {
-        // Получаем все записи TestTaskStatus с загруженными связанными данными
-        $testTaskStatuses = TestTaskStatus::with(['user', 'testTask'])->paginate();
-
-        // Формируем массив с нужными данными
-        $result = $testTaskStatuses->map(function ($status) {
-            return [
-                'id' => $status->id,
-                'status' => $status->status,
-                'end_date' => $status->end_date,
-                'start_date' => $status->start_date,
-                'user_name' => $status->user->name, // Имя пользователя
-                'test_task_name' => $status->testTask->name, // Имя тестового задания
-            ];
-        });
-
-        return $this->successResponse(
-            $this->paginate($result->toArray()) // Пагинация результатов
-        );
+        return TestTaskesStatusResource::collection(TestTaskStatus::with(['user', 'testTask'])->paginate($request->get('per_page')));
     }
 
     public function show($id)

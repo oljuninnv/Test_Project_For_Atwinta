@@ -105,7 +105,7 @@ const updateItemsPerPage = (event) => {
 
 const pagination = ref({
   page: 1,
-  per_page: 3,
+  per_page: 1,
   total: 1,
   last_page: 1,
 });
@@ -155,8 +155,8 @@ async function fetchtest_taskes_status(page = 1, name = null) {
       const response = await GetTaskesStatus(page, pagination.value.per_page, name); // Передаем параметр name
       console.log(response);
       test_taskes_status.value = response.data; // Обновляем данные
-      pagination.value.total = response.total;
-      pagination.value.last_page = response.last_page;
+      pagination.value.total = response.meta.total;
+      pagination.value.last_page = response.meta.last_page;
       loading.value = false; // Скрываем загрузку
   } catch (error) {
       console.error('Ошибка при загрузке данных:', error);

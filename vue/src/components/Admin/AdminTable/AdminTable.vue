@@ -78,7 +78,7 @@ import axios from '../../../libs/axios';
 
 const pagination = ref({
   page: 1,
-  per_page: 3,
+  per_page: 1,
   total: 1,
   last_page: 1,
 });
@@ -131,8 +131,8 @@ const loadUsers = async (page = 1, name = null) => {
     console.log(response);
     users.value = response.data;
     console.log(users);
-    pagination.value.total = response.total;
-    pagination.value.last_page = response.last_page;
+    pagination.value.total = response.meta.total;
+    pagination.value.last_page = response.meta.last_page;
     console.log(users.value);
     loading.value = false; // Скрываем загрузку
 

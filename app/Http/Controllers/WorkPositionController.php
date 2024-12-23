@@ -4,26 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Position;
+use App\Http\Resources\PositionResource;
 
 class WorkPositionController extends Controller
 {
     public function index(Request $request)
     {
-        $name = $request->get('name');
-
-        if (!!$name) {
-            $positions = Position::where('name', 'like', "%$name%")->orWhere('name')->get();
-        } else {
-            $positions = Position::all();
-        }
-        return $this->successResponse(
-            $this->paginate(
-                collect(
-                    $positions,
-                )
-                    ->toArray()
-            )
-        );
+        return PositionResource::collection(Position::paginate($request->get('per_page')));
     }
 
     public function show($id)

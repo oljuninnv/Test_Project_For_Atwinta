@@ -7,15 +7,16 @@ use App\Models\TestTask;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\AddTestTaskesRequest;
 use App\Http\Requests\UpdateTestTaskesRequest;
+use App\Http\Resources\TestTaskesResource;
 
 class TestTaskesController extends Controller
 {
     public function __construct(protected TestTask $testTask)
     {
     }
-    public function index()
+    public function index(Request $request)
     {
-        return $this->successResponse($this->paginate(TestTask::all()->toArray()));
+        return TestTaskesResource::collection(TestTask::paginate($request->get('per_page')));
 
     }
 

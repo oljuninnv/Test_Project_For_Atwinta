@@ -115,8 +115,8 @@ async function fetchPositions(page = 1, name = null) {
     console.log(response);
     positions.value = response.data;
     console.log(positions.value);
-    pagination.value.total = response.total;
-    pagination.value.last_page = response.last_page;
+    pagination.value.total = response.meta.total;
+    pagination.value.last_page = response.meta.last_page;
     console.log(positions.value);
     loading.value = false; // Скрываем загрузку
 
