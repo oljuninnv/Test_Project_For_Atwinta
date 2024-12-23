@@ -105,7 +105,7 @@ const updateItemsPerPage = (event) => {
 
 const pagination = ref({
   page: 1,
-  per_page: 1,
+  per_page: 3,
   total: 1,
   last_page: 1,
 });

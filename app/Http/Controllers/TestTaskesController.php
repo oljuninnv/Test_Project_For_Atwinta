@@ -49,7 +49,7 @@ class TestTaskesController extends Controller
                 'time_limit_in_weeks' => $values['time_limit_in_weeks']
             ]);
 
-            return (new TestTaskesResource($testTask)->additional(['success' => true]));
+            return (new TestTaskesResource($testTask))->additional(['success' => true]);
         } else {
             return response()->json(['message' => 'Файл не загружен.'], 400);
         }
@@ -79,7 +79,7 @@ class TestTaskesController extends Controller
 
         $testTask->update($request->only('name', 'time_limit_in_weeks'));
 
-        return (new TestTaskesResource($testTask)->additional(['success' => true]));
+        return (new TestTaskesResource($testTask))->additional(['success' => true]);
     }
 
     public function destroy($id)
