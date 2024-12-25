@@ -1,19 +1,20 @@
 <?php
 
 namespace App\Rules;
+
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class PhoneFormatRule implements Rule
 {
-    protected $message;
+    protected ?string $message;
 
     /**
      * Create a new rule instance.
      *
-     * @param string $message
+     * @param string|null $message
      */
-    public function __construct($message = null)
+    public function __construct(?string $message = null)
     {
         $this->message = $message;
     }
@@ -26,19 +27,19 @@ class PhoneFormatRule implements Rule
      *
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         $phone = preg_replace('/\(|\)|-|\+|\s/', '', $value);
 
         return is_numeric($phone) && strlen((string)$phone) === 11;
     }
 
-    public static function handle() : string
+    public static function handle(): string
     {
         return 'phone';
     }
 
-    public function validate(string $attribute, $value, $params, Validator $validator) : bool
+    public function validate(string $attribute, $value, array $params, Validator $validator): bool
     {
         $handle = $this->handle();
 
@@ -54,7 +55,7 @@ class PhoneFormatRule implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return $this->message ?? 'Phone format of :attribute is wrong';
     }

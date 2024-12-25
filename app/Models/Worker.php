@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Position;
 use App\Models\User;
 use App\Models\Department;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Worker extends Model
 {
@@ -21,17 +22,32 @@ class Worker extends Model
         'adopted_at',
     ];
 
-    public function user()
+    /**
+     * Get the user associated with the worker.
+     *
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function department()
+    /**
+     * Get the department associated with the worker.
+     *
+     * @return BelongsTo
+     */
+    public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }
 
-    public function position()
+    /**
+     * Get the position associated with the worker.
+     *
+     * @return BelongsTo
+     */
+    public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class);
     }

@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -18,7 +18,6 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-
     protected $guarded = [];
 
     /**
@@ -39,12 +38,22 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function roles()
+    /**
+     * Get the roles associated with the user.
+     *
+     * @return BelongsToMany
+     */
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_roles');
     }
 
-    public function worker()
+    /**
+     * Get the worker associated with the user.
+     *
+     * @return BelongsTo
+     */
+    public function worker(): BelongsTo
     {
         return $this->belongsTo(Worker::class, 'id', 'user_id');
     }

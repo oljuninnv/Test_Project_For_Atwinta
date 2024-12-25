@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RestoreConfirmRequest;
 use Illuminate\Http\Request;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Models\PasswordReset;
 use App\DTO\PasswordResetDTO;

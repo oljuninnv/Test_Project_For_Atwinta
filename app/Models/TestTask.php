@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TestTask extends Model
 {
@@ -15,8 +16,12 @@ class TestTask extends Model
         'time_limit_in_weeks', // Время на выполнение в неделях
     ];
 
-    // Определение связи с TestTaskStatus
-    public function statuses()
+    /**
+     * Get the statuses associated with the test task.
+     *
+     * @return HasMany
+     */
+    public function statuses(): HasMany
     {
         return $this->hasMany(TestTaskStatus::class);
     }

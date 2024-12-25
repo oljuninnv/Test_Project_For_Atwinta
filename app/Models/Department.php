@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Department extends Model
 {
@@ -11,9 +12,14 @@ class Department extends Model
 
     public $table = 'departments';
 
-    public $fillable = ['name'];
+    protected $fillable = ['name'];
 
-    public function workers()
+    /**
+     * Get the workers associated with the department.
+     *
+     * @return HasMany
+     */
+    public function workers(): HasMany
     {
         return $this->hasMany(Worker::class);
     }

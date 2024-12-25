@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TestTaskStatus extends Model
 {
@@ -17,14 +18,22 @@ class TestTaskStatus extends Model
         'end_date',
     ];
 
-    // Определение связи с User
-    public function user()
+    /**
+     * Get the user associated with the test task status.
+     *
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Определение связи с TestTask
-    public function testTask()
+    /**
+     * Get the test task associated with the test task status.
+     *
+     * @return BelongsTo
+     */
+    public function testTask(): BelongsTo
     {
         return $this->belongsTo(TestTask::class);
     }

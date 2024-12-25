@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Role;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Carbon;
 use App\Models\Worker;
 use App\Models\TestTask;
@@ -17,9 +17,6 @@ use Illuminate\Http\JsonResponse;
 use App\DTO\SendFileDTO;
 use App\DTO\ErrorDTO;
 use App\Enums\RoleEnum;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\RoleResource;
-use App\Http\Resources\DepartmentResource;
 
 class AuthController extends Controller
 {
